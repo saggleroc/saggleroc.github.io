@@ -1,7 +1,7 @@
 (function () {
   "use strict";
   const $ = id => document.getElementById(id);
-  const { equipmentReadinessRecords, encodeMessage } = window.FleetPulse;
+  const { encodeMessage } = window.FleetPulse;
 
   function parseDocument(text) {
     let document;
@@ -10,29 +10,34 @@
     } catch (error) {
       throw new Error(`Invalid JSON: ${error.message}`);
     }
-    return { document, records: equipmentReadinessRecords(document) };
+    if (document?.format !== "NAVDASH-0800") throw new Error('Expected format "NAVDASH-0800".');
+    if (!document.report?.ship?.name) throw new Error("Report ship identity is required.");
+    for (const key of ["missionAreas", "manning", "casreps"]) {
+      if (!Array.isArray(document[key])) throw new Error(`${key} must be an array.`);
+    }
+    const shipNames = new Set([document.report.ship.name, document.report.ship.hullNumber].filter(Boolean).map(value => value.toLowerCase()));
+    for (const rows of [document.missionAreas, document.manning, document.casreps]) {
+      const otherShip = rows.find(row => row.ship && !shipNames.has(String(row.ship).toLowerCase()));
+      if (otherShip) throw new Error(`Data for another ship is not allowed: ${otherShip.ship}.`);
+    }
+    return document;
   }
 
   async function generate() {
     $("message").value = "";
     $("status").textContent = "Validating and encoding dashboard data…";
     try {
-      const { document, records } = parseDocument($("json").value);
+      const document = parseDocument($("json").value);
       const asOf = $("asOf").value ? new Date($("asOf").value).toISOString() : document.report.asOf || document.generatedAt;
-      const packet = {
-        f: "ND1", d: "readiness", t: asOf, u: "h",
-        r: records.map(item => [
-          item.ship, item.repair_hours, item.is_this_ship ? 1 : 0, item.failure_rate,
-          item.failures, item.uptime, item.long_repairs, item.weekly_repairs
-        ])
-      };
+      const packet = { f: "ND1", d: "0800", t: asOf, r: {...document, report: {...document.report, asOf}} };
       const result = await encodeMessage(packet, {
         subject: $("subject").value.trim() || "DASHBOARD UPDATE",
         body: $("body").value.trim()
       });
       $("message").value = result.message;
       const reduction = Math.round((1 - result.encodedLength / (result.rawLength * 1.6)) * 100);
-      $("status").textContent = `${records.length} records: ${result.rawLength} raw bytes → ${result.byteLength} ${result.compression.toLowerCase()} bytes → ${result.encodedLength} Base32 characters (${Math.max(0, reduction)}% smaller).`;
+      const count = document.missionAreas.length + document.manning.length + document.casreps.length;
+      $("status").textContent = `${count} report rows: ${result.rawLength} raw bytes → ${result.byteLength} ${result.compression.toLowerCase()} bytes → ${result.encodedLength} Base32 characters (${Math.max(0, reduction)}% smaller).`;
       $("loadSample").classList.remove("next-action");
       $("saveVirtual").classList.add("next-action");
     } catch (error) {
@@ -43,7 +48,7 @@
   async function loadSample() {
     $("status").textContent = "Loading the built-in synthetic sample…";
     try {
-      const response = await fetch("./examples/equipment-readiness.json");
+      const response = await fetch("./examples/0800-report.json");
       if (!response.ok) throw new Error(`Sample returned HTTP ${response.status}`);
       $("json").value = await response.text();
       await generate();

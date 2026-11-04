@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Dashboard Message Generator</title>
+  <title>0800 Report Message Generator</title>
   <style>
     :root { color-scheme: dark; --navy:#07182c; --panel:#102741; --line:#31506f; --blue:#61b7ff; --text:#eef6ff; --muted:#abc0d3; }
     * { box-sizing: border-box; }
@@ -38,23 +38,23 @@
 </head>
 <body>
 <main>
-  <div class="topline"><div><h1>Dashboard Message Generator</h1><p class="lead">Import canonical JSON, package it as text-safe Base32, and produce a complete message for transmission.</p></div><button id="resetApp" class="reset">Reset entire demo</button></div>
+  <div class="topline"><div><h1>0800 Report Message Generator</h1><p class="lead">Package a single-ship 0800 report as a verified, offline text message.</p></div><button id="resetApp" class="reset">Reset entire demo</button></div>
   <div class="demo-bar"><strong>TEMP DEMO</strong><span>Step 1: load data. Step 2: save the generated message.</span><button id="loadSample" class="next-action">1. Load synthetic sample</button></div>
   <div class="grid">
     <section class="card">
-      <label for="jsonFile">Canonical JSON snapshot</label>
+      <label for="jsonFile">0800 report JSON</label>
       <input id="jsonFile" type="file" accept=".json,application/json">
       <label for="json">JSON data</label>
-      <textarea id="json" spellcheck="false" placeholder="Import a JSON snapshot to populate dashboard data."></textarea>
-      <p class="note">See <code>examples/equipment-readiness.json</code> for a synthetic example. CSV mappings are a later import feature.</p>
+      <textarea id="json" spellcheck="false" placeholder="Import an 0800 report JSON file."></textarea>
+      <p class="note">Uses the synthetic <code>examples/0800-report.json</code>. All rows must belong to the ship named in the report.</p>
       <label for="asOf">Data as of</label>
       <input id="asOf" type="datetime-local">
       <label for="subject">Subject</label>
-      <input id="subject" value="EQUIPMENT REPAIR PERFORMANCE DASHBOARD UPDATE">
+      <input id="subject" value="USS ARLEIGH BURKE (DDG 51) 0800 REPORT">
       <label for="body">Message body</label>
-      <textarea id="body">Readiness dashboard update follows.
+      <textarea id="body">Commanding Officer's 0800 report follows.
 
-This update contains fleet-level equipment readiness data. Open the approved offline dashboard viewer and import the complete message.</textarea>
+This message contains a single-ship operational summary. Open the offline 0800 report viewer and import the complete message.</textarea>
       <button id="generate">Generate message</button>
     </section>
     <section class="card">
@@ -62,7 +62,7 @@ This update contains fleet-level equipment readiness data. Open the approved off
         <button id="saveVirtual" class="virtual">2. Save to simulated drive</button>
         <button id="copy" class="secondary">Copy</button>
         <button id="download" class="secondary">Download .txt</button>
-        <a id="openViewer" class="viewer-button" href="./viewer.html">3. Open in viewer →</a>
+        <a id="openViewer" class="viewer-button" href="./0800.html">3. Open in viewer →</a>
       </div>
       <label for="message">Generated message</label>
       <textarea id="message" readonly spellcheck="false" placeholder="The complete message will appear here."></textarea>

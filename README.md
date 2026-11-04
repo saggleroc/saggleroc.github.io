@@ -5,7 +5,7 @@ Static GitHub Pages site for the FleetHacker 2026 proof of concept.
 - `/` is the project overview.
 - `/app/` is the temporary demo launcher.
 - `/app/sender.html` generates a dashboard message.
-- `/app/viewer.html` decodes the message and renders the offline dashboard.
+- `/app/0800.html` decodes the message and renders the ship's offline 0800 report.
 - `/presentation/` hosts the integrated SAGGLE ROC HTML slide deck.
 
 The hosted demo includes a simulated browser-local drive. It stores generated
