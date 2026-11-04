@@ -38,6 +38,18 @@
     }
   }
 
+  async function loadSample() {
+    $("status").textContent = "Loading the built-in synthetic sample…";
+    try {
+      const response = await fetch("./examples/equipment-readiness.json");
+      if (!response.ok) throw new Error(`Sample returned HTTP ${response.status}`);
+      $("json").value = await response.text();
+      await generate();
+    } catch (error) {
+      $("status").textContent = `Could not load the sample: ${error.message}`;
+    }
+  }
+
   $("jsonFile").addEventListener("change", async event => {
     const file = event.target.files[0];
     if (!file) return;
@@ -51,6 +63,7 @@
     }
   });
   $("generate").addEventListener("click", generate);
+  $("loadSample").addEventListener("click", loadSample);
   $("copy").addEventListener("click", async () => {
     try {
       await navigator.clipboard.writeText($("message").value);
@@ -72,8 +85,15 @@
     link.click();
     setTimeout(() => URL.revokeObjectURL(link.href), 1000);
   });
+  $("saveVirtual").addEventListener("click", async () => {
+    if (!$("message").value) await generate();
+    if (!$("message").value) return;
+    const name = `navdash-${new Date().toISOString().replace(/[:.]/g, "-")}.txt`;
+    VirtualDrive.write(name, $("message").value);
+    $("status").innerHTML = `Saved <strong>${name}</strong> to the simulated drive. <a href="./viewer.html" style="color:#61b7ff">Open it in the viewer →</a>`;
+  });
 
   const local = new Date(Date.now() - new Date().getTimezoneOffset() * 60000);
   $("asOf").value = local.toISOString().slice(0, 16);
-  $("status").textContent = "No data loaded. Import examples/equipment-readiness.json to begin.";
+  $("status").textContent = "Load the built-in synthetic sample or import your own JSON to begin.";
 })();

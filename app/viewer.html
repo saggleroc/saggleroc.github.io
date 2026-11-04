@@ -18,6 +18,12 @@
     textarea { min-height:145px; resize:vertical; font-family:ui-monospace,Consolas,monospace; font-size:12px; margin-top:12px; }
     button { padding:10px 14px; border:0; border-radius:7px; background:var(--blue); color:#052039; font-weight:800; cursor:pointer; }
     button.secondary { background:#d5e5f3; }
+    button.virtual { background:#73e2a7; }
+    dialog { width:min(680px,calc(100% - 32px)); color:var(--text); background:#102741; border:1px solid #486b8c; border-radius:14px; padding:20px; box-shadow:0 25px 80px #000a; }
+    dialog::backdrop { background:#020812cc; }
+    .virtual-files { display:grid; gap:10px; margin:18px 0; }
+    .virtual-file { display:flex; justify-content:space-between; gap:15px; align-items:center; padding:13px; background:#07182c; border:1px solid #31506f; border-radius:8px; }
+    .virtual-file small { display:block; color:var(--muted); }
     .table-tools { display:flex; flex-wrap:wrap; gap:10px; align-items:center; }
     .table-tools input[type=file] { width:auto; max-width:280px; }
     #tableStatus { flex-basis:100%; margin:0; }
@@ -83,6 +89,8 @@
   <p class="lead">Import or paste a complete text message. The viewer detects and decodes the embedded dashboard payload locally.</p>
 
   <section class="card">
+    <p class="muted"><strong style="color:#73e2a7">TEMP DEMO:</strong> Open a message saved by the generator without using your computer's file system.</p>
+    <button id="browseVirtual" class="virtual">Browse simulated drive</button>
     <div class="import-grid">
       <div>
         <label for="messageFile">Message file</label>
@@ -94,6 +102,13 @@
     <textarea id="message" spellcheck="false" placeholder="Paste SUBJECT, body, and NAVDASH payload here..."></textarea>
     <div id="status" role="status">Waiting for a message.</div>
   </section>
+
+  <dialog id="virtualBrowser">
+    <h2>Simulated file browser</h2>
+    <p class="muted">These demo files live only in this browser's local storage. They are not uploaded or saved to your computer.</p>
+    <div id="virtualFiles" class="virtual-files"></div>
+    <button id="closeVirtual" class="secondary">Close</button>
+  </dialog>
 
   <div id="dashboard" hidden>
     <section class="card banner">
@@ -147,12 +162,45 @@
   </div>
 </main>
 <script src="./shared/browser-foundation.js"></script>
+<script src="./shared/virtual-drive.js"></script>
 <script src="src/table-files.js"></script>
 <script>
   "use strict";
   const $ = id => document.getElementById(id);
   let currentDashboard = null;
   let shoreDashboard = null;
+
+  function refreshVirtualBrowser() {
+    const container = $("virtualFiles");
+    container.replaceChildren();
+    const files = VirtualDrive.list();
+    if (!files.length) {
+      const empty = document.createElement("p");
+      empty.className = "muted";
+      empty.textContent = "No virtual files yet. Generate a message, then choose “Save to simulated drive.”";
+      container.append(empty);
+      return;
+    }
+    files.forEach(file => {
+      const row = document.createElement("div");
+      row.className = "virtual-file";
+      const details = document.createElement("div");
+      const name = document.createElement("strong");
+      name.textContent = file.name;
+      const saved = document.createElement("small");
+      saved.textContent = `Saved ${new Date(file.savedAt).toLocaleString()} · ${(file.content.length / 1024).toFixed(1)} KB`;
+      details.append(name, saved);
+      const open = document.createElement("button");
+      open.textContent = "Open";
+      open.addEventListener("click", async () => {
+        $("message").value = file.content;
+        $("virtualBrowser").close();
+        await decode();
+      });
+      row.append(details, open);
+      container.append(row);
+    });
+  }
 
   async function decodeDashboardMessage(text) {
     const decoded = await FleetPulse.decodeMessage(text);
@@ -363,6 +411,11 @@
     timer = setTimeout(decode, 400);
   });
   $("decode").addEventListener("click", decode);
+  $("browseVirtual").addEventListener("click", () => {
+    refreshVirtualBrowser();
+    $("virtualBrowser").showModal();
+  });
+  $("closeVirtual").addEventListener("click", () => $("virtualBrowser").close());
   $("messageFile").addEventListener("change", async event => {
     const file = event.target.files[0];
     if (file) {

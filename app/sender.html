@@ -19,6 +19,10 @@
     #message { min-height:490px; }
     button { margin:14px 8px 0 0; padding:10px 15px; border:0; border-radius:7px; cursor:pointer; font-weight:750; background:var(--blue); color:#05203a; }
     button.secondary { background:#d5e5f3; }
+    button.virtual { background:#73e2a7; }
+    .demo-bar { display:flex; flex-wrap:wrap; align-items:center; gap:10px; margin:0 0 18px; padding:14px 18px; border:1px solid #4f7595; border-radius:10px; background:#0c223b; }
+    .demo-bar strong { color:#73e2a7; }
+    .demo-bar button { margin:0; }
     .note, #status { color:var(--muted); font-size:13px; }
     #status { min-height:20px; margin-top:10px; }
     @media (max-width:760px) { .grid { grid-template-columns:1fr; } }
@@ -28,6 +32,7 @@
 <main>
   <h1>Dashboard Message Generator</h1>
   <p class="lead">Import canonical JSON, package it as text-safe Base32, and produce a complete message for transmission.</p>
+  <div class="demo-bar"><strong>TEMP DEMO</strong><span>No local files needed.</span><button id="loadSample">Load synthetic sample</button><a href="./viewer.html" style="color:var(--blue)">Open viewer →</a></div>
   <div class="grid">
     <section class="card">
       <label for="jsonFile">Canonical JSON snapshot</label>
@@ -50,11 +55,13 @@ This update contains fleet-level equipment readiness data. Open the approved off
       <textarea id="message" readonly spellcheck="false" placeholder="The complete message will appear here."></textarea>
       <button id="copy" class="secondary">Copy</button>
       <button id="download" class="secondary">Download .txt</button>
+      <button id="saveVirtual" class="virtual">Save to simulated drive</button>
       <div id="status" role="status"></div>
     </section>
   </div>
 </main>
 <script src="./shared/browser-foundation.js"></script>
+<script src="./shared/virtual-drive.js"></script>
 <script src="./sender/browser-app.js"></script>
 </body>
 </html>
