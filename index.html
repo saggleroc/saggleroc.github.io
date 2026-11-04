@@ -3,39 +3,32 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Temporary FleetHacker project overview and offline 0800 report prototype.">
-  <title>FleetHacker | Temporary Project Dashboard</title>
+  <meta name="description" content="SAGGLE ROC standardizes, automates, and visualizes the ship's 0800 report.">
+  <title>SAGGLE ROC | FleetHacker 2026</title>
   <style>
     :root{color-scheme:dark;--ink:#f4f8fc;--muted:#a8bed0;--navy:#061526;--panel:#0d2945;--line:#315a7d;--blue:#65bdff;--gold:#ffd166;--green:#73e2a7}
     *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(circle at 80% 5%,#15507d 0,transparent 28%),linear-gradient(145deg,#030d18,#071d34 70%,#0b2e50);color:var(--ink);font:16px/1.55 system-ui,-apple-system,Segoe UI,sans-serif}
-    a{color:inherit}.wrap{width:min(1120px,calc(100% - 32px));margin:auto}.temp{display:inline-flex;align-items:center;gap:7px;padding:5px 9px;border:1px solid #e7b84e;border-radius:999px;color:var(--gold);background:#ffd16614;font-size:.72rem;font-weight:850;letter-spacing:.08em}.temp::before{content:"TEMP";background:var(--gold);color:#18202a;padding:1px 5px;border-radius:4px}
-    nav{display:flex;align-items:center;justify-content:space-between;padding:22px 0}.brand{font-weight:900;letter-spacing:.08em}.navlinks{display:flex;gap:20px;color:var(--muted);font-size:.9rem}.navlinks a{text-decoration:none}.hero{padding:70px 0 58px;display:grid;grid-template-columns:1.2fr .8fr;gap:44px;align-items:center}.eyebrow{color:var(--blue);font-weight:850;letter-spacing:.12em;font-size:.75rem}.hero h1{font-size:clamp(2.7rem,6vw,5.2rem);line-height:.98;letter-spacing:-.045em;margin:18px 0}.hero p{max-width:680px;color:var(--muted);font-size:1.15rem}.actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px}.button{display:inline-block;text-decoration:none;padding:12px 18px;border-radius:8px;background:var(--blue);color:#052039;font-weight:850}.button.secondary{background:transparent;color:var(--ink);border:1px solid var(--line)}
-    .signal{background:linear-gradient(145deg,#123b61,#091d33);border:1px solid var(--line);border-radius:18px;padding:24px;box-shadow:0 24px 60px #0007}.signal h2{margin:12px 0 4px}.pulse{height:130px;display:flex;align-items:end;gap:9px;margin:22px 0}.pulse i{display:block;flex:1;min-height:12%;height:var(--h);border-radius:5px 5px 2px 2px;background:linear-gradient(var(--blue),#2479b8)}.status{display:flex;justify-content:space-between;border-top:1px solid var(--line);padding-top:14px;color:var(--muted)}.status strong{color:var(--green)}
+    a{color:inherit}.wrap{width:min(1120px,calc(100% - 32px));margin:auto}
+    nav{display:flex;align-items:center;justify-content:space-between;padding:22px 0}.brand{font-weight:900;letter-spacing:.08em}.navlinks{display:flex;gap:20px;color:var(--muted);font-size:.9rem}.navlinks a{text-decoration:none}.hero{padding:90px 0 76px;max-width:900px}.eyebrow{color:var(--blue);font-weight:850;letter-spacing:.12em;font-size:.75rem}.hero h1{font-size:clamp(3rem,7vw,6rem);line-height:.98;letter-spacing:-.045em;margin:18px 0}.hero p{max-width:720px;color:var(--muted);font-size:1.15rem}.actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px}.button{display:inline-block;text-decoration:none;padding:12px 18px;border-radius:8px;background:var(--blue);color:#052039;font-weight:850}.button.secondary{background:transparent;color:var(--ink);border:1px solid var(--line)}
     .presentation-shell{display:grid;grid-template-columns:64px minmax(0,1fr) 64px;gap:14px;align-items:center}.presentation-frame{width:100%;aspect-ratio:16/9;border:1px solid var(--line);border-radius:16px;background:#050b17;box-shadow:0 24px 60px #0008}.slide-arrow{height:92px;border:1px solid var(--line);border-radius:12px;background:#102e4d;color:var(--blue);font-size:2.4rem;cursor:pointer}.slide-arrow:hover{border-color:var(--blue);background:#163c61}.presentation-help{text-align:center;color:var(--muted);font-size:.9rem;margin-top:12px}
     section{padding:55px 0}.section-head{max-width:700px;margin-bottom:28px}.section-head h2{font-size:clamp(2rem,4vw,3rem);margin:8px 0}.section-head p{color:var(--muted)}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.card{background:linear-gradient(145deg,#102e4d,#091d32);border:1px solid var(--line);border-radius:14px;padding:22px}.number{color:var(--blue);font-weight:900;font-size:.8rem}.card h3{margin:10px 0}.card p{color:var(--muted);margin-bottom:0}.flow{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.flow .card{position:relative}.flow .card:not(:last-child)::after{content:"→";position:absolute;right:-13px;top:50%;z-index:2;color:var(--gold);font-size:1.4rem}.callout{display:flex;justify-content:space-between;gap:30px;align-items:center;background:linear-gradient(110deg,#12446f,#112740);border:1px solid #46769c;border-radius:16px;padding:30px}.callout h2{margin:0 0 8px}.callout p{margin:0;color:var(--muted)}footer{padding:40px 0 60px;color:var(--muted);font-size:.85rem}
-    @media(max-width:850px){.hero{grid-template-columns:1fr;padding-top:40px}.grid{grid-template-columns:1fr}.flow{grid-template-columns:1fr 1fr}.flow .card::after{display:none}.presentation-shell{grid-template-columns:46px minmax(0,1fr) 46px}.slide-arrow{height:70px}}@media(max-width:560px){.navlinks{display:none}.flow{grid-template-columns:1fr}.callout{display:block}.callout .button{margin-top:20px}.presentation-shell{grid-template-columns:1fr 1fr}.presentation-frame{grid-column:1/-1;grid-row:1}.slide-arrow{height:48px}}
+    @media(max-width:850px){.hero{padding-top:55px}.grid{grid-template-columns:1fr}.flow{grid-template-columns:1fr 1fr}.flow .card::after{display:none}.presentation-shell{grid-template-columns:46px minmax(0,1fr) 46px}.slide-arrow{height:70px}}@media(max-width:560px){.navlinks{display:none}.flow{grid-template-columns:1fr}.callout{display:block}.callout .button{margin-top:20px}.presentation-shell{grid-template-columns:1fr 1fr}.presentation-frame{grid-column:1/-1;grid-row:1}.slide-arrow{height:48px}}
   </style>
 </head>
 <body>
   <header class="wrap">
-    <nav><div class="brand">FLEETHACKER</div><div class="navlinks"><a href="#presentation">Presentation</a><a href="#how">How it works</a><a href="#why">Why it matters</a><a href="./app/sender.html">Launch app</a></div></nav>
+    <nav><div class="brand">SAGGLE ROC · FLEETHACKER 2026</div><div class="navlinks"><a href="#presentation">Presentation</a><a href="#how">How it works</a><a href="#why">Why it matters</a><a href="./app/sender.html">Launch app</a></div></nav>
     <div class="hero">
       <div>
-        <span class="temp">PROJECT COPY &amp; METRICS</span>
-        <div class="eyebrow">THE SHIP'S DAILY PICTURE, AVAILABLE OFFLINE</div>
-        <h1>From a text message to the CO's 0800 report.</h1>
-        <p>FleetHacker packages one ship's mission, manning, casualty, and command-priority data into ordinary text, moves it through constrained environments, and rebuilds the report locally—without a runtime network connection.</p>
-        <div class="actions"><a class="button" href="./app/sender.html">Try the temporary demo</a><a class="button secondary" href="#presentation">View presentation</a><a class="button secondary" href="#how">See how it works</a></div>
+        <div class="eyebrow">STANDARDIZE · AUTOMATE · VISUALIZE</div>
+        <h1>From Fleet Data to Decision at 0800.</h1>
+        <p>A faster, clearer 0800 report—built from trusted data and available where the fleet needs it, including low-bandwidth environments.</p>
+        <div class="actions"><a class="button" href="./app/sender.html">Try the demo</a><a class="button secondary" href="#presentation">View presentation</a><a class="button secondary" href="#how">See how it works</a></div>
       </div>
-      <aside class="signal" aria-label="Temporary concept metrics">
-        <span class="temp">SAMPLE VISUAL</span><h2>Readiness pulse</h2><p style="color:var(--muted);margin-top:0">Illustrative data only</p>
-        <div class="pulse" aria-hidden="true"><i style="--h:42%"></i><i style="--h:61%"></i><i style="--h:48%"></i><i style="--h:76%"></i><i style="--h:69%"></i><i style="--h:88%"></i><i style="--h:81%"></i><i style="--h:94%"></i></div>
-        <div class="status"><span>Prototype status</span><strong>WORKING POC</strong></div>
-      </aside>
     </div>
   </header>
   <main>
-    <section id="presentation"><div class="wrap"><div class="section-head"><span class="temp">PRESENTATION CONTENT</span><h2>The SAGGLE ROC story</h2><p>Use the side arrows, keyboard controls, or click the presentation itself to advance.</p></div>
+    <section id="presentation"><div class="wrap"><div class="section-head"><h2>The SAGGLE ROC story</h2><p>See the problem, solution, architecture, and path to fleet impact.</p></div>
       <div class="presentation-shell">
         <button class="slide-arrow" id="presentationPrevious" aria-label="Previous presentation slide">‹</button>
         <iframe class="presentation-frame" id="presentationFrame" src="./presentation/" title="SAGGLE ROC presentation"></iframe>
@@ -43,15 +36,15 @@
       </div>
       <p class="presentation-help">Click anywhere on a slide to move forward · Use the arrows to move in either direction</p>
     </div></section>
-    <section id="how"><div class="wrap"><div class="section-head"><span class="temp">WORKFLOW WORDING</span><h2>One small, resilient workflow</h2><p>The proof of concept keeps generation, transport, and viewing simple enough to run as static files.</p></div>
-      <div class="flow"><article class="card"><span class="number">01</span><h3>Prepare</h3><p>Build one ship's structured 0800 report snapshot.</p></article><article class="card"><span class="number">02</span><h3>Package</h3><p>Encode and checksum it into text-safe NAVDASH content.</p></article><article class="card"><span class="number">03</span><h3>Move</h3><p>Send the complete payload through an ordinary text channel.</p></article><article class="card"><span class="number">04</span><h3>Understand</h3><p>Decode locally and review the complete 0800 report offline.</p></article></div>
+    <section id="how"><div class="wrap"><div class="section-head"><h2>One resilient workflow</h2><p>Move a decision-ready report from trusted sources to the tactical edge.</p></div>
+      <div class="flow"><article class="card"><span class="number">01</span><h3>Standardize</h3><p>Bring the ship's 0800 data into one consistent structure.</p></article><article class="card"><span class="number">02</span><h3>Automate</h3><p>Package validated report data into a lightweight payload.</p></article><article class="card"><span class="number">03</span><h3>Move</h3><p>Transfer it through constrained communications.</p></article><article class="card"><span class="number">04</span><h3>Visualize</h3><p>Review the complete report locally and offline.</p></article></div>
     </div></section>
-    <section id="why"><div class="wrap"><div class="section-head"><span class="temp">BENEFIT CLAIMS</span><h2>Why the concept is compelling</h2><p>These are prototype benefits to validate with users and stakeholders before replacing them with approved claims.</p></div>
-      <div class="grid"><article class="card"><span class="number">NO RUNTIME CLOUD</span><h3>Works at the edge</h3><p>The viewer uses browser-native capabilities and makes no network requests while decoding or displaying a message.</p></article><article class="card"><span class="number">HUMAN + MACHINE</span><h3>Fits ordinary text</h3><p>A readable message and a structured payload travel together, with length and checksum validation to detect corruption.</p></article><article class="card"><span class="number">ZERO BUILD STEP</span><h3>Easy to demonstrate</h3><p>Static HTML, JavaScript, and JSON make the prototype portable, inspectable, and inexpensive to host.</p></article></div>
+    <section id="why"><div class="wrap"><div class="section-head"><h2>Less reporting. More readiness.</h2><p>Give leaders a clearer picture while returning time to the deckplate.</p></div>
+      <div class="grid"><article class="card"><span class="number">ONE PICTURE</span><h3>Consistent reporting</h3><p>A shared structure improves clarity across departments.</p></article><article class="card"><span class="number">LESS MANUAL WORK</span><h3>Faster preparation</h3><p>Automation reduces repetitive collection and re-entry.</p></article><article class="card"><span class="number">DDIL-READY</span><h3>Available at the edge</h3><p>Lightweight payloads keep the report useful in constrained environments.</p></article></div>
     </div></section>
-    <section><div class="wrap"><div class="callout"><div><span class="temp">DEMO ENVIRONMENT</span><h2>Explore the proof of concept</h2><p>Use synthetic sample data only. This is demonstration software, not an approved operational system.</p></div><a class="button" href="./app/sender.html">Start the demo</a></div></div></section>
+    <section><div class="wrap"><div class="callout"><div><h2>See the workflow in action</h2><p>The demonstration uses synthetic sample data and is not an approved operational system.</p></div><a class="button" href="./app/sender.html">Start the demo</a></div></div></section>
   </main>
-  <footer class="wrap">Temporary FleetHacker project site · Replace all TEMP-labeled content before final release.</footer>
+  <footer class="wrap">SAGGLE ROC · FleetHacker 2026</footer>
   <script>
     const presentation = document.getElementById("presentationFrame");
     document.getElementById("presentationPrevious").addEventListener("click", () => presentation.contentWindow.postMessage("presentation:previous", "*"));
