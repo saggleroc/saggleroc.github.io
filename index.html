@@ -11,20 +11,21 @@
     a{color:inherit}.wrap{width:min(1120px,calc(100% - 32px));margin:auto}.temp{display:inline-flex;align-items:center;gap:7px;padding:5px 9px;border:1px solid #e7b84e;border-radius:999px;color:var(--gold);background:#ffd16614;font-size:.72rem;font-weight:850;letter-spacing:.08em}.temp::before{content:"TEMP";background:var(--gold);color:#18202a;padding:1px 5px;border-radius:4px}
     nav{display:flex;align-items:center;justify-content:space-between;padding:22px 0}.brand{font-weight:900;letter-spacing:.08em}.navlinks{display:flex;gap:20px;color:var(--muted);font-size:.9rem}.navlinks a{text-decoration:none}.hero{padding:70px 0 58px;display:grid;grid-template-columns:1.2fr .8fr;gap:44px;align-items:center}.eyebrow{color:var(--blue);font-weight:850;letter-spacing:.12em;font-size:.75rem}.hero h1{font-size:clamp(2.7rem,6vw,5.2rem);line-height:.98;letter-spacing:-.045em;margin:18px 0}.hero p{max-width:680px;color:var(--muted);font-size:1.15rem}.actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px}.button{display:inline-block;text-decoration:none;padding:12px 18px;border-radius:8px;background:var(--blue);color:#052039;font-weight:850}.button.secondary{background:transparent;color:var(--ink);border:1px solid var(--line)}
     .signal{background:linear-gradient(145deg,#123b61,#091d33);border:1px solid var(--line);border-radius:18px;padding:24px;box-shadow:0 24px 60px #0007}.signal h2{margin:12px 0 4px}.pulse{height:130px;display:flex;align-items:end;gap:9px;margin:22px 0}.pulse i{display:block;flex:1;min-height:12%;height:var(--h);border-radius:5px 5px 2px 2px;background:linear-gradient(var(--blue),#2479b8)}.status{display:flex;justify-content:space-between;border-top:1px solid var(--line);padding-top:14px;color:var(--muted)}.status strong{color:var(--green)}
+    .presentation-shell{display:grid;grid-template-columns:64px minmax(0,1fr) 64px;gap:14px;align-items:center}.presentation-frame{width:100%;aspect-ratio:16/9;border:1px solid var(--line);border-radius:16px;background:#050b17;box-shadow:0 24px 60px #0008}.slide-arrow{height:92px;border:1px solid var(--line);border-radius:12px;background:#102e4d;color:var(--blue);font-size:2.4rem;cursor:pointer}.slide-arrow:hover{border-color:var(--blue);background:#163c61}.presentation-help{text-align:center;color:var(--muted);font-size:.9rem;margin-top:12px}
     section{padding:55px 0}.section-head{max-width:700px;margin-bottom:28px}.section-head h2{font-size:clamp(2rem,4vw,3rem);margin:8px 0}.section-head p{color:var(--muted)}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.card{background:linear-gradient(145deg,#102e4d,#091d32);border:1px solid var(--line);border-radius:14px;padding:22px}.number{color:var(--blue);font-weight:900;font-size:.8rem}.card h3{margin:10px 0}.card p{color:var(--muted);margin-bottom:0}.flow{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.flow .card{position:relative}.flow .card:not(:last-child)::after{content:"→";position:absolute;right:-13px;top:50%;z-index:2;color:var(--gold);font-size:1.4rem}.callout{display:flex;justify-content:space-between;gap:30px;align-items:center;background:linear-gradient(110deg,#12446f,#112740);border:1px solid #46769c;border-radius:16px;padding:30px}.callout h2{margin:0 0 8px}.callout p{margin:0;color:var(--muted)}footer{padding:40px 0 60px;color:var(--muted);font-size:.85rem}
-    @media(max-width:850px){.hero{grid-template-columns:1fr;padding-top:40px}.grid{grid-template-columns:1fr}.flow{grid-template-columns:1fr 1fr}.flow .card::after{display:none}}@media(max-width:560px){.navlinks{display:none}.flow{grid-template-columns:1fr}.callout{display:block}.callout .button{margin-top:20px}}
+    @media(max-width:850px){.hero{grid-template-columns:1fr;padding-top:40px}.grid{grid-template-columns:1fr}.flow{grid-template-columns:1fr 1fr}.flow .card::after{display:none}.presentation-shell{grid-template-columns:46px minmax(0,1fr) 46px}.slide-arrow{height:70px}}@media(max-width:560px){.navlinks{display:none}.flow{grid-template-columns:1fr}.callout{display:block}.callout .button{margin-top:20px}.presentation-shell{grid-template-columns:1fr 1fr}.presentation-frame{grid-column:1/-1;grid-row:1}.slide-arrow{height:48px}}
   </style>
 </head>
 <body>
   <header class="wrap">
-    <nav><div class="brand">FLEETHACKER</div><div class="navlinks"><a href="#how">How it works</a><a href="#why">Why it matters</a><a href="./presentation/">Presentation</a><a href="./app/">Launch app</a></div></nav>
+    <nav><div class="brand">FLEETHACKER</div><div class="navlinks"><a href="#presentation">Presentation</a><a href="#how">How it works</a><a href="#why">Why it matters</a><a href="./app/">Launch app</a></div></nav>
     <div class="hero">
       <div>
         <span class="temp">PROJECT COPY &amp; METRICS</span>
         <div class="eyebrow">OFFLINE READINESS DATA, MADE USEFUL</div>
         <h1>From a text message to a decision-ready dashboard.</h1>
         <p>FleetHacker packages a structured readiness snapshot into ordinary text, moves it through constrained environments, and rebuilds a visual dashboard locally—without a runtime network connection.</p>
-        <div class="actions"><a class="button" href="./app/">Try the temporary demo</a><a class="button secondary" href="./presentation/">View presentation</a><a class="button secondary" href="#how">See how it works</a></div>
+        <div class="actions"><a class="button" href="./app/">Try the temporary demo</a><a class="button secondary" href="#presentation">View presentation</a><a class="button secondary" href="#how">See how it works</a></div>
       </div>
       <aside class="signal" aria-label="Temporary concept metrics">
         <span class="temp">SAMPLE VISUAL</span><h2>Readiness pulse</h2><p style="color:var(--muted);margin-top:0">Illustrative data only</p>
@@ -34,6 +35,14 @@
     </div>
   </header>
   <main>
+    <section id="presentation"><div class="wrap"><div class="section-head"><span class="temp">PRESENTATION CONTENT</span><h2>The SAGGLE ROC story</h2><p>Use the side arrows, keyboard controls, or click the presentation itself to advance.</p></div>
+      <div class="presentation-shell">
+        <button class="slide-arrow" id="presentationPrevious" aria-label="Previous presentation slide">‹</button>
+        <iframe class="presentation-frame" id="presentationFrame" src="./presentation/" title="SAGGLE ROC presentation"></iframe>
+        <button class="slide-arrow" id="presentationNext" aria-label="Next presentation slide">›</button>
+      </div>
+      <p class="presentation-help">Click anywhere on a slide to move forward · Use the arrows to move in either direction</p>
+    </div></section>
     <section id="how"><div class="wrap"><div class="section-head"><span class="temp">WORKFLOW WORDING</span><h2>One small, resilient workflow</h2><p>The proof of concept keeps generation, transport, and viewing simple enough to run as static files.</p></div>
       <div class="flow"><article class="card"><span class="number">01</span><h3>Prepare</h3><p>Import a canonical JSON readiness snapshot.</p></article><article class="card"><span class="number">02</span><h3>Package</h3><p>Encode and checksum it into text-safe NAVDASH content.</p></article><article class="card"><span class="number">03</span><h3>Move</h3><p>Send the complete payload through an ordinary text channel.</p></article><article class="card"><span class="number">04</span><h3>Understand</h3><p>Decode locally and explore the visual dashboard offline.</p></article></div>
     </div></section>
@@ -43,5 +52,10 @@
     <section><div class="wrap"><div class="callout"><div><span class="temp">DEMO ENVIRONMENT</span><h2>Explore the proof of concept</h2><p>Use synthetic sample data only. This is demonstration software, not an approved operational system.</p></div><a class="button" href="./app/">Open app launcher</a></div></div></section>
   </main>
   <footer class="wrap">Temporary FleetHacker project site · Replace all TEMP-labeled content before final release.</footer>
+  <script>
+    const presentation = document.getElementById("presentationFrame");
+    document.getElementById("presentationPrevious").addEventListener("click", () => presentation.contentWindow.postMessage("presentation:previous", "*"));
+    document.getElementById("presentationNext").addEventListener("click", () => presentation.contentWindow.postMessage("presentation:next", "*"));
+  </script>
 </body>
 </html>

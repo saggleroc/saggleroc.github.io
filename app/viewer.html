@@ -19,6 +19,11 @@
     button { padding:10px 14px; border:0; border-radius:7px; background:var(--blue); color:#052039; font-weight:800; cursor:pointer; }
     button.secondary { background:#d5e5f3; }
     button.virtual { background:#73e2a7; }
+    .topline { display:flex; justify-content:space-between; gap:16px; align-items:start; }
+    .reset { background:transparent; color:var(--muted); border:1px solid var(--line); white-space:nowrap; }
+    .next-action { position:relative; animation:pulse 1.25s infinite; box-shadow:0 0 0 5px #ffd16655,0 0 30px #ffd16677; }
+    .next-action::before { content:"➜ NEXT"; position:absolute; z-index:3; left:50%; bottom:calc(100% + 12px); transform:translateX(-50%) rotate(90deg); color:#ffd166; font-size:22px; font-weight:950; white-space:nowrap; text-shadow:0 2px 8px #000; pointer-events:none; }
+    @keyframes pulse { 50% { box-shadow:0 0 0 10px #ffd16622,0 0 42px #ffd166aa; } }
     dialog { width:min(680px,calc(100% - 32px)); color:var(--text); background:#102741; border:1px solid #486b8c; border-radius:14px; padding:20px; box-shadow:0 25px 80px #000a; }
     dialog::backdrop { background:#020812cc; }
     .virtual-files { display:grid; gap:10px; margin:18px 0; }
@@ -85,12 +90,11 @@
 </head>
 <body>
 <main>
-  <h1>Offline Dashboard Viewer</h1>
-  <p class="lead">Import or paste a complete text message. The viewer detects and decodes the embedded dashboard payload locally.</p>
+  <div class="topline"><div><h1>Offline Dashboard Viewer</h1><p class="lead">Import or paste a complete text message. The viewer detects and decodes the embedded dashboard payload locally.</p></div><button id="resetApp" class="reset">Reset entire demo</button></div>
 
   <section class="card">
     <p class="muted"><strong style="color:#73e2a7">TEMP DEMO:</strong> Open a message saved by the generator without using your computer's file system.</p>
-    <button id="browseVirtual" class="virtual">Browse simulated drive</button>
+    <button id="browseVirtual" class="virtual next-action">4. Browse simulated drive</button>
     <div class="import-grid">
       <div>
         <label for="messageFile">Message file</label>
@@ -178,10 +182,14 @@
       const empty = document.createElement("p");
       empty.className = "muted";
       empty.textContent = "No virtual files yet. Generate a message, then choose “Save to simulated drive.”";
-      container.append(empty);
+      const reset = document.createElement("button");
+      reset.className = "virtual next-action";
+      reset.textContent = "Reset demo and start again";
+      reset.addEventListener("click", resetDemo);
+      container.append(empty, reset);
       return;
     }
-    files.forEach(file => {
+    files.forEach((file, index) => {
       const row = document.createElement("div");
       row.className = "virtual-file";
       const details = document.createElement("div");
@@ -191,15 +199,22 @@
       saved.textContent = `Saved ${new Date(file.savedAt).toLocaleString()} · ${(file.content.length / 1024).toFixed(1)} KB`;
       details.append(name, saved);
       const open = document.createElement("button");
-      open.textContent = "Open";
+      open.textContent = index === 0 ? "5. Load file (most recent)" : "Load file";
+      if (index === 0) open.classList.add("next-action");
       open.addEventListener("click", async () => {
         $("message").value = file.content;
         $("virtualBrowser").close();
+        $("browseVirtual").classList.remove("next-action");
         await decode();
       });
       row.append(details, open);
       container.append(row);
     });
+  }
+
+  function resetDemo() {
+    VirtualDrive.clear();
+    location.href = "./sender.html";
   }
 
   async function decodeDashboardMessage(text) {
@@ -412,10 +427,12 @@
   });
   $("decode").addEventListener("click", decode);
   $("browseVirtual").addEventListener("click", () => {
+    $("browseVirtual").classList.remove("next-action");
     refreshVirtualBrowser();
     $("virtualBrowser").showModal();
   });
   $("closeVirtual").addEventListener("click", () => $("virtualBrowser").close());
+  $("resetApp").addEventListener("click", resetDemo);
   $("messageFile").addEventListener("change", async event => {
     const file = event.target.files[0];
     if (file) {

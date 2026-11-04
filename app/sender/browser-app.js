@@ -33,6 +33,8 @@
       $("message").value = result.message;
       const reduction = Math.round((1 - result.encodedLength / (result.rawLength * 1.6)) * 100);
       $("status").textContent = `${records.length} records: ${result.rawLength} raw bytes → ${result.byteLength} ${result.compression.toLowerCase()} bytes → ${result.encodedLength} Base32 characters (${Math.max(0, reduction)}% smaller).`;
+      $("loadSample").classList.remove("next-action");
+      $("saveVirtual").classList.add("next-action");
     } catch (error) {
       $("status").textContent = `Error: ${error.message}`;
     }
@@ -90,7 +92,13 @@
     if (!$("message").value) return;
     const name = `navdash-${new Date().toISOString().replace(/[:.]/g, "-")}.txt`;
     VirtualDrive.write(name, $("message").value);
-    $("status").innerHTML = `Saved <strong>${name}</strong> to the simulated drive. <a href="./viewer.html" style="color:#61b7ff">Open it in the viewer →</a>`;
+    $("saveVirtual").classList.remove("next-action");
+    $("openViewer").classList.add("ready", "next-action");
+    $("status").innerHTML = `Saved <strong>${name}</strong> to the simulated drive. Continue with step 3.`;
+  });
+  $("resetApp").addEventListener("click", () => {
+    VirtualDrive.clear();
+    location.reload();
   });
 
   const local = new Date(Date.now() - new Date().getTimezoneOffset() * 60000);

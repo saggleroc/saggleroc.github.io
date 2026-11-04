@@ -35,6 +35,10 @@
       const files = load();
       delete files[name];
       persist(files);
+    },
+
+    clear() {
+      localStorage.removeItem(STORAGE_KEY);
     }
   };
 })();

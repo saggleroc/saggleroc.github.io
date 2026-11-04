@@ -257,6 +257,14 @@
   });
   document.getElementById('next').onclick = () => show(i + 1);
   document.getElementById('prev').onclick = () => show(i - 1);
+  slides.forEach(slide => slide.addEventListener('click', event => {
+    if (event.target.closest('[contenteditable]')) return;
+    show(i + 1);
+  }));
+  window.addEventListener('message', event => {
+    if (event.data === 'presentation:next') show(i + 1);
+    if (event.data === 'presentation:previous') show(i - 1);
+  });
   show(parseInt(location.hash.slice(1)) || 0);
 </script>
 </body>
