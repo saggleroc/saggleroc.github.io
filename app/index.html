@@ -3,6 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="refresh" content="0; url=./sender.html">
   <title>FleetHacker Temporary App Launcher</title>
   <style>
     :root{color-scheme:dark;--text:#eef6ff;--muted:#abc0d3;--line:#31506f;--blue:#61b7ff;--gold:#ffd166}
@@ -19,6 +20,9 @@
   <div class="note"><strong>TEMP / DEMO ONLY:</strong> Use synthetic data. The prototype is not an approved operational, security, or classification-handling system.</div>
 </main>
 <script src="./shared/virtual-drive.js"></script>
-<script>document.getElementById("resetApp").addEventListener("click",()=>{VirtualDrive.clear();location.href="./sender.html";});</script>
+<script>
+  location.replace("./sender.html");
+  document.getElementById("resetApp").addEventListener("click",()=>{VirtualDrive.clear();location.href="./sender.html";});
+</script>
 </body>
 </html>

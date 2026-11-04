@@ -22,8 +22,9 @@
     .topline { display:flex; justify-content:space-between; gap:16px; align-items:start; }
     .reset { background:transparent; color:var(--muted); border:1px solid var(--line); white-space:nowrap; }
     .next-action { position:relative; animation:pulse 1.25s infinite; box-shadow:0 0 0 5px #ffd16655,0 0 30px #ffd16677; }
-    .next-action::before { content:"➜ NEXT"; position:absolute; z-index:3; left:50%; bottom:calc(100% + 12px); transform:translateX(-50%) rotate(90deg); color:#ffd166; font-size:22px; font-weight:950; white-space:nowrap; text-shadow:0 2px 8px #000; pointer-events:none; }
     @keyframes pulse { 50% { box-shadow:0 0 0 10px #ffd16622,0 0 42px #ffd166aa; } }
+    .see-dashboard { display:none; margin-top:12px; }
+    .see-dashboard.ready { display:inline-block; }
     dialog { width:min(680px,calc(100% - 32px)); color:var(--text); background:#102741; border:1px solid #486b8c; border-radius:14px; padding:20px; box-shadow:0 25px 80px #000a; }
     dialog::backdrop { background:#020812cc; }
     .virtual-files { display:grid; gap:10px; margin:18px 0; }
@@ -105,6 +106,7 @@
     <label for="message" style="margin-top:14px">Or paste message text</label>
     <textarea id="message" spellcheck="false" placeholder="Paste SUBJECT, body, and NAVDASH payload here..."></textarea>
     <div id="status" role="status">Waiting for a message.</div>
+    <button id="seeDashboard" class="virtual see-dashboard">6. See the dashboard ↓</button>
   </section>
 
   <dialog id="virtualBrowser">
@@ -410,8 +412,10 @@
       render(result);
       $("status").className = "ok";
       $("status").textContent = `Payload verified and loaded: ${result.packet.records.length} records.`;
+      $("seeDashboard").classList.add("ready", "next-action");
     } catch (error) {
       $("dashboard").hidden = true;
+      $("seeDashboard").classList.remove("ready", "next-action");
       $("status").className = "error";
       $("status").textContent = `Not loaded: ${error.message}`;
     }
@@ -421,6 +425,7 @@
   $("message").addEventListener("input", () => {
     clearTimeout(timer);
     $("dashboard").hidden = true;
+    $("seeDashboard").classList.remove("ready", "next-action");
     $("status").className = "";
     $("status").textContent = "Decoding and verifying payload…";
     timer = setTimeout(decode, 400);
@@ -433,6 +438,10 @@
   });
   $("closeVirtual").addEventListener("click", () => $("virtualBrowser").close());
   $("resetApp").addEventListener("click", resetDemo);
+  $("seeDashboard").addEventListener("click", () => {
+    $("seeDashboard").classList.remove("next-action");
+    $("dashboard").scrollIntoView({behavior:"smooth", block:"start"});
+  });
   $("messageFile").addEventListener("change", async event => {
     const file = event.target.files[0];
     if (file) {
