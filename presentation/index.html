@@ -38,6 +38,18 @@
   .step strong { display:block; color:var(--text); font-size:2.3vh; margin-bottom:.8vh; }
   .step span.d { color:var(--muted); }
   .step:not(:last-child)::after { content:"\2192"; position:absolute; right:-1.1vw; top:50%; transform:translateY(-50%); color:var(--cyan); font-size:3vh; z-index:2; }
+  .step.big3 { font-size:2.3vh; padding:3.5vh 1.4vw; text-align:left; }
+  .step.big3 strong { font-size:2.8vh; color:var(--cyan); }
+  .zones { display:flex; align-items:stretch; gap:.8vw; }
+  .zone { flex:1; border:1px dashed var(--line); border-radius:1.6vh; padding:2vh 1vw; display:flex; flex-direction:column; align-items:center; gap:1vh; background:rgba(15,35,68,.45); }
+  .zt { color:var(--cyan); font-size:1.7vh; letter-spacing:.14em; text-transform:uppercase; text-align:center; margin-bottom:.4vh; }
+  .an { width:100%; background:var(--panel); border:1px solid var(--line); border-radius:1.2vh; padding:1.8vh .8vw; text-align:center; font-size:2.2vh; font-weight:600; line-height:1.3; }
+  .an span { display:block; margin-top:.5vh; color:var(--muted); font-size:1.8vh; font-weight:400; }
+  .an.hl { border-color:var(--cyan); box-shadow:0 0 2vh rgba(39,211,255,.22); }
+  .av { color:var(--cyan); font-size:2.6vh; line-height:1; }
+  .link { display:flex; flex-direction:column; align-items:center; justify-content:center; width:7vw; color:var(--cyan); text-align:center; }
+  .link span { font-size:5vh; line-height:1; }
+  .link small { color:var(--muted); font-size:1.5vh; margin-top:.6vh; }
   .chips { display:flex; flex-wrap:wrap; gap:1.2vh 1vw; margin-top:1vh; }
   .chip { background:#102f58; border:1px solid var(--line); color:var(--cyan); border-radius:5vh; padding:1vh 1.6vw; font-size:2.3vh; font-weight:600; }
   .chip.dept { color:var(--text); }
@@ -47,6 +59,14 @@
   .node { background:var(--panel); border:1px solid var(--line); border-radius:1.2vh; padding:2vh 1.4vw; font-size:2.3vh; text-align:center; }
   .node.hl { border-color:var(--cyan); box-shadow:0 0 2vh rgba(39,211,255,.25); }
   .arrow { color:var(--cyan); font-size:3.4vh; }
+  .crit-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:2vh 1.2vw; }
+  .crit { background:var(--panel); border:1px solid var(--line); border-radius:1.4vh; padding:2.2vh 1.3vw; }
+  .crit .ch { display:flex; align-items:center; gap:.8vw; margin-bottom:1.4vh; }
+  .crit .cn { background:#12335f; color:var(--cyan); border-radius:.8vh; width:3.6vh; height:3.6vh; display:flex; align-items:center; justify-content:center; font-size:2vh; font-weight:700; flex:none; }
+  .crit .ct { flex:1; font-size:2.3vh; font-weight:600; line-height:1.2; }
+  .crit .cw { color:var(--cyan); font-size:3.4vh; font-weight:700; }
+  .crit ul { font-size:1.9vh; line-height:1.35; }
+  .crit li { margin-bottom:.9vh; padding-left:2.2vh; }
   [contenteditable]:focus { outline:1px dashed var(--cyan); outline-offset:3px; }
   #bar { position:fixed; left:0; bottom:0; height:.8vh; background:linear-gradient(90deg,var(--blue),var(--cyan)); transition:width .3s; z-index:3; }
   #ctr { position:fixed; right:2vw; bottom:2vh; color:var(--muted); font-size:2vh; z-index:3; }
@@ -178,23 +198,132 @@
 <!-- 7 -->
 <section class="slide">
   <div class="tag">Edge</div>
-  <h2>Low bandwidth: <em>keeping the report moving when the network doesn't</em></h2>
-  <div class="cols">
-    <div class="box pain"><h3>Why it matters at 2000</h3>
+  <h2>Edge-first automation: <em>works 100% offline, once the payload lands</em></h2>
+  <div class="flow">
+    <div class="step big3"><span class="n">1</span><strong>Shore-side (Enterprise)</strong><span class="d">Aggregates and serializes high-level PMT data (e.g., logistics, parts tracking, personnel updates) into ultra-compressed, text-only payloads such as flat JSON</span></div>
+    <div class="step big3"><span class="n">2</span><strong>The Push (Transit)</strong><span class="d">Sends these tiny payloads over low-bandwidth tactical networks (e.g., C-band/Ku-band or HF secondary lines) only when a connection is established</span></div>
+    <div class="step big3"><span class="n">3</span><strong>The Edge (Shipboard)</strong><span class="d">Ingests the payload into a locally hosted, containerized environment (e.g., Docker on the ship's local network/CANES), with no pipe to the cloud needed</span></div>
+  </div>
+  <p class="note">Designed for disconnected, intermittent and limited (DDIL) conditions. Compresses PMT data into lightweight payloads that update ships at the tactical edge.</p>
+</section>
+
+<!-- Speed to Fleet architecture -->
+<section class="slide">
+  <div class="tag">Speed to Fleet · Architecture</div>
+  <h2>Architecture built to <em>field fast under DDIL</em></h2>
+  <div class="zones">
+    <div class="zone">
+      <div class="zt">Shore-side · Enterprise</div>
+      <div class="an">Authoritative PMT sources<br><span>personnel · maintenance · training</span></div>
+      <div class="av">↓</div>
+      <div class="an hl">Aggregate &amp; serialize<br><span>ultra-compressed, text-only payload (flat JSON)</span></div>
+    </div>
+    <div class="link"><span>→</span><small>Low-bandwidth push<br>only when a link is up</small></div>
+    <div class="zone">
+      <div class="zt">Transit · Tactical networks</div>
+      <div class="an">Store and forward<br><span>C-band / Ku-band or HF secondary lines</span></div>
+      <div class="av">↓</div>
+      <div class="an">Tiny payload<br><span>delivered intermittently</span></div>
+    </div>
+    <div class="link"><span>→</span><small>Local ingest</small></div>
+    <div class="zone">
+      <div class="zt">Edge · Shipboard</div>
+      <div class="an hl">Containerized engine<br><span>on ship's local network (e.g., CANES)</span></div>
+      <div class="av">↓</div>
+      <div class="an">Local data store and app<br><span>department briefs, CO readiness view</span></div>
+    </div>
+  </div>
+  <div class="cols" style="margin-top:3.2vh">
+    <div class="box good"><h3>Why it fields fast</h3>
       <ul>
-        <li><b>Late-day scramble:</b> data gathered from many divisions in the final hours</li>
-        <li><b>Stale or inconsistent numbers:</b> different sources, different measurement times</li>
-        <li><b>Competing demands:</b> watch turnover, meals, evolutions and training</li>
+        <li>Lightweight payloads fit within constrained bandwidth</li>
+        <li>Container packaging is portable and repeatable across ships</li>
+        <li>No cloud connection needed once the payload is received</li>
       </ul>
     </div>
-    <div class="box good" contenteditable><h3>How we solve it</h3>
+    <div class="box"><h3>Path to fielding</h3>
       <ul>
-        <li>[Lightweight HTML package that runs without a connection]</li>
-        <li>[How data is exported from Foundry]</li>
-        <li>[How data moves to and from the ship]</li>
+        <li>Package the HTML app with <b>Forge</b> for cybersecurity compliance</li>
+        <li>Move from synthetic to real data</li>
+        <li>Build a bidirectional data pipeline</li>
       </ul>
     </div>
   </div>
+</section>
+
+<!-- Impact -->
+<section class="slide">
+  <div class="tag">Impact</div>
+  <h2>Reclaiming time for <em>warfighting readiness</em></h2>
+  <div class="big">
+    <div class="box"><span class="num">2.5 hrs</span>saved per day of manual administrative burden</div>
+    <div class="box"><span class="num">17+ hrs</span>reclaimed per week for combat readiness, tactical training and maintenance</div>
+    <div class="box"><span class="num">912+ hrs</span>of deckplate time reclaimed per ship annually</div>
+  </div>
+  <p class="note">Basis: 0.5 hours per department × 5 departments on a DDG = 2.5 hours per day. Also gives the commanding officer a highly accurate, near-real-time readiness picture.</p>
+  <div class="cols" style="margin-top:3vh">
+    <div class="box pain"><h3>Before</h3>
+      <ul>
+        <li>All-hands evolution: each department manually gathers PMT data from onboard databases</li>
+        <li>Data re-entered into spreadsheets and documents</li>
+      </ul>
+    </div>
+    <div class="box good"><h3>After</h3>
+      <ul>
+        <li>Payload ingested locally; system statuses auto-populate</li>
+        <li>Departments review and brief instead of compile</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- Judging criteria -->
+<section class="slide">
+  <div class="tag">Judging Criteria</div>
+  <h2>How SAGGLE ROC <em>delivers against the criteria</em></h2>
+  <div class="crit-grid">
+    <div class="crit">
+      <div class="ch"><span class="cn">1</span><span class="ct">Warfighting &amp; Deckplate Impact</span><span class="cw">30%</span></div>
+      <ul>
+        <li>Automating data aggregation reclaims <b>17+ hours per week</b> (912+ per ship annually)</li>
+        <li>Time returns to combat readiness, tactical training and maintenance</li>
+        <li>Offloads watchstander burden; CO gets a near-real-time readiness picture</li>
+      </ul>
+    </div>
+    <div class="crit">
+      <div class="ch"><span class="cn">2</span><span class="ct">Speed to Fleet</span><span class="cw">20%</span></div>
+      <ul>
+        <li>Tiny text-only payloads pushed over low-bandwidth networks when a link is available</li>
+        <li>Containerized shipboard engine runs <b>100% offline</b> (DDIL-ready)</li>
+        <li>Forge packaging for cybersecurity compliance is the next step to field</li>
+      </ul>
+    </div>
+    <div class="crit">
+      <div class="ch"><span class="cn">3</span><span class="ct">Fleet Scalability</span><span class="cw">20%</span></div>
+      <ul>
+        <li>Can be used seamlessly across other classes of ships</li>
+        <li>Spans 5 departments and 4 systems of record in the MVP</li>
+        <li>Expandable data sources and functionality</li>
+      </ul>
+    </div>
+    <div class="crit">
+      <div class="ch"><span class="cn">4</span><span class="ct">Barrier Removal</span><span class="cw">15%</span></div>
+      <ul>
+        <li>Removes manual double-entry from CSMP and RSUPPLY, plus paper signatures</li>
+        <li>Auto-populates statuses (fuel, CASREPs, food days remaining)</li>
+        <li>No more radio chatter to confirm GTG mission capability</li>
+      </ul>
+    </div>
+    <div class="crit">
+      <div class="ch"><span class="cn">5</span><span class="ct">Judges' Discretion</span><span class="cw">15%</span></div>
+      <ul>
+        <li>Dual-path design: Foundry app plus offline package</li>
+        <li>Workshop UX tailored to each department's brief</li>
+        <li>Realistic synthetic data modeled on real data sets</li>
+      </ul>
+    </div>
+  </div>
+  <p class="note" contenteditable>Hours based on 0.5 hrs per department × 5 departments on a DDG = 2.5 hrs/day.</p>
 </section>
 
 <!-- 8 -->
