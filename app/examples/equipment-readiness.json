@@ -1,0 +1,1951 @@
+{
+  "format": "NAVDASH",
+  "version": 2,
+  "uid": "equipment-readiness-demo-2026-11-04",
+  "generatedAt": "2026-11-04T13:00:00Z",
+  "report": {
+    "uid": "equipment-readiness",
+    "title": "Equipment Readiness",
+    "subtitle": "Synthetic demonstration data",
+    "unitUid": "uss-resolute",
+    "asOf": "2026-11-04T08:00:00-05:00"
+  },
+  "tables": [
+    {
+      "uid": "equipment-repair-performance",
+      "title": "Equipment Repair Performance",
+      "source": {
+        "uid": "synthetic-demo-source",
+        "title": "Synthetic demonstration data",
+        "asOf": "2026-11-04T13:00:00Z"
+      },
+      "columns": [
+        {
+          "uid": "ship",
+          "title": "Ship",
+          "type": "string",
+          "required": true
+        },
+        {
+          "uid": "repairHours",
+          "title": "Mean Repair Time",
+          "type": "number",
+          "unit": "hours",
+          "required": true
+        },
+        {
+          "uid": "isSelectedUnit",
+          "title": "Selected Unit",
+          "type": "boolean"
+        },
+        {
+          "uid": "failureRate",
+          "title": "Failure Rate",
+          "type": "number"
+        }
+      ],
+      "rows": [
+        {
+          "uid": "uss-resolute",
+          "values": {
+            "ship": "USS Resolute",
+            "repairHours": 96,
+            "isSelectedUnit": true,
+            "failureRate": 8.7
+          }
+        },
+        {
+          "uid": "uss-archer",
+          "values": {
+            "ship": "USS Archer",
+            "repairHours": 31,
+            "isSelectedUnit": false,
+            "failureRate": 2.8
+          }
+        },
+        {
+          "uid": "uss-beacon",
+          "values": {
+            "ship": "USS Beacon",
+            "repairHours": 39,
+            "isSelectedUnit": false,
+            "failureRate": 3.1
+          }
+        },
+        {
+          "uid": "uss-courage",
+          "values": {
+            "ship": "USS Courage",
+            "repairHours": 42,
+            "isSelectedUnit": false,
+            "failureRate": 3.4
+          }
+        },
+        {
+          "uid": "uss-dauntless",
+          "values": {
+            "ship": "USS Dauntless",
+            "repairHours": 45,
+            "isSelectedUnit": false,
+            "failureRate": 3.6
+          }
+        },
+        {
+          "uid": "uss-endeavor",
+          "values": {
+            "ship": "USS Endeavor",
+            "repairHours": 48,
+            "isSelectedUnit": false,
+            "failureRate": 3.9
+          }
+        },
+        {
+          "uid": "uss-freedom",
+          "values": {
+            "ship": "USS Freedom",
+            "repairHours": 51,
+            "isSelectedUnit": false,
+            "failureRate": 4.1
+          }
+        },
+        {
+          "uid": "uss-guardian",
+          "values": {
+            "ship": "USS Guardian",
+            "repairHours": 54,
+            "isSelectedUnit": false,
+            "failureRate": 4.4
+          }
+        },
+        {
+          "uid": "uss-horizon",
+          "values": {
+            "ship": "USS Horizon",
+            "repairHours": 58,
+            "isSelectedUnit": false,
+            "failureRate": 4.7
+          }
+        },
+        {
+          "uid": "uss-independence",
+          "values": {
+            "ship": "USS Independence",
+            "repairHours": 62,
+            "isSelectedUnit": false,
+            "failureRate": 5
+          }
+        },
+        {
+          "uid": "uss-justice",
+          "values": {
+            "ship": "USS Justice",
+            "repairHours": 67,
+            "isSelectedUnit": false,
+            "failureRate": 5.5
+          }
+        },
+        {
+          "uid": "uss-liberty",
+          "values": {
+            "ship": "USS Liberty",
+            "repairHours": 110,
+            "isSelectedUnit": false,
+            "failureRate": 9.4
+          }
+        }
+      ]
+    },
+    {
+      "uid": "failures-by-category",
+      "title": "Failures by Category",
+      "source": {
+        "uid": "synthetic-demo-source",
+        "title": "Synthetic demonstration data",
+        "asOf": "2026-11-04T13:00:00Z"
+      },
+      "columns": [
+        {
+          "uid": "shipUid",
+          "title": "Ship UID",
+          "type": "string",
+          "required": true
+        },
+        {
+          "uid": "category",
+          "title": "Category",
+          "type": "string",
+          "required": true
+        },
+        {
+          "uid": "count",
+          "title": "Count",
+          "type": "number",
+          "required": true
+        }
+      ],
+      "rows": [
+        {
+          "uid": "uss-resolute-failure-1",
+          "values": {
+            "shipUid": "uss-resolute",
+            "category": "Propulsion",
+            "count": 7
+          }
+        },
+        {
+          "uid": "uss-resolute-failure-2",
+          "values": {
+            "shipUid": "uss-resolute",
+            "category": "Electrical",
+            "count": 11
+          }
+        },
+        {
+          "uid": "uss-resolute-failure-3",
+          "values": {
+            "shipUid": "uss-resolute",
+            "category": "Combat systems",
+            "count": 5
+          }
+        },
+        {
+          "uid": "uss-resolute-failure-4",
+          "values": {
+            "shipUid": "uss-resolute",
+            "category": "Auxiliary",
+            "count": 4
+          }
+        },
+        {
+          "uid": "uss-archer-failure-1",
+          "values": {
+            "shipUid": "uss-archer",
+            "category": "Propulsion",
+            "count": 2
+          }
+        },
+        {
+          "uid": "uss-archer-failure-2",
+          "values": {
+            "shipUid": "uss-archer",
+            "category": "Electrical",
+            "count": 3
+          }
+        },
+        {
+          "uid": "uss-archer-failure-3",
+          "values": {
+            "shipUid": "uss-archer",
+            "category": "Combat systems",
+            "count": 1
+          }
+        },
+        {
+          "uid": "uss-archer-failure-4",
+          "values": {
+            "shipUid": "uss-archer",
+            "category": "Auxiliary",
+            "count": 2
+          }
+        },
+        {
+          "uid": "uss-beacon-failure-1",
+          "values": {
+            "shipUid": "uss-beacon",
+            "category": "Propulsion",
+            "count": 2
+          }
+        },
+        {
+          "uid": "uss-beacon-failure-2",
+          "values": {
+            "shipUid": "uss-beacon",
+            "category": "Electrical",
+            "count": 4
+          }
+        },
+        {
+          "uid": "uss-beacon-failure-3",
+          "values": {
+            "shipUid": "uss-beacon",
+            "category": "Combat systems",
+            "count": 2
+          }
+        },
+        {
+          "uid": "uss-beacon-failure-4",
+          "values": {
+            "shipUid": "uss-beacon",
+            "category": "Auxiliary",
+            "count": 1
+          }
+        },
+        {
+          "uid": "uss-courage-failure-1",
+          "values": {
+            "shipUid": "uss-courage",
+            "category": "Propulsion",
+            "count": 3
+          }
+        },
+        {
+          "uid": "uss-courage-failure-2",
+          "values": {
+            "shipUid": "uss-courage",
+            "category": "Electrical",
+            "count": 4
+          }
+        },
+        {
+          "uid": "uss-courage-failure-3",
+          "values": {
+            "shipUid": "uss-courage",
+            "category": "Combat systems",
+            "count": 2
+          }
+        },
+        {
+          "uid": "uss-courage-failure-4",
+          "values": {
+            "shipUid": "uss-courage",
+            "category": "Auxiliary",
+            "count": 2
+          }
+        },
+        {
+          "uid": "uss-dauntless-failure-1",
+          "values": {
+            "shipUid": "uss-dauntless",
+            "category": "Propulsion",
+            "count": 3
+          }
+        },
+        {
+          "uid": "uss-dauntless-failure-2",
+          "values": {
+            "shipUid": "uss-dauntless",
+            "category": "Electrical",
+            "count": 5
+          }
+        },
+        {
+          "uid": "uss-dauntless-failure-3",
+          "values": {
+            "shipUid": "uss-dauntless",
+            "category": "Combat systems",
+            "count": 2
+          }
+        },
+        {
+          "uid": "uss-dauntless-failure-4",
+          "values": {
+            "shipUid": "uss-dauntless",
+            "category": "Auxiliary",
+            "count": 2
+          }
+        },
+        {
+          "uid": "uss-endeavor-failure-1",
+          "values": {
+            "shipUid": "uss-endeavor",
+            "category": "Propulsion",
+            "count": 4
+          }
+        },
+        {
+          "uid": "uss-endeavor-failure-2",
+          "values": {
+            "shipUid": "uss-endeavor",
+            "category": "Electrical",
+            "count": 5
+          }
+        },
+        {
+          "uid": "uss-endeavor-failure-3",
+          "values": {
+            "shipUid": "uss-endeavor",
+            "category": "Combat systems",
+            "count": 2
+          }
+        },
+        {
+          "uid": "uss-endeavor-failure-4",
+          "values": {
+            "shipUid": "uss-endeavor",
+            "category": "Auxiliary",
+            "count": 2
+          }
+        },
+        {
+          "uid": "uss-freedom-failure-1",
+          "values": {
+            "shipUid": "uss-freedom",
+            "category": "Propulsion",
+            "count": 4
+          }
+        },
+        {
+          "uid": "uss-freedom-failure-2",
+          "values": {
+            "shipUid": "uss-freedom",
+            "category": "Electrical",
+            "count": 5
+          }
+        },
+        {
+          "uid": "uss-freedom-failure-3",
+          "values": {
+            "shipUid": "uss-freedom",
+            "category": "Combat systems",
+            "count": 3
+          }
+        },
+        {
+          "uid": "uss-freedom-failure-4",
+          "values": {
+            "shipUid": "uss-freedom",
+            "category": "Auxiliary",
+            "count": 2
+          }
+        },
+        {
+          "uid": "uss-guardian-failure-1",
+          "values": {
+            "shipUid": "uss-guardian",
+            "category": "Propulsion",
+            "count": 4
+          }
+        },
+        {
+          "uid": "uss-guardian-failure-2",
+          "values": {
+            "shipUid": "uss-guardian",
+            "category": "Electrical",
+            "count": 6
+          }
+        },
+        {
+          "uid": "uss-guardian-failure-3",
+          "values": {
+            "shipUid": "uss-guardian",
+            "category": "Combat systems",
+            "count": 3
+          }
+        },
+        {
+          "uid": "uss-guardian-failure-4",
+          "values": {
+            "shipUid": "uss-guardian",
+            "category": "Auxiliary",
+            "count": 3
+          }
+        },
+        {
+          "uid": "uss-horizon-failure-1",
+          "values": {
+            "shipUid": "uss-horizon",
+            "category": "Propulsion",
+            "count": 5
+          }
+        },
+        {
+          "uid": "uss-horizon-failure-2",
+          "values": {
+            "shipUid": "uss-horizon",
+            "category": "Electrical",
+            "count": 6
+          }
+        },
+        {
+          "uid": "uss-horizon-failure-3",
+          "values": {
+            "shipUid": "uss-horizon",
+            "category": "Combat systems",
+            "count": 3
+          }
+        },
+        {
+          "uid": "uss-horizon-failure-4",
+          "values": {
+            "shipUid": "uss-horizon",
+            "category": "Auxiliary",
+            "count": 3
+          }
+        },
+        {
+          "uid": "uss-independence-failure-1",
+          "values": {
+            "shipUid": "uss-independence",
+            "category": "Propulsion",
+            "count": 5
+          }
+        },
+        {
+          "uid": "uss-independence-failure-2",
+          "values": {
+            "shipUid": "uss-independence",
+            "category": "Electrical",
+            "count": 7
+          }
+        },
+        {
+          "uid": "uss-independence-failure-3",
+          "values": {
+            "shipUid": "uss-independence",
+            "category": "Combat systems",
+            "count": 4
+          }
+        },
+        {
+          "uid": "uss-independence-failure-4",
+          "values": {
+            "shipUid": "uss-independence",
+            "category": "Auxiliary",
+            "count": 3
+          }
+        },
+        {
+          "uid": "uss-justice-failure-1",
+          "values": {
+            "shipUid": "uss-justice",
+            "category": "Propulsion",
+            "count": 6
+          }
+        },
+        {
+          "uid": "uss-justice-failure-2",
+          "values": {
+            "shipUid": "uss-justice",
+            "category": "Electrical",
+            "count": 7
+          }
+        },
+        {
+          "uid": "uss-justice-failure-3",
+          "values": {
+            "shipUid": "uss-justice",
+            "category": "Combat systems",
+            "count": 4
+          }
+        },
+        {
+          "uid": "uss-justice-failure-4",
+          "values": {
+            "shipUid": "uss-justice",
+            "category": "Auxiliary",
+            "count": 3
+          }
+        },
+        {
+          "uid": "uss-liberty-failure-1",
+          "values": {
+            "shipUid": "uss-liberty",
+            "category": "Propulsion",
+            "count": 8
+          }
+        },
+        {
+          "uid": "uss-liberty-failure-2",
+          "values": {
+            "shipUid": "uss-liberty",
+            "category": "Electrical",
+            "count": 12
+          }
+        },
+        {
+          "uid": "uss-liberty-failure-3",
+          "values": {
+            "shipUid": "uss-liberty",
+            "category": "Combat systems",
+            "count": 6
+          }
+        },
+        {
+          "uid": "uss-liberty-failure-4",
+          "values": {
+            "shipUid": "uss-liberty",
+            "category": "Auxiliary",
+            "count": 5
+          }
+        }
+      ]
+    },
+    {
+      "uid": "mission-area-uptime",
+      "title": "Mission-area Uptime",
+      "source": {
+        "uid": "synthetic-demo-source",
+        "title": "Synthetic demonstration data",
+        "asOf": "2026-11-04T13:00:00Z"
+      },
+      "columns": [
+        {
+          "uid": "shipUid",
+          "title": "Ship UID",
+          "type": "string",
+          "required": true
+        },
+        {
+          "uid": "missionArea",
+          "title": "Mission Area",
+          "type": "string",
+          "required": true
+        },
+        {
+          "uid": "uptimePercent",
+          "title": "Uptime",
+          "type": "number",
+          "unit": "percent",
+          "required": true
+        }
+      ],
+      "rows": [
+        {
+          "uid": "uss-resolute-uptime-1",
+          "values": {
+            "shipUid": "uss-resolute",
+            "missionArea": "Engineering",
+            "uptimePercent": 84.3
+          }
+        },
+        {
+          "uid": "uss-resolute-uptime-2",
+          "values": {
+            "shipUid": "uss-resolute",
+            "missionArea": "Combat systems",
+            "uptimePercent": 69.5
+          }
+        },
+        {
+          "uid": "uss-resolute-uptime-3",
+          "values": {
+            "shipUid": "uss-resolute",
+            "missionArea": "Communications",
+            "uptimePercent": 91.2
+          }
+        },
+        {
+          "uid": "uss-resolute-uptime-4",
+          "values": {
+            "shipUid": "uss-resolute",
+            "missionArea": "Navigation",
+            "uptimePercent": 95.5
+          }
+        },
+        {
+          "uid": "uss-archer-uptime-1",
+          "values": {
+            "shipUid": "uss-archer",
+            "missionArea": "Engineering",
+            "uptimePercent": 98.1
+          }
+        },
+        {
+          "uid": "uss-archer-uptime-2",
+          "values": {
+            "shipUid": "uss-archer",
+            "missionArea": "Combat systems",
+            "uptimePercent": 97.2
+          }
+        },
+        {
+          "uid": "uss-archer-uptime-3",
+          "values": {
+            "shipUid": "uss-archer",
+            "missionArea": "Communications",
+            "uptimePercent": 99
+          }
+        },
+        {
+          "uid": "uss-archer-uptime-4",
+          "values": {
+            "shipUid": "uss-archer",
+            "missionArea": "Navigation",
+            "uptimePercent": 99.2
+          }
+        },
+        {
+          "uid": "uss-beacon-uptime-1",
+          "values": {
+            "shipUid": "uss-beacon",
+            "missionArea": "Engineering",
+            "uptimePercent": 97.5
+          }
+        },
+        {
+          "uid": "uss-beacon-uptime-2",
+          "values": {
+            "shipUid": "uss-beacon",
+            "missionArea": "Combat systems",
+            "uptimePercent": 96.8
+          }
+        },
+        {
+          "uid": "uss-beacon-uptime-3",
+          "values": {
+            "shipUid": "uss-beacon",
+            "missionArea": "Communications",
+            "uptimePercent": 98.7
+          }
+        },
+        {
+          "uid": "uss-beacon-uptime-4",
+          "values": {
+            "shipUid": "uss-beacon",
+            "missionArea": "Navigation",
+            "uptimePercent": 99.1
+          }
+        },
+        {
+          "uid": "uss-courage-uptime-1",
+          "values": {
+            "shipUid": "uss-courage",
+            "missionArea": "Engineering",
+            "uptimePercent": 96.9
+          }
+        },
+        {
+          "uid": "uss-courage-uptime-2",
+          "values": {
+            "shipUid": "uss-courage",
+            "missionArea": "Combat systems",
+            "uptimePercent": 96.1
+          }
+        },
+        {
+          "uid": "uss-courage-uptime-3",
+          "values": {
+            "shipUid": "uss-courage",
+            "missionArea": "Communications",
+            "uptimePercent": 98.4
+          }
+        },
+        {
+          "uid": "uss-courage-uptime-4",
+          "values": {
+            "shipUid": "uss-courage",
+            "missionArea": "Navigation",
+            "uptimePercent": 98.8
+          }
+        },
+        {
+          "uid": "uss-dauntless-uptime-1",
+          "values": {
+            "shipUid": "uss-dauntless",
+            "missionArea": "Engineering",
+            "uptimePercent": 96.2
+          }
+        },
+        {
+          "uid": "uss-dauntless-uptime-2",
+          "values": {
+            "shipUid": "uss-dauntless",
+            "missionArea": "Combat systems",
+            "uptimePercent": 95.7
+          }
+        },
+        {
+          "uid": "uss-dauntless-uptime-3",
+          "values": {
+            "shipUid": "uss-dauntless",
+            "missionArea": "Communications",
+            "uptimePercent": 98.2
+          }
+        },
+        {
+          "uid": "uss-dauntless-uptime-4",
+          "values": {
+            "shipUid": "uss-dauntless",
+            "missionArea": "Navigation",
+            "uptimePercent": 98.5
+          }
+        },
+        {
+          "uid": "uss-endeavor-uptime-1",
+          "values": {
+            "shipUid": "uss-endeavor",
+            "missionArea": "Engineering",
+            "uptimePercent": 95.8
+          }
+        },
+        {
+          "uid": "uss-endeavor-uptime-2",
+          "values": {
+            "shipUid": "uss-endeavor",
+            "missionArea": "Combat systems",
+            "uptimePercent": 95.1
+          }
+        },
+        {
+          "uid": "uss-endeavor-uptime-3",
+          "values": {
+            "shipUid": "uss-endeavor",
+            "missionArea": "Communications",
+            "uptimePercent": 97.9
+          }
+        },
+        {
+          "uid": "uss-endeavor-uptime-4",
+          "values": {
+            "shipUid": "uss-endeavor",
+            "missionArea": "Navigation",
+            "uptimePercent": 98.2
+          }
+        },
+        {
+          "uid": "uss-freedom-uptime-1",
+          "values": {
+            "shipUid": "uss-freedom",
+            "missionArea": "Engineering",
+            "uptimePercent": 95.2
+          }
+        },
+        {
+          "uid": "uss-freedom-uptime-2",
+          "values": {
+            "shipUid": "uss-freedom",
+            "missionArea": "Combat systems",
+            "uptimePercent": 94.6
+          }
+        },
+        {
+          "uid": "uss-freedom-uptime-3",
+          "values": {
+            "shipUid": "uss-freedom",
+            "missionArea": "Communications",
+            "uptimePercent": 97.5
+          }
+        },
+        {
+          "uid": "uss-freedom-uptime-4",
+          "values": {
+            "shipUid": "uss-freedom",
+            "missionArea": "Navigation",
+            "uptimePercent": 98
+          }
+        },
+        {
+          "uid": "uss-guardian-uptime-1",
+          "values": {
+            "shipUid": "uss-guardian",
+            "missionArea": "Engineering",
+            "uptimePercent": 94.6
+          }
+        },
+        {
+          "uid": "uss-guardian-uptime-2",
+          "values": {
+            "shipUid": "uss-guardian",
+            "missionArea": "Combat systems",
+            "uptimePercent": 93.9
+          }
+        },
+        {
+          "uid": "uss-guardian-uptime-3",
+          "values": {
+            "shipUid": "uss-guardian",
+            "missionArea": "Communications",
+            "uptimePercent": 97.1
+          }
+        },
+        {
+          "uid": "uss-guardian-uptime-4",
+          "values": {
+            "shipUid": "uss-guardian",
+            "missionArea": "Navigation",
+            "uptimePercent": 97.7
+          }
+        },
+        {
+          "uid": "uss-horizon-uptime-1",
+          "values": {
+            "shipUid": "uss-horizon",
+            "missionArea": "Engineering",
+            "uptimePercent": 93.8
+          }
+        },
+        {
+          "uid": "uss-horizon-uptime-2",
+          "values": {
+            "shipUid": "uss-horizon",
+            "missionArea": "Combat systems",
+            "uptimePercent": 92.8
+          }
+        },
+        {
+          "uid": "uss-horizon-uptime-3",
+          "values": {
+            "shipUid": "uss-horizon",
+            "missionArea": "Communications",
+            "uptimePercent": 96.8
+          }
+        },
+        {
+          "uid": "uss-horizon-uptime-4",
+          "values": {
+            "shipUid": "uss-horizon",
+            "missionArea": "Navigation",
+            "uptimePercent": 97.3
+          }
+        },
+        {
+          "uid": "uss-independence-uptime-1",
+          "values": {
+            "shipUid": "uss-independence",
+            "missionArea": "Engineering",
+            "uptimePercent": 92.9
+          }
+        },
+        {
+          "uid": "uss-independence-uptime-2",
+          "values": {
+            "shipUid": "uss-independence",
+            "missionArea": "Combat systems",
+            "uptimePercent": 91.7
+          }
+        },
+        {
+          "uid": "uss-independence-uptime-3",
+          "values": {
+            "shipUid": "uss-independence",
+            "missionArea": "Communications",
+            "uptimePercent": 96.3
+          }
+        },
+        {
+          "uid": "uss-independence-uptime-4",
+          "values": {
+            "shipUid": "uss-independence",
+            "missionArea": "Navigation",
+            "uptimePercent": 96.9
+          }
+        },
+        {
+          "uid": "uss-justice-uptime-1",
+          "values": {
+            "shipUid": "uss-justice",
+            "missionArea": "Engineering",
+            "uptimePercent": 91.8
+          }
+        },
+        {
+          "uid": "uss-justice-uptime-2",
+          "values": {
+            "shipUid": "uss-justice",
+            "missionArea": "Combat systems",
+            "uptimePercent": 90.5
+          }
+        },
+        {
+          "uid": "uss-justice-uptime-3",
+          "values": {
+            "shipUid": "uss-justice",
+            "missionArea": "Communications",
+            "uptimePercent": 95.8
+          }
+        },
+        {
+          "uid": "uss-justice-uptime-4",
+          "values": {
+            "shipUid": "uss-justice",
+            "missionArea": "Navigation",
+            "uptimePercent": 96.5
+          }
+        },
+        {
+          "uid": "uss-liberty-uptime-1",
+          "values": {
+            "shipUid": "uss-liberty",
+            "missionArea": "Engineering",
+            "uptimePercent": 81.7
+          }
+        },
+        {
+          "uid": "uss-liberty-uptime-2",
+          "values": {
+            "shipUid": "uss-liberty",
+            "missionArea": "Combat systems",
+            "uptimePercent": 75.4
+          }
+        },
+        {
+          "uid": "uss-liberty-uptime-3",
+          "values": {
+            "shipUid": "uss-liberty",
+            "missionArea": "Communications",
+            "uptimePercent": 89.6
+          }
+        },
+        {
+          "uid": "uss-liberty-uptime-4",
+          "values": {
+            "shipUid": "uss-liberty",
+            "missionArea": "Navigation",
+            "uptimePercent": 94.2
+          }
+        }
+      ]
+    },
+    {
+      "uid": "recent-long-repairs",
+      "title": "Recent Long Repairs",
+      "source": {
+        "uid": "synthetic-demo-source",
+        "title": "Synthetic demonstration data",
+        "asOf": "2026-11-04T13:00:00Z"
+      },
+      "columns": [
+        {
+          "uid": "shipUid",
+          "title": "Ship UID",
+          "type": "string",
+          "required": true
+        },
+        {
+          "uid": "description",
+          "title": "Description",
+          "type": "string",
+          "required": true
+        },
+        {
+          "uid": "hours",
+          "title": "Hours",
+          "type": "number",
+          "unit": "hours",
+          "required": true
+        }
+      ],
+      "rows": [
+        {
+          "uid": "uss-resolute-long-repair-1",
+          "values": {
+            "shipUid": "uss-resolute",
+            "description": "No. 2 Ship Service Generator",
+            "hours": 142
+          }
+        },
+        {
+          "uid": "uss-resolute-long-repair-2",
+          "values": {
+            "shipUid": "uss-resolute",
+            "description": "Firemain Isolation Valve",
+            "hours": 119
+          }
+        },
+        {
+          "uid": "uss-resolute-long-repair-3",
+          "values": {
+            "shipUid": "uss-resolute",
+            "description": "Air Search Radar Cooling Pump",
+            "hours": 103
+          }
+        }
+      ]
+    },
+    {
+      "uid": "weekly-repairs",
+      "title": "Weekly Repairs",
+      "source": {
+        "uid": "synthetic-demo-source",
+        "title": "Synthetic demonstration data",
+        "asOf": "2026-11-04T13:00:00Z"
+      },
+      "columns": [
+        {
+          "uid": "shipUid",
+          "title": "Ship UID",
+          "type": "string",
+          "required": true
+        },
+        {
+          "uid": "weekIndex",
+          "title": "Week Index",
+          "type": "number",
+          "required": true
+        },
+        {
+          "uid": "weekLabel",
+          "title": "Week Label",
+          "type": "string",
+          "required": true
+        },
+        {
+          "uid": "repairCount",
+          "title": "Repair Count",
+          "type": "number",
+          "required": true
+        }
+      ],
+      "rows": [
+        {
+          "uid": "uss-resolute-week-1",
+          "values": {
+            "shipUid": "uss-resolute",
+            "weekIndex": 1,
+            "weekLabel": "Week 1",
+            "repairCount": 2
+          }
+        },
+        {
+          "uid": "uss-resolute-week-2",
+          "values": {
+            "shipUid": "uss-resolute",
+            "weekIndex": 2,
+            "weekLabel": "Week 2",
+            "repairCount": 4
+          }
+        },
+        {
+          "uid": "uss-resolute-week-3",
+          "values": {
+            "shipUid": "uss-resolute",
+            "weekIndex": 3,
+            "weekLabel": "Week 3",
+            "repairCount": 3
+          }
+        },
+        {
+          "uid": "uss-resolute-week-4",
+          "values": {
+            "shipUid": "uss-resolute",
+            "weekIndex": 4,
+            "weekLabel": "Week 4",
+            "repairCount": 6
+          }
+        },
+        {
+          "uid": "uss-resolute-week-5",
+          "values": {
+            "shipUid": "uss-resolute",
+            "weekIndex": 5,
+            "weekLabel": "Week 5",
+            "repairCount": 5
+          }
+        },
+        {
+          "uid": "uss-resolute-week-6",
+          "values": {
+            "shipUid": "uss-resolute",
+            "weekIndex": 6,
+            "weekLabel": "Week 6",
+            "repairCount": 8
+          }
+        },
+        {
+          "uid": "uss-resolute-week-7",
+          "values": {
+            "shipUid": "uss-resolute",
+            "weekIndex": 7,
+            "weekLabel": "Week 7",
+            "repairCount": 7
+          }
+        },
+        {
+          "uid": "uss-resolute-week-8",
+          "values": {
+            "shipUid": "uss-resolute",
+            "weekIndex": 8,
+            "weekLabel": "Week 8",
+            "repairCount": 10
+          }
+        },
+        {
+          "uid": "uss-archer-week-1",
+          "values": {
+            "shipUid": "uss-archer",
+            "weekIndex": 1,
+            "weekLabel": "Week 1",
+            "repairCount": 1
+          }
+        },
+        {
+          "uid": "uss-archer-week-2",
+          "values": {
+            "shipUid": "uss-archer",
+            "weekIndex": 2,
+            "weekLabel": "Week 2",
+            "repairCount": 1
+          }
+        },
+        {
+          "uid": "uss-archer-week-3",
+          "values": {
+            "shipUid": "uss-archer",
+            "weekIndex": 3,
+            "weekLabel": "Week 3",
+            "repairCount": 2
+          }
+        },
+        {
+          "uid": "uss-archer-week-4",
+          "values": {
+            "shipUid": "uss-archer",
+            "weekIndex": 4,
+            "weekLabel": "Week 4",
+            "repairCount": 1
+          }
+        },
+        {
+          "uid": "uss-archer-week-5",
+          "values": {
+            "shipUid": "uss-archer",
+            "weekIndex": 5,
+            "weekLabel": "Week 5",
+            "repairCount": 1
+          }
+        },
+        {
+          "uid": "uss-archer-week-6",
+          "values": {
+            "shipUid": "uss-archer",
+            "weekIndex": 6,
+            "weekLabel": "Week 6",
+            "repairCount": 2
+          }
+        },
+        {
+          "uid": "uss-archer-week-7",
+          "values": {
+            "shipUid": "uss-archer",
+            "weekIndex": 7,
+            "weekLabel": "Week 7",
+            "repairCount": 1
+          }
+        },
+        {
+          "uid": "uss-archer-week-8",
+          "values": {
+            "shipUid": "uss-archer",
+            "weekIndex": 8,
+            "weekLabel": "Week 8",
+            "repairCount": 1
+          }
+        },
+        {
+          "uid": "uss-beacon-week-1",
+          "values": {
+            "shipUid": "uss-beacon",
+            "weekIndex": 1,
+            "weekLabel": "Week 1",
+            "repairCount": 1
+          }
+        },
+        {
+          "uid": "uss-beacon-week-2",
+          "values": {
+            "shipUid": "uss-beacon",
+            "weekIndex": 2,
+            "weekLabel": "Week 2",
+            "repairCount": 2
+          }
+        },
+        {
+          "uid": "uss-beacon-week-3",
+          "values": {
+            "shipUid": "uss-beacon",
+            "weekIndex": 3,
+            "weekLabel": "Week 3",
+            "repairCount": 1
+          }
+        },
+        {
+          "uid": "uss-beacon-week-4",
+          "values": {
+            "shipUid": "uss-beacon",
+            "weekIndex": 4,
+            "weekLabel": "Week 4",
+            "repairCount": 2
+          }
+        },
+        {
+          "uid": "uss-beacon-week-5",
+          "values": {
+            "shipUid": "uss-beacon",
+            "weekIndex": 5,
+            "weekLabel": "Week 5",
+            "repairCount": 2
+          }
+        },
+        {
+          "uid": "uss-beacon-week-6",
+          "values": {
+            "shipUid": "uss-beacon",
+            "weekIndex": 6,
+            "weekLabel": "Week 6",
+            "repairCount": 1
+          }
+        },
+        {
+          "uid": "uss-beacon-week-7",
+          "values": {
+            "shipUid": "uss-beacon",
+            "weekIndex": 7,
+            "weekLabel": "Week 7",
+            "repairCount": 2
+          }
+        },
+        {
+          "uid": "uss-beacon-week-8",
+          "values": {
+            "shipUid": "uss-beacon",
+            "weekIndex": 8,
+            "weekLabel": "Week 8",
+            "repairCount": 1
+          }
+        },
+        {
+          "uid": "uss-courage-week-1",
+          "values": {
+            "shipUid": "uss-courage",
+            "weekIndex": 1,
+            "weekLabel": "Week 1",
+            "repairCount": 2
+          }
+        },
+        {
+          "uid": "uss-courage-week-2",
+          "values": {
+            "shipUid": "uss-courage",
+            "weekIndex": 2,
+            "weekLabel": "Week 2",
+            "repairCount": 1
+          }
+        },
+        {
+          "uid": "uss-courage-week-3",
+          "values": {
+            "shipUid": "uss-courage",
+            "weekIndex": 3,
+            "weekLabel": "Week 3",
+            "repairCount": 2
+          }
+        },
+        {
+          "uid": "uss-courage-week-4",
+          "values": {
+            "shipUid": "uss-courage",
+            "weekIndex": 4,
+            "weekLabel": "Week 4",
+            "repairCount": 2
+          }
+        },
+        {
+          "uid": "uss-courage-week-5",
+          "values": {
+            "shipUid": "uss-courage",
+            "weekIndex": 5,
+            "weekLabel": "Week 5",
+            "repairCount": 1
+          }
+        },
+        {
+          "uid": "uss-courage-week-6",
+          "values": {
+            "shipUid": "uss-courage",
+            "weekIndex": 6,
+            "weekLabel": "Week 6",
+            "repairCount": 2
+          }
+        },
+        {
+          "uid": "uss-courage-week-7",
+          "values": {
+            "shipUid": "uss-courage",
+            "weekIndex": 7,
+            "weekLabel": "Week 7",
+            "repairCount": 2
+          }
+        },
+        {
+          "uid": "uss-courage-week-8",
+          "values": {
+            "shipUid": "uss-courage",
+            "weekIndex": 8,
+            "weekLabel": "Week 8",
+            "repairCount": 2
+          }
+        },
+        {
+          "uid": "uss-dauntless-week-1",
+          "values": {
+            "shipUid": "uss-dauntless",
+            "weekIndex": 1,
+            "weekLabel": "Week 1",
+            "repairCount": 2
+          }
+        },
+        {
+          "uid": "uss-dauntless-week-2",
+          "values": {
+            "shipUid": "uss-dauntless",
+            "weekIndex": 2,
+            "weekLabel": "Week 2",
+            "repairCount": 2
+          }
+        },
+        {
+          "uid": "uss-dauntless-week-3",
+          "values": {
+            "shipUid": "uss-dauntless",
+            "weekIndex": 3,
+            "weekLabel": "Week 3",
+            "repairCount": 2
+          }
+        },
+        {
+          "uid": "uss-dauntless-week-4",
+          "values": {
+            "shipUid": "uss-dauntless",
+            "weekIndex": 4,
+            "weekLabel": "Week 4",
+            "repairCount": 1
+          }
+        },
+        {
+          "uid": "uss-dauntless-week-5",
+          "values": {
+            "shipUid": "uss-dauntless",
+            "weekIndex": 5,
+            "weekLabel": "Week 5",
+            "repairCount": 3
+          }
+        },
+        {
+          "uid": "uss-dauntless-week-6",
+          "values": {
+            "shipUid": "uss-dauntless",
+            "weekIndex": 6,
+            "weekLabel": "Week 6",
+            "repairCount": 2
+          }
+        },
+        {
+          "uid": "uss-dauntless-week-7",
+          "values": {
+            "shipUid": "uss-dauntless",
+            "weekIndex": 7,
+            "weekLabel": "Week 7",
+            "repairCount": 2
+          }
+        },
+        {
+          "uid": "uss-dauntless-week-8",
+          "values": {
+            "shipUid": "uss-dauntless",
+            "weekIndex": 8,
+            "weekLabel": "Week 8",
+            "repairCount": 2
+          }
+        },
+        {
+          "uid": "uss-endeavor-week-1",
+          "values": {
+            "shipUid": "uss-endeavor",
+            "weekIndex": 1,
+            "weekLabel": "Week 1",
+            "repairCount": 2
+          }
+        },
+        {
+          "uid": "uss-endeavor-week-2",
+          "values": {
+            "shipUid": "uss-endeavor",
+            "weekIndex": 2,
+            "weekLabel": "Week 2",
+            "repairCount": 2
+          }
+        },
+        {
+          "uid": "uss-endeavor-week-3",
+          "values": {
+            "shipUid": "uss-endeavor",
+            "weekIndex": 3,
+            "weekLabel": "Week 3",
+            "repairCount": 3
+          }
+        },
+        {
+          "uid": "uss-endeavor-week-4",
+          "values": {
+            "shipUid": "uss-endeavor",
+            "weekIndex": 4,
+            "weekLabel": "Week 4",
+            "repairCount": 2
+          }
+        },
+        {
+          "uid": "uss-endeavor-week-5",
+          "values": {
+            "shipUid": "uss-endeavor",
+            "weekIndex": 5,
+            "weekLabel": "Week 5",
+            "repairCount": 2
+          }
+        },
+        {
+          "uid": "uss-endeavor-week-6",
+          "values": {
+            "shipUid": "uss-endeavor",
+            "weekIndex": 6,
+            "weekLabel": "Week 6",
+            "repairCount": 3
+          }
+        },
+        {
+          "uid": "uss-endeavor-week-7",
+          "values": {
+            "shipUid": "uss-endeavor",
+            "weekIndex": 7,
+            "weekLabel": "Week 7",
+            "repairCount": 2
+          }
+        },
+        {
+          "uid": "uss-endeavor-week-8",
+          "values": {
+            "shipUid": "uss-endeavor",
+            "weekIndex": 8,
+            "weekLabel": "Week 8",
+            "repairCount": 2
+          }
+        },
+        {
+          "uid": "uss-freedom-week-1",
+          "values": {
+            "shipUid": "uss-freedom",
+            "weekIndex": 1,
+            "weekLabel": "Week 1",
+            "repairCount": 2
+          }
+        },
+        {
+          "uid": "uss-freedom-week-2",
+          "values": {
+            "shipUid": "uss-freedom",
+            "weekIndex": 2,
+            "weekLabel": "Week 2",
+            "repairCount": 3
+          }
+        },
+        {
+          "uid": "uss-freedom-week-3",
+          "values": {
+            "shipUid": "uss-freedom",
+            "weekIndex": 3,
+            "weekLabel": "Week 3",
+            "repairCount": 2
+          }
+        },
+        {
+          "uid": "uss-freedom-week-4",
+          "values": {
+            "shipUid": "uss-freedom",
+            "weekIndex": 4,
+            "weekLabel": "Week 4",
+            "repairCount": 3
+          }
+        },
+        {
+          "uid": "uss-freedom-week-5",
+          "values": {
+            "shipUid": "uss-freedom",
+            "weekIndex": 5,
+            "weekLabel": "Week 5",
+            "repairCount": 3
+          }
+        },
+        {
+          "uid": "uss-freedom-week-6",
+          "values": {
+            "shipUid": "uss-freedom",
+            "weekIndex": 6,
+            "weekLabel": "Week 6",
+            "repairCount": 2
+          }
+        },
+        {
+          "uid": "uss-freedom-week-7",
+          "values": {
+            "shipUid": "uss-freedom",
+            "weekIndex": 7,
+            "weekLabel": "Week 7",
+            "repairCount": 3
+          }
+        },
+        {
+          "uid": "uss-freedom-week-8",
+          "values": {
+            "shipUid": "uss-freedom",
+            "weekIndex": 8,
+            "weekLabel": "Week 8",
+            "repairCount": 3
+          }
+        },
+        {
+          "uid": "uss-guardian-week-1",
+          "values": {
+            "shipUid": "uss-guardian",
+            "weekIndex": 1,
+            "weekLabel": "Week 1",
+            "repairCount": 3
+          }
+        },
+        {
+          "uid": "uss-guardian-week-2",
+          "values": {
+            "shipUid": "uss-guardian",
+            "weekIndex": 2,
+            "weekLabel": "Week 2",
+            "repairCount": 2
+          }
+        },
+        {
+          "uid": "uss-guardian-week-3",
+          "values": {
+            "shipUid": "uss-guardian",
+            "weekIndex": 3,
+            "weekLabel": "Week 3",
+            "repairCount": 3
+          }
+        },
+        {
+          "uid": "uss-guardian-week-4",
+          "values": {
+            "shipUid": "uss-guardian",
+            "weekIndex": 4,
+            "weekLabel": "Week 4",
+            "repairCount": 3
+          }
+        },
+        {
+          "uid": "uss-guardian-week-5",
+          "values": {
+            "shipUid": "uss-guardian",
+            "weekIndex": 5,
+            "weekLabel": "Week 5",
+            "repairCount": 2
+          }
+        },
+        {
+          "uid": "uss-guardian-week-6",
+          "values": {
+            "shipUid": "uss-guardian",
+            "weekIndex": 6,
+            "weekLabel": "Week 6",
+            "repairCount": 4
+          }
+        },
+        {
+          "uid": "uss-guardian-week-7",
+          "values": {
+            "shipUid": "uss-guardian",
+            "weekIndex": 7,
+            "weekLabel": "Week 7",
+            "repairCount": 3
+          }
+        },
+        {
+          "uid": "uss-guardian-week-8",
+          "values": {
+            "shipUid": "uss-guardian",
+            "weekIndex": 8,
+            "weekLabel": "Week 8",
+            "repairCount": 3
+          }
+        },
+        {
+          "uid": "uss-horizon-week-1",
+          "values": {
+            "shipUid": "uss-horizon",
+            "weekIndex": 1,
+            "weekLabel": "Week 1",
+            "repairCount": 3
+          }
+        },
+        {
+          "uid": "uss-horizon-week-2",
+          "values": {
+            "shipUid": "uss-horizon",
+            "weekIndex": 2,
+            "weekLabel": "Week 2",
+            "repairCount": 3
+          }
+        },
+        {
+          "uid": "uss-horizon-week-3",
+          "values": {
+            "shipUid": "uss-horizon",
+            "weekIndex": 3,
+            "weekLabel": "Week 3",
+            "repairCount": 3
+          }
+        },
+        {
+          "uid": "uss-horizon-week-4",
+          "values": {
+            "shipUid": "uss-horizon",
+            "weekIndex": 4,
+            "weekLabel": "Week 4",
+            "repairCount": 4
+          }
+        },
+        {
+          "uid": "uss-horizon-week-5",
+          "values": {
+            "shipUid": "uss-horizon",
+            "weekIndex": 5,
+            "weekLabel": "Week 5",
+            "repairCount": 3
+          }
+        },
+        {
+          "uid": "uss-horizon-week-6",
+          "values": {
+            "shipUid": "uss-horizon",
+            "weekIndex": 6,
+            "weekLabel": "Week 6",
+            "repairCount": 3
+          }
+        },
+        {
+          "uid": "uss-horizon-week-7",
+          "values": {
+            "shipUid": "uss-horizon",
+            "weekIndex": 7,
+            "weekLabel": "Week 7",
+            "repairCount": 4
+          }
+        },
+        {
+          "uid": "uss-horizon-week-8",
+          "values": {
+            "shipUid": "uss-horizon",
+            "weekIndex": 8,
+            "weekLabel": "Week 8",
+            "repairCount": 3
+          }
+        },
+        {
+          "uid": "uss-independence-week-1",
+          "values": {
+            "shipUid": "uss-independence",
+            "weekIndex": 1,
+            "weekLabel": "Week 1",
+            "repairCount": 3
+          }
+        },
+        {
+          "uid": "uss-independence-week-2",
+          "values": {
+            "shipUid": "uss-independence",
+            "weekIndex": 2,
+            "weekLabel": "Week 2",
+            "repairCount": 4
+          }
+        },
+        {
+          "uid": "uss-independence-week-3",
+          "values": {
+            "shipUid": "uss-independence",
+            "weekIndex": 3,
+            "weekLabel": "Week 3",
+            "repairCount": 3
+          }
+        },
+        {
+          "uid": "uss-independence-week-4",
+          "values": {
+            "shipUid": "uss-independence",
+            "weekIndex": 4,
+            "weekLabel": "Week 4",
+            "repairCount": 4
+          }
+        },
+        {
+          "uid": "uss-independence-week-5",
+          "values": {
+            "shipUid": "uss-independence",
+            "weekIndex": 5,
+            "weekLabel": "Week 5",
+            "repairCount": 4
+          }
+        },
+        {
+          "uid": "uss-independence-week-6",
+          "values": {
+            "shipUid": "uss-independence",
+            "weekIndex": 6,
+            "weekLabel": "Week 6",
+            "repairCount": 3
+          }
+        },
+        {
+          "uid": "uss-independence-week-7",
+          "values": {
+            "shipUid": "uss-independence",
+            "weekIndex": 7,
+            "weekLabel": "Week 7",
+            "repairCount": 4
+          }
+        },
+        {
+          "uid": "uss-independence-week-8",
+          "values": {
+            "shipUid": "uss-independence",
+            "weekIndex": 8,
+            "weekLabel": "Week 8",
+            "repairCount": 4
+          }
+        },
+        {
+          "uid": "uss-justice-week-1",
+          "values": {
+            "shipUid": "uss-justice",
+            "weekIndex": 1,
+            "weekLabel": "Week 1",
+            "repairCount": 4
+          }
+        },
+        {
+          "uid": "uss-justice-week-2",
+          "values": {
+            "shipUid": "uss-justice",
+            "weekIndex": 2,
+            "weekLabel": "Week 2",
+            "repairCount": 3
+          }
+        },
+        {
+          "uid": "uss-justice-week-3",
+          "values": {
+            "shipUid": "uss-justice",
+            "weekIndex": 3,
+            "weekLabel": "Week 3",
+            "repairCount": 4
+          }
+        },
+        {
+          "uid": "uss-justice-week-4",
+          "values": {
+            "shipUid": "uss-justice",
+            "weekIndex": 4,
+            "weekLabel": "Week 4",
+            "repairCount": 4
+          }
+        },
+        {
+          "uid": "uss-justice-week-5",
+          "values": {
+            "shipUid": "uss-justice",
+            "weekIndex": 5,
+            "weekLabel": "Week 5",
+            "repairCount": 5
+          }
+        },
+        {
+          "uid": "uss-justice-week-6",
+          "values": {
+            "shipUid": "uss-justice",
+            "weekIndex": 6,
+            "weekLabel": "Week 6",
+            "repairCount": 4
+          }
+        },
+        {
+          "uid": "uss-justice-week-7",
+          "values": {
+            "shipUid": "uss-justice",
+            "weekIndex": 7,
+            "weekLabel": "Week 7",
+            "repairCount": 4
+          }
+        },
+        {
+          "uid": "uss-justice-week-8",
+          "values": {
+            "shipUid": "uss-justice",
+            "weekIndex": 8,
+            "weekLabel": "Week 8",
+            "repairCount": 5
+          }
+        },
+        {
+          "uid": "uss-liberty-week-1",
+          "values": {
+            "shipUid": "uss-liberty",
+            "weekIndex": 1,
+            "weekLabel": "Week 1",
+            "repairCount": 6
+          }
+        },
+        {
+          "uid": "uss-liberty-week-2",
+          "values": {
+            "shipUid": "uss-liberty",
+            "weekIndex": 2,
+            "weekLabel": "Week 2",
+            "repairCount": 7
+          }
+        },
+        {
+          "uid": "uss-liberty-week-3",
+          "values": {
+            "shipUid": "uss-liberty",
+            "weekIndex": 3,
+            "weekLabel": "Week 3",
+            "repairCount": 5
+          }
+        },
+        {
+          "uid": "uss-liberty-week-4",
+          "values": {
+            "shipUid": "uss-liberty",
+            "weekIndex": 4,
+            "weekLabel": "Week 4",
+            "repairCount": 8
+          }
+        },
+        {
+          "uid": "uss-liberty-week-5",
+          "values": {
+            "shipUid": "uss-liberty",
+            "weekIndex": 5,
+            "weekLabel": "Week 5",
+            "repairCount": 7
+          }
+        },
+        {
+          "uid": "uss-liberty-week-6",
+          "values": {
+            "shipUid": "uss-liberty",
+            "weekIndex": 6,
+            "weekLabel": "Week 6",
+            "repairCount": 9
+          }
+        },
+        {
+          "uid": "uss-liberty-week-7",
+          "values": {
+            "shipUid": "uss-liberty",
+            "weekIndex": 7,
+            "weekLabel": "Week 7",
+            "repairCount": 8
+          }
+        },
+        {
+          "uid": "uss-liberty-week-8",
+          "values": {
+            "shipUid": "uss-liberty",
+            "weekIndex": 8,
+            "weekLabel": "Week 8",
+            "repairCount": 11
+          }
+        }
+      ]
+    }
+  ],
+  "extensions": {
+    "synthetic": true,
+    "temporaryPrototypeSchema": true
+  }
+}

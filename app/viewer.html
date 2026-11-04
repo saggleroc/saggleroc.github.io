@@ -1,0 +1,413 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Offline Dashboard Viewer</title>
+  <style>
+    :root { color-scheme:dark; --navy:#061526; --panel:#102741; --line:#31506f; --blue:#5eb8ff; --red:#ff796f; --gold:#f7c85f; --text:#f1f7fc; --muted:#abc0d3; }
+    * { box-sizing:border-box; }
+    body { margin:0; background:radial-gradient(circle at 82% 8%,#164b77 0,transparent 28%),radial-gradient(circle at 10% 45%,#0d3858 0,transparent 25%),linear-gradient(145deg,#030d18,#071d34 65%,#0a2746); color:var(--text); font:15px/1.45 system-ui,sans-serif; min-height:100vh; }
+    main { width:min(1100px,calc(100% - 32px)); margin:28px auto 60px; }
+    h1,h2,p { margin-top:0; } .lead,.muted { color:var(--muted); }
+    .card { background:linear-gradient(145deg,rgba(18,45,74,.98),rgba(10,29,51,.98)); border:1px solid #365a7c; border-radius:14px; padding:20px; margin-bottom:18px; box-shadow:0 15px 40px #0006,inset 0 1px #ffffff0b; }
+    .import-grid { display:grid; grid-template-columns:1fr auto; gap:12px; align-items:end; }
+    label { display:block; font-weight:750; margin-bottom:6px; }
+    input,textarea,button { font:inherit; }
+    input[type=file],textarea { width:100%; color:var(--text); background:#07182c; border:1px solid #486b8c; border-radius:7px; padding:10px; }
+    textarea { min-height:145px; resize:vertical; font-family:ui-monospace,Consolas,monospace; font-size:12px; margin-top:12px; }
+    button { padding:10px 14px; border:0; border-radius:7px; background:var(--blue); color:#052039; font-weight:800; cursor:pointer; }
+    button.secondary { background:#d5e5f3; }
+    .table-tools { display:flex; flex-wrap:wrap; gap:10px; align-items:center; }
+    .table-tools input[type=file] { width:auto; max-width:280px; }
+    #tableStatus { flex-basis:100%; margin:0; }
+    #status { margin:10px 0 0; min-height:22px; color:var(--muted); }
+    #status.error { color:#ffaaa3; } #status.ok { color:#8ce5b2; }
+    #dashboard[hidden] { display:none; }
+    .banner { display:flex; justify-content:space-between; gap:20px; align-items:start; border-left:5px solid var(--blue); background:linear-gradient(110deg,#123a60,#102741 55%,#152c45); }
+    .eyebrow { color:var(--blue); font-weight:850; letter-spacing:.09em; font-size:12px; }
+    .status-pill { display:inline-block; margin-top:7px; padding:4px 9px; border-radius:999px; background:#1f9d6825; border:1px solid #63d7a0; color:#8aebba; font-size:11px; font-weight:800; letter-spacing:.06em; }
+    .timestamp { text-align:right; white-space:nowrap; } .timestamp strong { display:block; font-size:16px; }
+    .stats { display:grid; grid-template-columns:repeat(4,1fr); gap:15px; }
+    .stat { position:relative; overflow:hidden; background:linear-gradient(145deg,#0d2a47,#08192c); border:1px solid #345777; border-radius:12px; padding:17px; box-shadow:0 10px 25px #0004; }
+    .stat::before { content:""; position:absolute; left:0; top:0; right:0; height:3px; background:linear-gradient(90deg,var(--blue),#9c7bff); }
+    .stat.warning::before { background:linear-gradient(90deg,var(--gold),var(--red)); }
+    .stat span { display:block; color:var(--muted); font-size:12px; text-transform:uppercase; letter-spacing:.05em; }
+    .stat strong { display:block; font-size:29px; margin-top:5px; }
+    .detail-grid { display:grid; grid-template-columns:1fr 1fr; gap:18px; margin-top:18px; }
+    .chart { position:relative; padding-top:5px; }
+    .row { display:grid; grid-template-columns:minmax(120px,200px) 1fr 65px; gap:12px; align-items:center; min-height:38px; }
+    .row.self { color:#fff; font-weight:800; }
+    .track { position:relative; height:22px; background:#07182c; border-radius:4px; overflow:visible; }
+    .bar { height:100%; min-width:2px; background:linear-gradient(90deg,#268dd8,var(--blue)); border-radius:4px; }
+    .self .bar { background:linear-gradient(90deg,#e54e58,var(--red)); box-shadow:0 0 14px #ff796f66; }
+    .average { position:absolute; top:-9px; bottom:-9px; width:2px; background:var(--gold); box-shadow:0 0 5px #f7c85f88; z-index:2; }
+    .axis-note { text-align:right; color:var(--muted); font-size:12px; margin-top:10px; }
+    .detail-row { display:grid; grid-template-columns:150px 1fr 52px; gap:10px; align-items:center; margin:14px 0; }
+    .donut-layout { display:grid; grid-template-columns:180px 1fr; gap:24px; align-items:center; margin-top:12px; }
+    .donut { width:175px; height:175px; border-radius:50%; display:grid; place-items:center; box-shadow:0 0 28px #0005; }
+    .donut-hole { width:92px; height:92px; border-radius:50%; display:grid; place-items:center; text-align:center; background:#0b2037; border:1px solid #426484; box-shadow:inset 0 4px 15px #0007; }
+    .donut-hole strong { display:block; font-size:28px; line-height:1; }
+    .donut-hole span { color:var(--muted); font-size:11px; text-transform:uppercase; }
+    .donut-legend { display:grid; gap:10px; }
+    .legend-row { display:grid; grid-template-columns:12px 1fr auto; gap:9px; align-items:center; }
+    .legend-swatch { width:12px; height:12px; border-radius:3px; }
+    .uptime-row { display:grid; grid-template-columns:125px 1fr 58px; gap:12px; align-items:center; margin:20px 0; }
+    .uptime-gauge { position:relative; height:12px; border-radius:7px; background:#07182c; border:1px solid #294963; box-shadow:inset 0 2px 5px #0007; }
+    .uptime-fill { position:absolute; inset:0 auto 0 0; border-radius:7px; background:var(--score-color); box-shadow:0 0 10px color-mix(in srgb,var(--score-color) 45%,transparent); }
+    .uptime-target { position:absolute; left:90%; top:-6px; bottom:-6px; border-left:2px dashed #b8dfb6; opacity:.85; }
+    .uptime-marker { position:absolute; top:50%; width:11px; height:11px; border:2px solid #f4fbff; border-radius:50%; background:var(--score-color); box-shadow:0 2px 7px #000a; transform:translate(-50%,-50%); }
+    .uptime-value { text-align:right; font-variant-numeric:tabular-nums; }
+    .uptime-legend { display:flex; flex-wrap:wrap; gap:12px 18px; color:var(--muted); font-size:10px; padding-left:137px; margin-top:4px; }
+    .uptime-key { display:flex; align-items:center; gap:5px; }
+    .uptime-key::before { content:""; width:8px; height:8px; border-radius:50%; background:var(--key-color); }
+    .repair-list { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; }
+    .repair-item { border-left:4px solid var(--red); background:#091c31; border-radius:7px; padding:14px; }
+    .repair-item strong { display:block; font-size:22px; color:#ffaaa3; margin-top:6px; }
+    .lollipop-wrap { height:260px; display:flex; gap:12px; align-items:stretch; padding:12px 8px 0; background:repeating-linear-gradient(to top,transparent 0,transparent 49px,#55718b33 50px); border-bottom:1px solid #55718b; }
+    .lollipop-item { flex:1; min-width:45px; display:flex; flex-direction:column; justify-content:flex-end; align-items:center; }
+    .lollipop-plot { width:100%; height:205px; display:flex; flex-direction:column; justify-content:flex-end; align-items:center; }
+    .lollipop-value { color:#cdeaff; font-weight:850; margin-bottom:6px; }
+    .lollipop-dot { width:18px; height:18px; flex:0 0 18px; border-radius:50%; background:var(--blue); border:4px solid #bde4ff; box-shadow:0 0 18px #61b7ffaa; z-index:2; }
+    .lollipop-stem { width:4px; background:linear-gradient(to top,#2777ad,var(--blue)); border-radius:4px 4px 0 0; }
+    .lollipop-label { height:35px; padding-top:8px; color:var(--muted); font-size:11px; text-align:center; }
+    .trend-summary { display:flex; align-items:center; gap:10px; color:var(--muted); }
+    .trend-summary strong { color:var(--text); font-size:18px; }
+    @media(max-width:850px) { .stats{grid-template-columns:1fr 1fr}.detail-grid{grid-template-columns:1fr}.repair-list{grid-template-columns:1fr} }
+    @media(max-width:700px) { .stats{grid-template-columns:1fr}.import-grid{grid-template-columns:1fr}.timestamp{text-align:left}.banner{display:block}.row{grid-template-columns:110px 1fr 52px}.detail-row{grid-template-columns:120px 1fr 45px}.donut-layout{grid-template-columns:1fr;justify-items:center}.donut-legend{width:100%}.uptime-row{grid-template-columns:105px 1fr 52px}.uptime-legend{padding-left:117px} }
+  </style>
+</head>
+<body>
+<main>
+  <h1>Offline Dashboard Viewer</h1>
+  <p class="lead">Import or paste a complete text message. The viewer detects and decodes the embedded dashboard payload locally.</p>
+
+  <section class="card">
+    <div class="import-grid">
+      <div>
+        <label for="messageFile">Message file</label>
+        <input id="messageFile" type="file" accept=".txt,text/plain">
+      </div>
+      <button id="decode">Decode message</button>
+    </div>
+    <label for="message" style="margin-top:14px">Or paste message text</label>
+    <textarea id="message" spellcheck="false" placeholder="Paste SUBJECT, body, and NAVDASH payload here..."></textarea>
+    <div id="status" role="status">Waiting for a message.</div>
+  </section>
+
+  <div id="dashboard" hidden>
+    <section class="card banner">
+      <div><div class="eyebrow">EQUIPMENT READINESS</div><h2>Fleet Readiness Pulse</h2><p id="subject" class="muted"></p><div class="status-pill">VERIFIED OFFLINE UPDATE</div></div>
+      <div class="timestamp"><span class="muted">DATA AS OF</span><strong id="asOf"></strong><span id="age" class="muted"></span></div>
+    </section>
+    <section class="card">
+      <h2>Equipment readiness table</h2>
+      <p class="muted">Export this table, edit it in Excel, then import the CSV to replace the table immediately.</p>
+      <div class="table-tools">
+        <button id="exportTable">Export CSV</button>
+        <input id="tableFile" type="file" accept=".csv,text/csv" aria-label="Replacement table CSV">
+        <button id="resetTable" class="secondary">Reset to shore data</button>
+        <p id="tableStatus" class="muted" role="status"></p>
+      </div>
+    </section>
+    <section class="stats">
+      <div class="stat"><span>Selected ship</span><strong id="shipMetric">—</strong><div id="shipName" class="muted"></div><div id="relativeMetric" class="muted"></div></div>
+      <div class="stat"><span>Fleet average</span><strong id="averageMetric">—</strong><div class="muted">Mean time to repair</div></div>
+      <div class="stat"><span>Fleet rank</span><strong id="rankMetric">—</strong><div class="muted">Lower repair time is better</div></div>
+      <div class="stat warning"><span>Failure rate</span><strong id="failureRateMetric">—</strong><div id="failureRateComparison" class="muted">Per 1,000 operating hours</div></div>
+    </section>
+    <section class="card" style="margin-top:18px">
+      <h2>Repair time comparison</h2>
+      <p class="muted">Gold marker: fleet average · Red bar: selected ship</p>
+      <div id="chart" class="chart"></div>
+      <div class="axis-note">Mean time to repair (hours) →</div>
+    </section>
+    <section class="card">
+      <h2>Repairs by week</h2>
+      <div id="weeklySummary" class="trend-summary"></div>
+      <div id="weeklyChart" class="lollipop-wrap" aria-label="Repairs completed by week"></div>
+    </section>
+    <div class="detail-grid">
+      <section class="card">
+        <h2>Failures by category</h2>
+        <p class="muted">Selected ship · rolling 90 days</p>
+        <div id="categoryChart"></div>
+      </section>
+      <section class="card">
+        <h2>Mission-area uptime</h2>
+        <p class="muted">Selected ship · percent available</p>
+        <div id="uptimeChart"></div>
+      </section>
+    </div>
+    <section class="card">
+      <h2>Recent long repair items</h2>
+      <p class="muted">Selected ship · longest recently completed repairs</p>
+      <div id="repairList" class="repair-list"></div>
+    </section>
+  </div>
+</main>
+<script src="./shared/browser-foundation.js"></script>
+<script src="src/table-files.js"></script>
+<script>
+  "use strict";
+  const $ = id => document.getElementById(id);
+  let currentDashboard = null;
+  let shoreDashboard = null;
+
+  async function decodeDashboardMessage(text) {
+    const decoded = await FleetPulse.decodeMessage(text);
+    let packet;
+    if (decoded.f === "ND1" && ["repair", "readiness"].includes(decoded.d) && Array.isArray(decoded.r)) {
+      packet = {
+        as_of:decoded.t,
+        records:decoded.r.map(row => ({
+          ship:row[0],
+          repair_hours:row[1],
+          is_this_ship:row[2] === 1,
+          failure_rate:row[3] ?? 0,
+          failures:Array.isArray(row[4]) ? row[4] : [0, 0, 0, 0],
+          uptime:Array.isArray(row[5]) ? row[5] : [0, 0, 0, 0],
+          long_repairs:Array.isArray(row[6]) ? row[6] : [],
+          weekly_repairs:Array.isArray(row[7]) ? row[7] : []
+        }))
+      };
+    } else if (decoded.format === "NAVDASH-1" && decoded.dashboard === "equipment-repair-time" && Array.isArray(decoded.records)) {
+      packet = decoded;
+    } else {
+      throw new Error("The decoded data is not a supported dashboard packet.");
+    }
+    const subject = text.match(/^\s*SUBJECT\s*:\s*(.+)$/im)?.[1].trim() || "Dashboard update";
+    return { packet, subject };
+  }
+
+  function ordinal(number) {
+    const rem100 = number % 100;
+    if (rem100 >= 11 && rem100 <= 13) return `${number}th`;
+    return `${number}${({1:"st",2:"nd",3:"rd"})[number % 10] || "th"}`;
+  }
+
+  function render({packet, subject}) {
+    const records = packet.records.map(record => ({
+      ship:String(record.ship || "Unknown"),
+      repair_hours:Number(record.repair_hours),
+      is_this_ship:Boolean(record.is_this_ship),
+      failure_rate:Number(record.failure_rate || 0),
+      failures:Array.isArray(record.failures) ? record.failures.map(Number) : [0, 0, 0, 0],
+      uptime:Array.isArray(record.uptime) ? record.uptime.map(Number) : [0, 0, 0, 0],
+      long_repairs:Array.isArray(record.long_repairs) ? record.long_repairs : [],
+      weekly_repairs:Array.isArray(record.weekly_repairs) ? record.weekly_repairs.map(Number) : []
+    })).filter(record => Number.isFinite(record.repair_hours) && record.repair_hours >= 0);
+    if (!records.length) throw new Error("The packet contains no valid repair records.");
+    records.sort((a,b) => a.repair_hours - b.repair_hours);
+    const average = records.reduce((sum, r) => sum + r.repair_hours, 0) / records.length;
+    const selected = records.find(r => r.is_this_ship) || records[0];
+    const rank = records.indexOf(selected) + 1;
+    const averageFailureRate = records.reduce((sum, r) => sum + r.failure_rate, 0) / records.length;
+    const maximum = Math.max(...records.map(r => r.repair_hours), average) * 1.08;
+    const asOf = new Date(packet.as_of);
+    if (Number.isNaN(asOf.valueOf())) throw new Error("The packet has an invalid data timestamp.");
+
+    $("subject").textContent = subject;
+    $("asOf").textContent = asOf.toLocaleString();
+    const hoursOld = Math.max(0, (Date.now() - asOf) / 36e5);
+    $("age").textContent = hoursOld < 1 ? "Less than one hour old" : `${Math.floor(hoursOld)} hours old`;
+    $("shipMetric").textContent = `${selected.repair_hours.toFixed(1)} hr`;
+    $("shipName").textContent = selected.ship;
+    const difference = (selected.repair_hours / average - 1) * 100;
+    $("relativeMetric").textContent = `${Math.abs(difference).toFixed(0)}% ${difference >= 0 ? "above" : "below"} fleet mean`;
+    $("averageMetric").textContent = `${average.toFixed(1)} hr`;
+    $("rankMetric").textContent = `${ordinal(rank)} of ${records.length}`;
+    $("failureRateMetric").textContent = selected.failure_rate.toFixed(1);
+    const failureDifference = averageFailureRate ? (selected.failure_rate / averageFailureRate - 1) * 100 : 0;
+    $("failureRateComparison").textContent = `${Math.abs(failureDifference).toFixed(0)}% ${failureDifference >= 0 ? "above" : "below"} fleet mean · per 1,000 hours`;
+
+    const chart = $("chart"); chart.replaceChildren();
+    for (const record of records) {
+      const row = document.createElement("div"); row.className = `row${record === selected ? " self" : ""}`;
+      const name = document.createElement("div"); name.textContent = record.ship;
+      const track = document.createElement("div"); track.className = "track";
+      const averageLine = document.createElement("div"); averageLine.className = "average"; averageLine.style.left = `${average / maximum * 100}%`;
+      const bar = document.createElement("div"); bar.className = "bar"; bar.style.width = `${record.repair_hours / maximum * 100}%`;
+      const value = document.createElement("div"); value.textContent = `${record.repair_hours.toFixed(1)} hr`;
+      track.append(bar, averageLine); row.append(name, track, value); chart.append(row);
+    }
+
+    const weekly = selected.weekly_repairs.length ? selected.weekly_repairs : [0, 0, 0, 0, 0, 0, 0, 0];
+    const currentWeek = weekly.at(-1) || 0;
+    const previousWeek = weekly.at(-2) || 0;
+    const trend = previousWeek ? (currentWeek / previousWeek - 1) * 100 : 0;
+    const summary = $("weeklySummary"); summary.replaceChildren();
+    const summaryValue = document.createElement("strong"); summaryValue.textContent = `${currentWeek} repairs this week`;
+    const summaryDetail = document.createElement("span");
+    summaryDetail.textContent = previousWeek ? `· ${Math.abs(trend).toFixed(0)}% ${trend >= 0 ? "above" : "below"} last week (${previousWeek})` : "· No prior-week comparison";
+    summary.append(summaryValue, summaryDetail);
+    const weeklyChart = $("weeklyChart"); weeklyChart.replaceChildren();
+    const weeklyMax = Math.max(...weekly, 1);
+    const labels = weekly.map((_, index) => index === weekly.length - 1 ? "This week" : `${weekly.length - index - 1} wk ago`);
+    weekly.forEach((value, index) => {
+      const item = document.createElement("div"); item.className = "lollipop-item";
+      const plot = document.createElement("div"); plot.className = "lollipop-plot";
+      const count = document.createElement("div"); count.className = "lollipop-value"; count.textContent = String(value);
+      const dot = document.createElement("div"); dot.className = "lollipop-dot";
+      const stem = document.createElement("div"); stem.className = "lollipop-stem"; stem.style.height = `${Math.max(4, value / weeklyMax * 150)}px`;
+      const label = document.createElement("div"); label.className = "lollipop-label"; label.textContent = labels[index];
+      plot.append(count, dot, stem); item.append(plot, label); weeklyChart.append(item);
+    });
+
+    const categories = ["Propulsion", "Electrical", "Combat systems", "Auxiliary"];
+    const categoryValues = categories.map((name, index) => [name, Number(selected.failures[index]) || 0]);
+    renderDonut($("categoryChart"), categoryValues);
+
+    const missionAreas = ["Engineering", "Combat systems", "Communications", "Navigation"];
+    const uptimeValues = missionAreas.map((name, index) => [name, Number(selected.uptime[index]) || 0]);
+    renderUptime($("uptimeChart"), uptimeValues);
+
+    const repairList = $("repairList"); repairList.replaceChildren();
+    if (!selected.long_repairs.length) {
+      const empty = document.createElement("p"); empty.className = "muted"; empty.textContent = "No recent long repair items reported.";
+      repairList.append(empty);
+    } else {
+      for (const [description, hours] of selected.long_repairs) {
+        const item = document.createElement("div"); item.className = "repair-item";
+        const name = document.createElement("div"); name.textContent = String(description);
+        const duration = document.createElement("strong"); duration.textContent = `${Number(hours).toFixed(0)} hr`;
+        item.append(name, duration); repairList.append(item);
+      }
+    }
+    $("dashboard").hidden = false;
+    currentDashboard = {packet, subject};
+  }
+
+  function renderDonut(container, entries) {
+    container.replaceChildren();
+    const colors = ["#5eb8ff", "#9c7bff", "#ff796f", "#f7c85f"];
+    const total = entries.reduce((sum, [, value]) => sum + value, 0);
+    let position = 0;
+    const stops = entries.map(([, value], index) => {
+      const start = position;
+      position += total ? value / total * 100 : 25;
+      return `${colors[index]} ${start}% ${position}%`;
+    });
+    const layout = document.createElement("div"); layout.className = "donut-layout";
+    const donut = document.createElement("div"); donut.className = "donut"; donut.style.background = `conic-gradient(${stops.join(",")})`;
+    const hole = document.createElement("div"); hole.className = "donut-hole";
+    const totalValue = document.createElement("strong"); totalValue.textContent = String(total);
+    const totalLabel = document.createElement("span"); totalLabel.textContent = "failures";
+    hole.append(totalValue, totalLabel); donut.append(hole);
+    const legend = document.createElement("div"); legend.className = "donut-legend";
+    entries.forEach(([label, value], index) => {
+      const row = document.createElement("div"); row.className = "legend-row";
+      const swatch = document.createElement("span"); swatch.className = "legend-swatch"; swatch.style.background = colors[index];
+      const name = document.createElement("span"); name.textContent = label;
+      const count = document.createElement("strong"); count.textContent = String(value);
+      row.append(swatch, name, count); legend.append(row);
+    });
+    layout.append(donut, legend); container.append(layout);
+  }
+
+  function renderUptime(container, entries) {
+    container.replaceChildren();
+    for (const [label, rawValue] of entries) {
+      const value = Math.max(0, Math.min(100, rawValue));
+      const color = value <= 70 ? "#ef5968" : value < 90 ? "#f2be55" : value < 95 ? "#abdca4" : "#45df91";
+      const row = document.createElement("div"); row.className = "uptime-row";
+      const name = document.createElement("div"); name.textContent = label;
+      const gauge = document.createElement("div"); gauge.className = "uptime-gauge"; gauge.style.setProperty("--score-color", color);
+      const fill = document.createElement("div"); fill.className = "uptime-fill"; fill.style.width = `${value}%`;
+      const target = document.createElement("div"); target.className = "uptime-target"; target.title = "90% target";
+      const marker = document.createElement("div"); marker.className = "uptime-marker"; marker.style.left = `${value}%`;
+      const display = document.createElement("strong"); display.className = "uptime-value"; display.textContent = `${value.toFixed(1)}%`;
+      gauge.append(fill, target, marker); row.append(name, gauge, display); container.append(row);
+    }
+    const legend = document.createElement("div"); legend.className = "uptime-legend";
+    [
+      ["≤70 critical", "#ef5968"],
+      ["71–89 watch", "#f2be55"],
+      ["90–94 target", "#abdca4"],
+      ["95–100 strong", "#45df91"]
+    ].forEach(([text, color]) => {
+      const item = document.createElement("span"); item.className = "uptime-key"; item.style.setProperty("--key-color", color); item.textContent = text; legend.append(item);
+    });
+    container.append(legend);
+  }
+
+  async function decode() {
+    const text = $("message").value;
+    $("status").className = "";
+    $("status").textContent = "Decoding and verifying payload…";
+    if (!/NAVDASH\s+PAYLOAD\s+END/i.test(text)) {
+      $("dashboard").hidden = true;
+      $("status").textContent = text.trim() ? "Decoding… waiting for the complete payload." : "Waiting for a message.";
+      return;
+    }
+    await new Promise(resolve => requestAnimationFrame(resolve));
+    try {
+      const result = await decodeDashboardMessage(text);
+      shoreDashboard = structuredClone(result);
+      render(result);
+      $("status").className = "ok";
+      $("status").textContent = `Payload verified and loaded: ${result.packet.records.length} records.`;
+    } catch (error) {
+      $("dashboard").hidden = true;
+      $("status").className = "error";
+      $("status").textContent = `Not loaded: ${error.message}`;
+    }
+  }
+
+  let timer;
+  $("message").addEventListener("input", () => {
+    clearTimeout(timer);
+    $("dashboard").hidden = true;
+    $("status").className = "";
+    $("status").textContent = "Decoding and verifying payload…";
+    timer = setTimeout(decode, 400);
+  });
+  $("decode").addEventListener("click", decode);
+  $("messageFile").addEventListener("change", async event => {
+    const file = event.target.files[0];
+    if (file) {
+      $("dashboard").hidden = true;
+      $("status").className = "";
+      $("status").textContent = `Reading ${file.name}…`;
+      $("message").value = await file.text();
+      await decode();
+    }
+  });
+
+  $("exportTable").addEventListener("click", () => {
+    if (!currentDashboard) return;
+    const csv = NavdashTableFiles.exportTable(currentDashboard.packet.records);
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(new Blob([csv], {type:"text/csv;charset=utf-8"}));
+    link.download = `${NavdashTableFiles.TABLE_UID}.csv`;
+    link.click();
+    setTimeout(() => URL.revokeObjectURL(link.href), 1000);
+    $("tableStatus").textContent = "Table exported. Edit it in Excel and import the saved CSV here.";
+  });
+
+  $("tableFile").addEventListener("change", async event => {
+    const file = event.target.files[0];
+    if (!file || !currentDashboard) return;
+    try {
+      const records = NavdashTableFiles.importTable(await file.text());
+      const replacement = {
+        subject: currentDashboard.subject,
+        packet: {...currentDashboard.packet, records}
+      };
+      render(replacement);
+      $("tableStatus").textContent = `Table replaced from ${file.name}: ${records.length} rows.`;
+    } catch (error) {
+      $("tableStatus").textContent = `Not imported: ${error.message}`;
+    } finally {
+      event.target.value = "";
+    }
+  });
+
+  $("resetTable").addEventListener("click", () => {
+    if (!shoreDashboard) return;
+    render(structuredClone(shoreDashboard));
+    $("tableStatus").textContent = "Restored the original shore table.";
+  });
+</script>
+</body>
+</html>

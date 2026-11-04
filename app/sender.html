@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dashboard Message Generator</title>
+  <style>
+    :root { color-scheme: dark; --navy:#07182c; --panel:#102741; --line:#31506f; --blue:#61b7ff; --text:#eef6ff; --muted:#abc0d3; }
+    * { box-sizing: border-box; }
+    body { margin:0; background:linear-gradient(135deg,#061221,#0b2542); color:var(--text); font:15px/1.5 system-ui,sans-serif; }
+    main { width:min(1050px,calc(100% - 32px)); margin:32px auto; }
+    h1 { margin-bottom:4px; } .lead { color:var(--muted); margin-top:0; }
+    .grid { display:grid; grid-template-columns:1fr 1fr; gap:18px; }
+    .card { background:rgba(16,39,65,.96); border:1px solid var(--line); border-radius:12px; padding:20px; box-shadow:0 14px 40px #0005; }
+    label { display:block; font-weight:700; margin:12px 0 5px; }
+    input, textarea, button { font:inherit; }
+    input, textarea { width:100%; color:var(--text); background:#07182c; border:1px solid #456786; border-radius:7px; padding:10px; }
+    textarea { min-height:245px; resize:vertical; font-family:ui-monospace,Consolas,monospace; font-size:13px; }
+    #message { min-height:490px; }
+    button { margin:14px 8px 0 0; padding:10px 15px; border:0; border-radius:7px; cursor:pointer; font-weight:750; background:var(--blue); color:#05203a; }
+    button.secondary { background:#d5e5f3; }
+    .note, #status { color:var(--muted); font-size:13px; }
+    #status { min-height:20px; margin-top:10px; }
+    @media (max-width:760px) { .grid { grid-template-columns:1fr; } }
+  </style>
+</head>
+<body>
+<main>
+  <h1>Dashboard Message Generator</h1>
+  <p class="lead">Import canonical JSON, package it as text-safe Base32, and produce a complete message for transmission.</p>
+  <div class="grid">
+    <section class="card">
+      <label for="jsonFile">Canonical JSON snapshot</label>
+      <input id="jsonFile" type="file" accept=".json,application/json">
+      <label for="json">JSON data</label>
+      <textarea id="json" spellcheck="false" placeholder="Import a JSON snapshot to populate dashboard data."></textarea>
+      <p class="note">See <code>examples/equipment-readiness.json</code> for a synthetic example. CSV mappings are a later import feature.</p>
+      <label for="asOf">Data as of</label>
+      <input id="asOf" type="datetime-local">
+      <label for="subject">Subject</label>
+      <input id="subject" value="EQUIPMENT REPAIR PERFORMANCE DASHBOARD UPDATE">
+      <label for="body">Message body</label>
+      <textarea id="body">Readiness dashboard update follows.
+
+This update contains fleet-level equipment readiness data. Open the approved offline dashboard viewer and import the complete message.</textarea>
+      <button id="generate">Generate message</button>
+    </section>
+    <section class="card">
+      <label for="message">Generated message</label>
+      <textarea id="message" readonly spellcheck="false" placeholder="The complete message will appear here."></textarea>
+      <button id="copy" class="secondary">Copy</button>
+      <button id="download" class="secondary">Download .txt</button>
+      <div id="status" role="status"></div>
+    </section>
+  </div>
+</main>
+<script src="./shared/browser-foundation.js"></script>
+<script src="./sender/browser-app.js"></script>
+</body>
+</html>
