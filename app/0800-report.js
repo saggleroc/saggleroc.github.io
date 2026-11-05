@@ -44,26 +44,21 @@ async function decode(){
   }
 }
 function resetDemo(){VirtualDrive.clear();location.href="./sender.html"}
-function refreshVirtualBrowser(){
-  const container=$("virtualFiles");container.replaceChildren();const files=VirtualDrive.list();
+async function loadMessageTraffic(){
+  const files=VirtualDrive.list();
   if(!files.length){
-    const empty=document.createElement("p");empty.className="muted";empty.textContent="No virtual files yet. Generate a report, then choose “Save to simulated drive.”";
-    const reset=document.createElement("button");reset.className="virtual next-action";reset.textContent="Reset demo and start again";reset.addEventListener("click",resetDemo);
-    container.append(empty,reset);return;
+    $("status").className="error";$("status").textContent="No report found in message traffic. Reset the demo and send one from shore command.";return;
   }
-  files.forEach((file,index)=>{
-    const row=document.createElement("div");row.className="virtual-file";
-    const details=document.createElement("div"),name=document.createElement("strong"),saved=document.createElement("small");
-    name.textContent=file.name;saved.textContent=`Saved ${new Date(file.savedAt).toLocaleString()} · ${(file.content.length/1024).toFixed(1)} KB`;details.append(name,saved);
-    const open=document.createElement("button");open.textContent=index===0?"5. Load file (most recent)":"Load file";if(index===0)open.classList.add("next-action");
-    open.addEventListener("click",async()=>{$("message").value=file.content;$("virtualBrowser").close();$("browseVirtual").classList.remove("next-action");await decode();});
-    row.append(details,open);container.append(row);
-  });
+  $("loadTraffic").classList.remove("next-action");
+  $("message").value=files[0].content;
+  await decode();
 }
-$("decode").addEventListener("click",decode);
-$("messageFile").addEventListener("change",async e=>{const f=e.target.files[0];if(f){$("message").value=await f.text();decode();}});
-$("browseVirtual").addEventListener("click",()=>{$("browseVirtual").classList.remove("next-action");refreshVirtualBrowser();$("virtualBrowser").showModal();});
-$("closeVirtual").addEventListener("click",()=>$("virtualBrowser").close());
+$("launchGenerator").addEventListener("click",()=>{
+  $("desktop").hidden=true;$("shipApp").hidden=false;
+});
+$("loadTraffic").addEventListener("click",loadMessageTraffic);
 $("resetApp").addEventListener("click",resetDemo);
 $("seeDashboard").addEventListener("click",()=>{$("seeDashboard").classList.remove("next-action");$("dashboard").scrollIntoView({behavior:"smooth",block:"start"});});
+const clock=$("desktopClock"),updateClock=()=>{clock.textContent=new Date().toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"});};
+updateClock();setInterval(updateClock,30000);
 })();

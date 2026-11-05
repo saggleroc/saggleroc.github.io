@@ -7,9 +7,9 @@
     "asOf": "2026-11-04T08:00:00-05:00",
     "classification": "UNCLASSIFIED // FOR OFFICIAL USE ONLY",
     "ship": {
-      "name": "USS ARLEIGH BURKE",
-      "hullNumber": "DDG 51",
-      "uic": "45000",
+      "name": "USS MAHAN",
+      "hullNumber": "DDG 72",
+      "uic": "21946",
       "location": "Norfolk, VA",
       "status": "UNDERWAY",
       "commandingOfficer": "CDR J. SAMPLE"

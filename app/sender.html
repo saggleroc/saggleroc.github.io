@@ -31,6 +31,14 @@
     .viewer-button.ready { display:inline-block; }
     .next-action { position:relative; isolation:isolate; animation:pulse 1.25s infinite; box-shadow:0 0 0 5px #ffd16655,0 0 30px #ffd16677; }
     @keyframes pulse { 50% { box-shadow:0 0 0 10px #ffd16622,0 0 42px #ffd166aa; } }
+    .transfer { position:fixed; inset:0; z-index:20; display:grid; place-items:center; background:#030d18f2; }
+    .transfer[hidden] { display:none; }
+    .transfer-card { width:min(760px,calc(100% - 32px)); padding:34px; border:1px solid var(--line); border-radius:16px; background:#0b2239; text-align:center; box-shadow:0 30px 90px #000b; }
+    .route { display:grid; grid-template-columns:1fr 2fr 1fr; align-items:center; gap:18px; margin:30px 0 20px; }
+    .endpoint { padding:18px 10px; border:1px solid #456786; border-radius:10px; background:#07182c; font-weight:850; }
+    .track { position:relative; height:4px; background:#31506f; }
+    .packet { position:absolute; top:50%; left:0; width:20px; height:14px; border-radius:3px; background:#73e2a7; box-shadow:0 0 20px #73e2a7; transform:translate(-50%,-50%); animation:transmit 2.2s ease-in-out forwards; }
+    @keyframes transmit { 0% { left:0; opacity:0 } 12% { opacity:1 } 88% { opacity:1 } 100% { left:100%; opacity:0 } }
     .note, #status { color:var(--muted); font-size:13px; }
     #status { min-height:20px; margin-top:10px; }
     @media (max-width:760px) { .grid { grid-template-columns:1fr; } }
@@ -39,7 +47,7 @@
 <body>
 <main>
   <div class="topline"><div><h1>0800 Report Message Generator</h1><p class="lead">Package a single-ship 0800 report as a verified, offline text message.</p></div><button id="resetApp" class="reset">Reset entire demo</button></div>
-  <div class="demo-bar"><strong>TEMP DEMO</strong><span>Step 1: load data. Step 2: save the generated message.</span><button id="loadSample" class="next-action">1. Load synthetic sample</button></div>
+  <div class="demo-bar"><strong>TEMP DEMO</strong><span>Step 1: load data. Step 2: send the generated message to USS MAHAN.</span><button id="loadSample" class="next-action">1. Load synthetic sample</button></div>
   <div class="grid">
     <section class="card">
       <label for="jsonFile">0800 report JSON</label>
@@ -50,7 +58,7 @@
       <label for="asOf">Data as of</label>
       <input id="asOf" type="datetime-local">
       <label for="subject">Subject</label>
-      <input id="subject" value="USS ARLEIGH BURKE (DDG 51) 0800 REPORT">
+      <input id="subject" value="USS MAHAN (DDG 72) 0800 REPORT">
       <label for="body">Message body</label>
       <textarea id="body">Commanding Officer's 0800 report follows.
 
@@ -59,10 +67,7 @@ This message contains a single-ship operational summary. Open the offline 0800 r
     </section>
     <section class="card">
       <div class="message-actions">
-        <button id="saveVirtual" class="virtual">2. Save to simulated drive</button>
-        <button id="copy" class="secondary">Copy</button>
-        <button id="download" class="secondary">Download .txt</button>
-        <a id="openViewer" class="viewer-button" href="./0800.html">3. Open in viewer →</a>
+        <button id="sendToShip" class="virtual">2. Send to ship</button>
       </div>
       <label for="message">Generated message</label>
       <textarea id="message" readonly spellcheck="false" placeholder="The complete message will appear here."></textarea>
@@ -70,6 +75,17 @@ This message contains a single-ship operational summary. Open the offline 0800 r
     </section>
   </div>
 </main>
+<div id="transfer" class="transfer" hidden aria-live="polite">
+  <div class="transfer-card">
+    <h2>Transmitting 0800 report</h2>
+    <div class="route">
+      <div class="endpoint">SHORE COMMAND</div>
+      <div class="track"><span class="packet"></span></div>
+      <div class="endpoint">USS MAHAN</div>
+    </div>
+    <p id="transferStatus" class="lead">Packaging message traffic…</p>
+  </div>
+</div>
 <script src="./shared/browser-foundation.js"></script>
 <script src="./shared/virtual-drive.js"></script>
 <script src="./sender/browser-app.js"></script>

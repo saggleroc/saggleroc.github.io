@@ -39,7 +39,7 @@
       const count = document.missionAreas.length + document.manning.length + document.casreps.length;
       $("status").textContent = `${count} report rows: ${result.rawLength} raw bytes → ${result.byteLength} ${result.compression.toLowerCase()} bytes → ${result.encodedLength} Base32 characters (${Math.max(0, reduction)}% smaller).`;
       $("loadSample").classList.remove("next-action");
-      $("saveVirtual").classList.add("next-action");
+      $("sendToShip").classList.add("next-action");
     } catch (error) {
       $("status").textContent = `Error: ${error.message}`;
     }
@@ -71,35 +71,15 @@
   });
   $("generate").addEventListener("click", generate);
   $("loadSample").addEventListener("click", loadSample);
-  $("copy").addEventListener("click", async () => {
-    try {
-      await navigator.clipboard.writeText($("message").value);
-    } catch {
-      $("message").select();
-      if (!document.execCommand("copy")) {
-        $("status").textContent = "Copy was blocked; select and copy the message manually.";
-        return;
-      }
-    }
-    $("status").textContent = "Message copied.";
-  });
-  $("download").addEventListener("click", async () => {
+  $("sendToShip").addEventListener("click", async () => {
     if (!$("message").value) await generate();
     if (!$("message").value) return;
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(new Blob([$("message").value], { type: "text/plain" }));
-    link.download = `navdash-${new Date().toISOString().replace(/[:.]/g, "-")}.txt`;
-    link.click();
-    setTimeout(() => URL.revokeObjectURL(link.href), 1000);
-  });
-  $("saveVirtual").addEventListener("click", async () => {
-    if (!$("message").value) await generate();
-    if (!$("message").value) return;
-    const name = `navdash-${new Date().toISOString().replace(/[:.]/g, "-")}.txt`;
+    const name = `USS-MAHAN-0800-${new Date().toISOString().replace(/[:.]/g, "-")}.txt`;
     VirtualDrive.write(name, $("message").value);
-    $("saveVirtual").classList.remove("next-action");
-    $("openViewer").classList.add("ready", "next-action");
-    $("status").innerHTML = `Saved <strong>${name}</strong> to the simulated drive. Continue with step 3.`;
+    $("sendToShip").classList.remove("next-action");
+    $("transfer").hidden = false;
+    setTimeout(() => { $("transferStatus").textContent = "Message received aboard USS MAHAN."; }, 1500);
+    setTimeout(() => { location.href = "./0800.html"; }, 2600);
   });
   $("resetApp").addEventListener("click", () => {
     VirtualDrive.clear();
