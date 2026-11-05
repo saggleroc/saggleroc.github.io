@@ -3,54 +3,282 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="SAGGLE ROC standardizes, automates, and visualizes the ship's 0800 report.">
+  <meta name="description" content="SAGGLE ROC automates the Eight O'Clock report and keeps ships informed in bandwidth-limited environments.">
   <title>SAGGLE ROC | FleetHacker 2026</title>
+  <link rel="icon" type="image/png" href="./assets/logo.png">
   <style>
-    :root{color-scheme:dark;--ink:#f4f8fc;--muted:#a8bed0;--navy:#061526;--panel:#0d2945;--line:#315a7d;--blue:#65bdff;--gold:#ffd166;--green:#73e2a7}
-    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(circle at 80% 5%,#15507d 0,transparent 28%),linear-gradient(145deg,#030d18,#071d34 70%,#0b2e50);color:var(--ink);font:16px/1.55 system-ui,-apple-system,Segoe UI,sans-serif}
-    a{color:inherit}.wrap{width:min(1120px,calc(100% - 32px));margin:auto}
-    nav{display:flex;align-items:center;justify-content:space-between;padding:22px 0}.brand{font-weight:900;letter-spacing:.08em}.navlinks{display:flex;gap:20px;color:var(--muted);font-size:.9rem}.navlinks a{text-decoration:none}.hero{padding:90px 0 76px;max-width:900px}.eyebrow{color:var(--blue);font-weight:850;letter-spacing:.12em;font-size:.75rem}.hero h1{font-size:clamp(3rem,7vw,6rem);line-height:.98;letter-spacing:-.045em;margin:18px 0}.hero p{max-width:720px;color:var(--muted);font-size:1.15rem}.actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px}.button{display:inline-block;text-decoration:none;padding:12px 18px;border-radius:8px;background:var(--blue);color:#052039;font-weight:850}.button.secondary{background:transparent;color:var(--ink);border:1px solid var(--line)}
-    .showcase{padding:0 0 55px}.video-shell{position:relative;padding:8px;border:1px solid var(--line);border-radius:18px;background:linear-gradient(145deg,#17446a,#081827);box-shadow:0 28px 80px #0009}.showcase-video{display:block;width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:11px;background:#02070c}.video-label{position:absolute;left:25px;top:25px;padding:6px 10px;border:1px solid #ffffff35;border-radius:999px;background:#03101ccc;color:#d8efff;font-size:.7rem;font-weight:850;letter-spacing:.1em;pointer-events:none}
-    .presentation-shell{display:grid;grid-template-columns:64px minmax(0,1fr) 64px;gap:14px;align-items:center}.presentation-frame{width:100%;aspect-ratio:16/9;border:1px solid var(--line);border-radius:16px;background:#050b17;box-shadow:0 24px 60px #0008}.slide-arrow{height:92px;border:1px solid var(--line);border-radius:12px;background:#102e4d;color:var(--blue);font-size:2.4rem;cursor:pointer}.slide-arrow:hover{border-color:var(--blue);background:#163c61}.presentation-help{text-align:center;color:var(--muted);font-size:.9rem;margin-top:12px}
-    section{padding:55px 0}.section-head{max-width:700px;margin-bottom:28px}.section-head h2{font-size:clamp(2rem,4vw,3rem);margin:8px 0}.section-head p{color:var(--muted)}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.card{background:linear-gradient(145deg,#102e4d,#091d32);border:1px solid var(--line);border-radius:14px;padding:22px}.number{color:var(--blue);font-weight:900;font-size:.8rem}.card h3{margin:10px 0}.card p{color:var(--muted);margin-bottom:0}.flow{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.flow .card{position:relative}.flow .card:not(:last-child)::after{content:"→";position:absolute;right:-13px;top:50%;z-index:2;color:var(--gold);font-size:1.4rem}.callout{display:flex;justify-content:space-between;gap:30px;align-items:center;background:linear-gradient(110deg,#12446f,#112740);border:1px solid #46769c;border-radius:16px;padding:30px}.callout h2{margin:0 0 8px}.callout p{margin:0;color:var(--muted)}footer{padding:40px 0 60px;color:var(--muted);font-size:.85rem}
-    @media(max-width:850px){.hero{padding-top:55px}.grid{grid-template-columns:1fr}.flow{grid-template-columns:1fr 1fr}.flow .card::after{display:none}.presentation-shell{grid-template-columns:46px minmax(0,1fr) 46px}.slide-arrow{height:70px}}@media(max-width:560px){.navlinks{display:none}.flow{grid-template-columns:1fr}.callout{display:block}.callout .button{margin-top:20px}.presentation-shell{grid-template-columns:1fr 1fr}.presentation-frame{grid-column:1/-1;grid-row:1}.slide-arrow{height:48px}}
+    :root{color-scheme:dark;--bg:#050b17;--panel:#0c1f3d;--panel2:#091a33;--line:#1b4673;--cyan:#27d3ff;--blue:#2b9bff;--ink:#eaf2fb;--muted:#8aa4c4;--crystal:#b44bd6;--amber:#ffc83d;--teal:#2fd6c9;--green:#5ad1a0}
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 -apple-system,"Segoe UI",Helvetica,Arial,system-ui,sans-serif;position:relative;overflow-x:hidden}
+    /* Subtle grid, matching the presentation */
+    body::before{content:"";position:fixed;inset:0;background-image:linear-gradient(rgba(39,211,255,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(39,211,255,.05) 1px,transparent 1px);background-size:44px 44px;pointer-events:none;z-index:0}
+    /* Cyan glow top-right, crystal glow bottom-left */
+    body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(circle 520px at 90% -5%,rgba(39,211,255,.14),transparent 70%),radial-gradient(ellipse 620px 420px at 0% 100%,rgba(180,75,214,.16),transparent 70%)}
+    header,main,footer{position:relative;z-index:1}
+    a{color:inherit}
+    .wrap{width:min(1120px,calc(100% - 32px));margin:auto}
+
+    /* Nav */
+    nav{display:flex;align-items:center;justify-content:space-between;padding:18px 0}
+    .brand{display:flex;align-items:center;gap:12px;font-weight:800;letter-spacing:.12em;font-size:.85rem;text-transform:uppercase;text-decoration:none}
+    .brand img{height:44px;width:auto}
+    .brand span em{font-style:normal;color:var(--cyan)}
+    .navlinks{display:flex;gap:22px;color:var(--muted);font-size:.9rem}
+    .navlinks a{text-decoration:none;transition:color .2s}
+    .navlinks a:hover{color:var(--cyan)}
+
+    /* Hero */
+    .hero{display:grid;grid-template-columns:1.2fr .8fr;gap:48px;align-items:center;padding:56px 0 76px}
+    .eyebrow,.kicker{color:var(--cyan);font-weight:800;letter-spacing:.26em;font-size:.72rem;text-transform:uppercase}
+    .eyebrow::before,.kicker::before{content:"\25C6";color:var(--crystal);margin-right:10px;font-size:.6rem;vertical-align:.1em}
+    .hero h1{font-size:clamp(2.8rem,6vw,5.2rem);line-height:1.02;letter-spacing:-.04em;margin:18px 0}
+    .hero h1 em{font-style:normal;color:var(--cyan)}
+    .hero p{max-width:620px;color:var(--muted);font-size:1.15rem}
+    .actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px}
+    .button{display:inline-block;text-decoration:none;padding:12px 20px;border-radius:8px;background:linear-gradient(90deg,var(--blue),var(--cyan));color:#04152a;font-weight:800;transition:transform .15s,box-shadow .15s}
+    .button:hover{transform:translateY(-1px);box-shadow:0 8px 26px rgba(39,211,255,.3)}
+    .button.secondary{background:transparent;color:var(--ink);border:1px solid var(--line)}
+    .button.secondary:hover{border-color:var(--cyan);box-shadow:none}
+    .hero-logo{display:flex;justify-content:center}
+    .hero-logo img{width:min(100%,380px);height:auto;filter:drop-shadow(0 0 40px rgba(39,211,255,.25))}
+
+    /* Accent bar (logo-inspired gradient) */
+    .rule{height:4px;border-radius:4px;background:linear-gradient(90deg,var(--blue),var(--cyan),var(--teal),var(--amber),var(--crystal));opacity:.85}
+
+    /* Presentation */
+    .presentation-shell{display:grid;grid-template-columns:64px minmax(0,1fr) 64px;gap:14px;align-items:center}
+    .presentation-frame{width:100%;aspect-ratio:16/9;border:1px solid var(--line);border-radius:16px;background:var(--bg);box-shadow:0 24px 60px #0009,0 0 40px rgba(39,211,255,.08)}
+    .slide-arrow{height:92px;border:1px solid var(--line);border-radius:12px;background:var(--panel);color:var(--cyan);font-size:2.4rem;cursor:pointer;transition:all .2s}
+    .slide-arrow:hover{border-color:var(--cyan);background:#12305a}
+    .presentation-help{text-align:center;color:var(--muted);font-size:.9rem;margin-top:12px}
+
+    /* Sections */
+    section{padding:55px 0}
+    .section-head{max-width:720px;margin-bottom:28px}
+    .section-head h2{font-size:clamp(1.9rem,3.8vw,2.8rem);line-height:1.12;margin:10px 0 8px;letter-spacing:-.02em}
+    .section-head p{color:var(--muted);margin:0}
+    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+    .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:22px;transition:border-color .2s,transform .2s}
+    .card:hover{border-color:var(--cyan);transform:translateY(-2px)}
+    .number{color:var(--cyan);font-weight:800;font-size:.75rem;letter-spacing:.14em}
+    .card h3{margin:10px 0 6px;font-size:1.2rem}
+    .card p{color:var(--muted);margin:0}
+    .flow{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+    .flow .card{position:relative;border-top:3px solid var(--cyan)}
+    .flow .card:nth-child(2){border-top-color:var(--teal)}
+    .flow .card:nth-child(3){border-top-color:var(--amber)}
+    .flow .card:nth-child(4){border-top-color:var(--crystal)}
+    .flow .card:not(:last-child)::after{content:"\2192";position:absolute;right:-14px;top:50%;transform:translateY(-50%);z-index:2;color:var(--cyan);font-size:1.4rem}
+
+    /* FleetPulse video (carried over from the dev branch) */
+    .showcase{padding:0}
+    .video-shell{position:relative;padding:8px;border:1px solid var(--line);border-radius:18px;background:linear-gradient(145deg,#17446a,#081827);box-shadow:0 28px 80px #0009}
+    .showcase-video{display:block;width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:11px;background:#02070c}
+    .video-label{position:absolute;left:25px;top:25px;padding:6px 10px;border:1px solid #ffffff35;border-radius:999px;background:#03101ccc;color:#d8efff;font-size:.7rem;font-weight:850;letter-spacing:.1em;pointer-events:none}
+    .grid.two{grid-template-columns:repeat(2,1fr)}
+    .demo-placeholder{aspect-ratio:16/9;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center;padding:24px;border:2px dashed var(--line);border-radius:16px;background:rgba(12,31,61,.5);color:var(--muted)}
+    .demo-placeholder p{margin:0;max-width:460px}
+    .demo-badge{color:var(--cyan);font-weight:800;letter-spacing:.2em;text-transform:uppercase;font-size:.78rem;border:1px solid var(--line);border-radius:999px;padding:6px 14px}
+    .stat{text-align:center;padding:28px 22px}
+    .stat-num{font-size:clamp(2.2rem,4.4vw,3.4rem);font-weight:800;color:var(--cyan);letter-spacing:-.03em;line-height:1.05;margin-bottom:6px}
+    .fine{color:var(--muted);font-size:.85rem;margin:14px 0 0;text-align:center}
+    .ba.before{border-left:5px solid #ff6b6b}
+    .ba.after{border-left:5px solid var(--green)}
+    .ba.before .number{color:#ff6b6b}
+    .ba.after .number{color:var(--green)}
+    .crit-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+    .crit-title{font-size:1.15rem;font-weight:700;line-height:1.25}
+    .crit-weight{color:var(--cyan);font-size:1.8rem;font-weight:800;line-height:1}
+    .crit-q{color:var(--muted);font-size:.85rem;font-style:italic;margin:10px 0 12px}
+    .crit ul{list-style:none;margin:0;padding:0;color:var(--ink);font-size:.93rem}
+    .crit li{position:relative;padding-left:18px;margin-bottom:8px}
+    .crit li::before{content:"\25B8";color:var(--cyan);position:absolute;left:0}
+    .crit li b{color:var(--cyan)}
+    .flow.nochain .card::after{display:none}
+    .flow.nochain .card{border-top-color:var(--crystal)}
+    /* Callout */
+    .callout{display:flex;justify-content:space-between;gap:30px;align-items:center;background:linear-gradient(110deg,rgba(180,75,214,.22),rgba(12,31,61,.95) 55%);border:1px solid var(--line);border-left:5px solid var(--crystal);border-radius:16px;padding:30px}
+    .callout h2{margin:0 0 8px}
+    .callout p{margin:0;color:var(--muted)}
+
+    footer{padding:30px 0 56px;color:var(--muted);font-size:.85rem}
+    .foot{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;margin-top:22px}
+    .foot img{height:34px;vertical-align:middle;margin-right:10px}
+    .motto{font-style:italic;letter-spacing:.28em;text-transform:uppercase;font-size:.72rem;opacity:.8}
+
+    @media(max-width:850px){.hero{grid-template-columns:1fr;padding-top:36px}.hero-logo{order:-1}.hero-logo img{width:240px}.grid,.grid.two{grid-template-columns:1fr}.flow{grid-template-columns:1fr 1fr}.flow .card::after{display:none}.presentation-shell{grid-template-columns:46px minmax(0,1fr) 46px}.slide-arrow{height:70px}}
+    @media(max-width:560px){.navlinks{display:none}.flow{grid-template-columns:1fr}.callout{display:block}.callout .button{margin-top:20px}.presentation-shell{grid-template-columns:1fr 1fr}.presentation-frame{grid-column:1/-1;grid-row:1}.slide-arrow{height:48px}.brand span{font-size:.7rem}}
   </style>
 </head>
 <body>
   <header class="wrap">
-    <nav><div class="brand">SAGGLE ROC · FLEETHACKER 2026</div><div class="navlinks"><a href="#showcase">Watch</a><a href="#presentation">Presentation</a><a href="#how">How it works</a><a href="#why">Why it matters</a><a href="./app/">Launch app</a></div></nav>
+    <nav>
+      <a class="brand" href="./"><img src="./assets/logo.png" alt="SAGGLE ROC logo"><span>SAGGLE ROC · <em>FleetHacker 2026</em></span></a>
+      <div class="navlinks"><a href="#challenge">Challenge</a><a href="#how">Solution</a><a href="#demo">Demo</a><a href="#impact">Impact</a><a href="#criteria">Criteria</a><a href="#next">Next steps</a><a href="#presentation">Presentation</a><a href="./app/">Launch app</a></div>
+    </nav>
     <div class="hero">
       <div>
-        <div class="eyebrow">STANDARDIZE · AUTOMATE · VISUALIZE</div>
-        <h1>From Fleet Data to Decision at 0800.</h1>
-        <p>A faster, clearer 0800 report—built from trusted data and available where the fleet needs it, including low-bandwidth environments.</p>
-        <div class="actions"><a class="button" href="./app/">Try the demo</a><a class="button secondary" href="#showcase">Watch FleetPulse</a><a class="button secondary" href="#presentation">View presentation</a></div>
+        <div class="eyebrow">Standardize · Automate · Visualize</div>
+        <h1>The Eight O'Clock report, <em>automated</em>.</h1>
+        <p>SAGGLE ROC streamlines the daily end-of-day brief to the Commanding Officer and delivers up-to-date information in bandwidth-limited environments. It is built on authoritative data and can be used today on an actual ship.</p>
+        <div class="actions"><a class="button" href="./app/">Try the demo</a><a class="button secondary" href="#showcase">Watch FleetPulse</a><a class="button secondary" href="#challenge">The challenge</a></div>
       </div>
+      <div class="hero-logo"><img src="./assets/logo.png" alt="COMNAVSURFPAC SAGGLE ROC team logo: In notitia, paratus"></div>
     </div>
+    <div class="rule"></div>
   </header>
+
   <main>
-    <section class="showcase" id="showcase"><div class="wrap">
-      <div class="section-head"><div class="eyebrow">FLEETPULSE IN ACTION</div><h2>Readiness at a glance.</h2><p>See how FleetPulse turns operational data into a clear, decision-ready picture.</p></div>
-      <div class="video-shell"><span class="video-label">FLEETPULSE · PRODUCT TOUR</span><video class="showcase-video" src="./FleetPulse.mp4" autoplay muted loop playsinline controls preload="metadata">Your browser does not support embedded video.</video></div>
+    <section id="challenge"><div class="wrap">
+      <div class="section-head"><div class="kicker">The challenge</div><h2>An essential report that still runs on manual effort</h2><p>The Eight O'Clock report is a formal end-of-day brief from department heads to the Commanding Officer. It covers personnel, material and training (PMT) status by department, and it is typically completed by department heads or their subordinates.</p></div>
+      <div class="flow nochain">
+        <article class="card"><span class="number">EFFORT</span><h3>Significant manual work</h3><p>Compiling the report takes time every day, pulling Sailors away from warfighting tasks.</p></article>
+        <article class="card"><span class="number">ACCURACY</span><h3>Error-prone</h3><p>Manual collection and re-entry introduce mistakes into a report leaders rely on.</p></article>
+        <article class="card"><span class="number">TRENDS</span><h3>Limited visibility</h3><p>Ships may not be aware of trends or what's being reported in systems of record.</p></article>
+        <article class="card"><span class="number">ALIGNMENT</span><h3>Cross-department blind spots</h3><p>Departments report separately, so gaps and dependencies are easy to miss.</p></article>
+      </div>
+      <p class="presentation-help" style="margin-top:20px">Much of this data already lives in authoritative systems of record. It can be aggregated and shared out to automate most of the process.</p>
     </div></section>
-    <section id="presentation"><div class="wrap"><div class="section-head"><h2>The SAGGLE ROC story</h2><p>See the problem, solution, architecture, and path to fleet impact.</p></div>
+
+    <section id="how"><div class="wrap">
+      <div class="section-head"><div class="kicker">The solution</div><h2>Two tools, one mission</h2><p>SAGGLE ROC tackles two major problems: streamlining Eight O'Clock report generation, and accessing up-to-date information in bandwidth-limited environments.</p></div>
+      <div class="grid two">
+        <article class="card"><span class="number">PATH 1 · CONNECTED</span><h3>Palantir Foundry</h3><p>Integrates and visualizes PMT data from authoritative systems of record, built with the Eight O'Clock report in mind.</p></article>
+        <article class="card"><span class="number">PATH 2 · BANDWIDTH-LIMITED</span><h3>What if you can't access Foundry?</h3><p>HTML files are sent to the ship and sit on a local computer. Small data packets then deliver current information from authoritative systems of record.</p></article>
+      </div>
+      <div class="showcase" id="showcase" style="margin-top:34px">
+        <div class="video-shell"><span class="video-label">FLEETPULSE · PRODUCT TOUR</span><video class="showcase-video" src="./FleetPulse.mp4" autoplay muted loop playsinline controls preload="metadata">Your browser does not support embedded video.</video></div>
+      </div>
+      <div class="section-head" style="margin-top:44px"><h2>The low-bandwidth workflow</h2><p>Small files travel over channels ships already use: email, Teams messages, naval message traffic and more.</p></div>
+      <div class="flow">
+        <article class="card"><span class="number">01</span><h3>Aggregate</h3><p>Pull PMT data from authoritative systems of record.</p></article>
+        <article class="card"><span class="number">02</span><h3>Package</h3><p>Compress the report data into a small data packet.</p></article>
+        <article class="card"><span class="number">03</span><h3>Transfer</h3><p>Send it by email, Teams or naval message traffic.</p></article>
+        <article class="card"><span class="number">04</span><h3>Visualize</h3><p>Review the complete report locally, with no cloud connection required.</p></article>
+      </div>
+    </div></section>
+
+    <section id="demo"><div class="wrap">
+      <div class="section-head"><div class="kicker">Demo</div><h2>See SAGGLE ROC in action</h2><p>Watch a data packet move from the systems of record to the ship's report view.</p></div>
+      <div class="demo-placeholder">
+        <div class="demo-badge">Demo video 1 placeholder</div>
+        <p>Embed the demo here: a video, an interactive walkthrough, or a link to the live app.</p>
+      </div>
+    </div></section>
+
+    <section id="impact"><div class="wrap">
+      <div class="section-head"><div class="kicker">Impact</div><h2>Less reporting. More readiness.</h2><p>Automating data aggregation returns hours to the deckplate and gives the commanding officer a more accurate, near-real-time readiness picture.</p></div>
+      <div class="grid">
+        <article class="card stat"><div class="stat-num">2.5 hrs</div><p>saved per day of manual administrative burden</p></article>
+        <article class="card stat"><div class="stat-num">17+ hrs</div><p>reclaimed per week for combat readiness, tactical training and maintenance</p></article>
+        <article class="card stat"><div class="stat-num">912+ hrs</div><p>of deckplate time reclaimed per ship, every year</p></article>
+      </div>
+      <p class="fine">Estimate based on 0.5 hours per department × 5 departments on a DDG = 2.5 hours per day.</p>
+      <div class="grid two" style="margin-top:22px">
+        <article class="card ba before"><span class="number">BEFORE</span><h3>Compile</h3><p>An all-hands evolution. Each department manually gathers PMT data from onboard databases and re-enters it into spreadsheets and documents.</p></article>
+        <article class="card ba after"><span class="number">AFTER</span><h3>Review and brief</h3><p>Data arrives in a small packet from authoritative systems of record, statuses populate automatically, and departments brief instead of compile.</p></article>
+      </div>
+      <div class="grid" style="margin-top:22px">
+        <article class="card"><span class="number">ONE PICTURE</span><h3>Consistent reporting</h3><p>A shared structure improves clarity and trend visibility across departments.</p></article>
+        <article class="card"><span class="number">LESS MANUAL WORK</span><h3>Faster preparation</h3><p>Automation reduces repetitive collection and re-entry, and the errors that come with it.</p></article>
+        <article class="card"><span class="number">DDIL-READY</span><h3>Current at the edge</h3><p>Small data packets keep the report up to date in bandwidth-limited environments.</p></article>
+      </div>
+    </div></section>
+
+    <section id="criteria"><div class="wrap">
+      <div class="section-head"><div class="kicker">Judging criteria</div><h2>How SAGGLE ROC delivers</h2><p>Each criterion, and the specific ways this project answers it.</p></div>
+      <div class="grid">
+        <article class="card crit"><div class="crit-head"><span class="crit-title">Warfighting &amp; Deckplate Impact</span></div>
+          <div class="crit-q">How significantly does this offload watchstander cognitive burden or reclaim deckplate hours?</div>
+          <ul>
+            <li>Automating data aggregation reclaims <b>17+ hours per week</b>, or 912+ per ship each year</li>
+            <li>Time goes back to combat readiness, tactical training and maintenance</li>
+            <li>One consistent view reduces errors and shows trends and cross-department gaps</li>
+            <li>The CO gets a near-real-time readiness picture</li>
+          </ul></article>
+        <article class="card crit"><div class="crit-head"><span class="crit-title">Speed to Fleet</span></div>
+          <div class="crit-q">How quickly can this be fielded to operate at the edge under disconnected afloat (DDIL) conditions?</div>
+          <ul>
+            <li><b>Built entirely using authorized tools</b></li>
+            <li>Small data packets travel by <b>email, Teams or naval message traffic</b>, with no new infrastructure</li>
+            <li>An HTML tool on a local computer needs no cloud connection</li>
+            <li>A second path means ships without Foundry access are still covered</li>
+            <li><b>Can be used today</b> on an actual ship</li>
+          </ul></article>
+        <article class="card crit"><div class="crit-head"><span class="crit-title">Fleet Scalability</span></div>
+          <div class="crit-q">How widely can this solution scale across multiple ship classes, ratings, or operational domains?</div>
+          <ul>
+            <li>Can be used seamlessly across other classes of ships</li>
+            <li>Spans <b>5 departments</b> and <b>7 data sources</b> in the MVP</li>
+            <li>A standardized report structure carries over to new ships and departments</li>
+            <li>Built to add more data sources and functionality</li>
+          </ul></article>
+        <article class="card crit"><div class="crit-head"><span class="crit-title">Barrier Removal</span></div>
+          <div class="crit-q">How effectively does this eliminate systemic bottlenecks, manual data entry, and legacy friction?</div>
+          <ul>
+            <li>Removes manual double-entry from CSMP and RSUPPLY, and paper signatures</li>
+            <li>Auto-populates statuses such as fuel, CASREPs and food days remaining</li>
+            <li>Ends radio chatter to confirm whether GTGs are fully mission capable</li>
+            <li>Works where bandwidth or platform access is the barrier</li>
+          </ul></article>
+        <article class="card crit"><div class="crit-head"><span class="crit-title">Judges' Discretion</span></div>
+          <div class="crit-q">How compelling are the technical execution, Sailor user experience (UX), and overall innovation?</div>
+          <ul>
+            <li>Dual-path design: Palantir Foundry for connected users, an HTML tool for bandwidth-limited ships</li>
+            <li>Delivers current data over channels ships already use</li>
+            <li>Realistic synthetic data modeled on real data sets and tailored by department</li>
+            <li>Built by technical experts paired with domain SMEs</li>
+          </ul></article>
+      </div>
+    </div></section>
+
+    <section id="next"><div class="wrap">
+      <div class="section-head"><div class="kicker">What's next</div><h2>From proof of concept to fleet capability</h2><p>The tool can be used today on an actual ship. We're building on that foundation.</p></div>
+      <div class="grid">
+        <article class="card"><span class="number">EXPAND</span><h3>More data sources</h3><p>Add more authoritative sources and functionality to the tools.</p></article>
+        <article class="card"><span class="number">CONNECT</span><h3>Two-way data flow</h3><p>Create a bidirectional flow of data between ship and shore.</p></article>
+        <article class="card"><span class="number">SCALE</span><h3>Across the fleet</h3><p>Extend to more departments and other classes of ships.</p></article>
+      </div>
+    </div></section>
+
+    <section><div class="wrap"><div class="callout">
+      <div><h2>See the workflow in action</h2><p>The demonstration uses synthetic sample data and is not an approved operational system.</p></div>
+      <a class="button" href="./app/">Start the demo</a>
+    </div></div></section>
+
+    <section id="presentation"><div class="wrap">
+      <div class="section-head"><div class="kicker">The story</div><h2>The SAGGLE ROC story</h2><p>Walk through the challenge, both solution paths, the architecture, and the path to fleet impact.</p></div>
       <div class="presentation-shell">
-        <button class="slide-arrow" id="presentationPrevious" aria-label="Previous presentation slide">‹</button>
+        <button class="slide-arrow" id="presentationPrevious" aria-label="Previous presentation slide">&#8249;</button>
         <iframe class="presentation-frame" id="presentationFrame" src="./presentation/" title="SAGGLE ROC presentation"></iframe>
-        <button class="slide-arrow" id="presentationNext" aria-label="Next presentation slide">›</button>
+        <button class="slide-arrow" id="presentationNext" aria-label="Next presentation slide">&#8250;</button>
       </div>
       <p class="presentation-help">Click anywhere on a slide to move forward · Use the arrows to move in either direction</p>
     </div></section>
-    <section id="how"><div class="wrap"><div class="section-head"><h2>One resilient workflow</h2><p>Move a decision-ready report from trusted sources to the tactical edge.</p></div>
-      <div class="flow"><article class="card"><span class="number">01</span><h3>Standardize</h3><p>Bring the ship's 0800 data into one consistent structure.</p></article><article class="card"><span class="number">02</span><h3>Automate</h3><p>Package validated report data into a lightweight payload.</p></article><article class="card"><span class="number">03</span><h3>Move</h3><p>Transfer it through constrained communications.</p></article><article class="card"><span class="number">04</span><h3>Visualize</h3><p>Review the complete report locally and offline.</p></article></div>
-    </div></section>
-    <section id="why"><div class="wrap"><div class="section-head"><h2>Less reporting. More readiness.</h2><p>Give leaders a clearer picture while returning time to the deckplate.</p></div>
-      <div class="grid"><article class="card"><span class="number">ONE PICTURE</span><h3>Consistent reporting</h3><p>A shared structure improves clarity across departments.</p></article><article class="card"><span class="number">LESS MANUAL WORK</span><h3>Faster preparation</h3><p>Automation reduces repetitive collection and re-entry.</p></article><article class="card"><span class="number">DDIL-READY</span><h3>Available at the edge</h3><p>Lightweight payloads keep the report useful in constrained environments.</p></article></div>
-    </div></section>
-    <section><div class="wrap"><div class="callout"><div><h2>See the workflow in action</h2><p>The demonstration uses synthetic sample data and is not an approved operational system.</p></div><a class="button" href="./app/">Start the demo</a></div></div></section>
   </main>
-  <footer class="wrap">SAGGLE ROC · FleetHacker 2026</footer>
+
+  <footer class="wrap">
+    <div class="rule"></div>
+    <div class="foot">
+      <div><img src="./assets/logo.png" alt="">SAGGLE ROC · FleetHacker 2026 · COMNAVSURFPAC Surface Analytics Group</div>
+      <div class="motto">In notitia, paratus</div>
+    </div>
+  </footer>
+
   <script>
+    // Space bar scrolls the page smoothly (Shift + Space scrolls up)
+    document.addEventListener("keydown", (e) => {
+      if (e.code !== "Space" || e.ctrlKey || e.metaKey || e.altKey) return;
+      const el = document.activeElement;
+      if (el && el !== document.body && /^(BUTTON|A|INPUT|TEXTAREA|SELECT|IFRAME|VIDEO)$/.test(el.tagName)) return;
+      if (el && el.isContentEditable) return;
+      e.preventDefault();
+      const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      const step = window.innerHeight * 0.85 * (e.shiftKey ? -1 : 1);
+      window.scrollBy({ top: step, behavior: reduce ? "auto" : "smooth" });
+    });
+
     const presentation = document.getElementById("presentationFrame");
     document.getElementById("presentationPrevious").addEventListener("click", () => presentation.contentWindow.postMessage("presentation:previous", "*"));
     document.getElementById("presentationNext").addEventListener("click", () => presentation.contentWindow.postMessage("presentation:next", "*"));
