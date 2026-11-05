@@ -149,6 +149,7 @@
       $("status").textContent = "No delivered report was found. Generate and send one first.";
       return;
     }
+    $("loadTraffic").classList.remove("next-action");
     $("message").value = file.content;
     await decode();
   }
