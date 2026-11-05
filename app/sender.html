@@ -4,6 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Eight O'Clock Report Message Generator</title>
+  <link rel="stylesheet" href="./shared/site-home.css">
   <style>
     :root { color-scheme: dark; --navy:#07182c; --panel:#102741; --line:#31506f; --blue:#61b7ff; --text:#eef6ff; --muted:#abc0d3; }
     * { box-sizing: border-box; }
@@ -22,6 +23,7 @@
     .note, #status { color:var(--muted); font-size:13px; }
     #status { min-height:20px; margin-top:10px; }
     .topline,.demo-bar,.message-actions { display:flex; align-items:center; justify-content:space-between; gap:12px; }
+    .topline { flex-wrap:wrap; align-items:flex-start; }
     .demo-bar { margin:16px 0; padding:12px; background:#173957; border:1px solid var(--line); border-radius:8px; }
     .virtual { background:#73e2a7; }
     .reset { background:transparent; color:var(--muted); border:1px solid var(--line); }
@@ -40,7 +42,7 @@
 </head>
 <body>
 <main>
-  <div class="topline"><div><h1>Eight O'Clock Report Message Generator</h1><p class="lead">Package a single-ship Eight O'Clock Report as a verified, offline message.</p></div><button id="resetApp" class="reset">Reset entire demo</button></div>
+  <div class="topline"><div class="site-home-group"><a class="site-home" href="../">← Home</a><div><h1>Eight O'Clock Report Message Generator</h1><p class="lead">Package a single-ship Eight O'Clock Report as a verified, offline message.</p></div></div><button id="resetApp" class="reset">Reset entire demo</button></div>
   <div class="demo-bar"><span>Retrieve the Foundry export, then send the generated report to USS MAHAN.</span><button id="loadSample" class="next-action">2. Load Foundry export</button></div>
   <div class="grid">
     <section class="card">

@@ -5,10 +5,11 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Eight O'Clock Report</title>
   <link rel="stylesheet" href="./eight-oclock-report.css">
+  <link rel="stylesheet" href="./shared/site-home.css">
 </head>
 <body>
 <section class="loader" id="loader">
-  <div><h1>Eight O'Clock Report</h1><button id="resetApp">Reset entire demo</button></div>
+  <div class="loader-heading"><a class="site-home" href="../">← Home</a><h1>Eight O'Clock Report</h1><button id="resetApp">Reset entire demo</button></div>
   <p class="muted">Load a complete Eight O'Clock Report message. Verification and rendering occur locally.</p>
   <button id="loadTraffic" class="next-action">5. Load from message traffic</button>
   <div class="loader-grid"><div><label for="messageFile">Message file</label><input id="messageFile" type="file" accept=".txt,text/plain"></div><button id="decode">Open report</button></div>
@@ -18,6 +19,7 @@
 </section>
 <div id="dashboard" hidden>
   <div class="screen-controls">
+    <a class="site-home" href="../">← Home</a>
     <button id="printReport">Print Report</button>
     <button id="openShipData" class="secondary">Ship Data</button>
     <span id="shipDataStatus" role="status">No ship TSO or DFS data loaded.</span>
