@@ -98,18 +98,20 @@
   function shipControlsPage(data, page, count) {
     const tsoRows = shipControls.tso.map(row => `<tr><td>${esc(row.number)}</td><td>${esc(row.date)}</td><td>${esc(row.department)}</td><td>${esc(row.related_condition)}</td><td>${esc(row.control)}</td></tr>`).join("");
     const dfsRows = shipControls.dfs.map(row => `<tr><td>${esc(row.number)}</td><td>${esc(row.date)}</td><td>${esc(row.department)}</td><td>${esc(row.type)}</td><td>${esc(row.related_condition)}</td><td>${esc(row.deviation)}</td></tr>`).join("");
-    return `<section class="print-page" id="ship-controls">${header(data, "Ship TSO and DFS Controls", page, count)}
-      <h2>Ship-Originated Operational Controls</h2><p class="callout"><strong>Ship-uploaded CSV data.</strong> TSO and DFS records are maintained aboard ship and are not supplied in the shore message.</p>
-      <section class="panel"><h3>Temporary Standing Orders (TSO)</h3>${tsoRows ? `<table><thead><tr><th>Number</th><th>Date</th><th>Dept</th><th>Related Condition</th><th>Control</th></tr></thead><tbody>${tsoRows}</tbody></table>` : `<p class="empty">No TSO CSV has been uploaded.</p>`}</section>
-      <section class="panel" style="margin-top:10px"><h3>Departures from Specification (DFS)</h3>${dfsRows ? `<table><thead><tr><th>Number</th><th>Date</th><th>Dept</th><th>Type</th><th>Related Condition</th><th>Approved Deviation</th></tr></thead><tbody>${dfsRows}</tbody></table>` : `<p class="empty">No DFS CSV has been uploaded.</p>`}</section>${footer(data)}</section>`;
+    return `<section class="print-page" id="ship-tso">${header(data, "Temporary Standing Orders", page, count)}
+      <h2>Ship-Originated TSO Controls</h2><p class="callout"><strong>Ship-uploaded CSV data.</strong> These records are maintained aboard ship and are not supplied in the shore message.</p>
+      <section class="panel"><h3>Temporary Standing Orders (TSO)</h3>${tsoRows ? `<table><thead><tr><th>Number</th><th>Date</th><th>Dept</th><th>Related Condition</th><th>Control</th></tr></thead><tbody>${tsoRows}</tbody></table>` : `<p class="empty">No TSO CSV has been uploaded.</p>`}</section>${footer(data)}</section>
+      <section class="print-page" id="ship-dfs">${header(data, "Departures from Specification", page + 1, count)}
+      <h2>Ship-Originated DFS Controls</h2><p class="callout"><strong>Ship-uploaded CSV data.</strong> Approved deviations and limitations are shown separately for readability.</p>
+      <section class="panel"><h3>Departures from Specification (DFS)</h3>${dfsRows ? `<table><thead><tr><th>Number</th><th>Date</th><th>Dept</th><th>Type</th><th>Related Condition</th><th>Approved Deviation</th></tr></thead><tbody>${dfsRows}</tbody></table>` : `<p class="empty">No DFS CSV has been uploaded.</p>`}</section>${footer(data)}</section>`;
   }
 
   function render(raw = currentReport) {
     const data = validate(raw);
     currentReport = data;
-    const count = 7;
+    const count = 8;
     $("report").innerHTML = overview(data, count) + Object.keys(departments).map((dept,index) => departmentPage(data,dept,index+2,count)).join("") + shipControlsPage(data,7,count);
-    $("tabNav").innerHTML = [["overview","Overview"],...Object.keys(departments).map(value=>[value.toLowerCase(),value]),["ship-controls","TSO / DFS"]].map(([id,label])=>`<a href="#${id}">${label}</a>`).join("");
+    $("tabNav").innerHTML = [["overview","Overview"],...Object.keys(departments).map(value=>[value.toLowerCase(),value]),["ship-tso","TSO"],["ship-dfs","DFS"]].map(([id,label])=>`<a href="#${id}">${label}</a>`).join("");
     $("dashboard").hidden = false;
   }
 
