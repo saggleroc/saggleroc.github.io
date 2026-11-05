@@ -78,7 +78,7 @@
     $("sendToShip").classList.remove("next-action");
     $("transfer").hidden = false;
     setTimeout(() => { $("transferStatus").textContent = "Message received aboard USS MAHAN."; }, 1500);
-    setTimeout(() => { location.href = "./eight-oclock.html"; }, 2600);
+    setTimeout(() => { location.href = "./mahan_dashboard.html"; }, 2600);
   });
   $("resetApp").addEventListener("click", () => {
     VirtualDrive.clear();
