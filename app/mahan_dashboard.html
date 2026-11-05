@@ -1,0 +1,1797 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>USS MAHAN (DDG 72) Readiness Dashboard</title>
+
+<style>
+  :root {
+    --navy:#08233b; --blue:#1878aa; --green:#197344; --amber:#a85f00;
+    --red:#b42318; --ink:#172b39; --muted:#637783; --line:#cad8df;
+    --canvas:#eaf0f3; --paper:#fff; --soft-blue:#eef7fb; --soft-green:#e9f5ed;
+    --soft-amber:#fff4df; --soft-red:#fff0ef;
+  }
+
+  * { box-sizing:border-box; }
+
+  body {
+    margin:0; min-width:1080px; color:var(--ink); background:var(--canvas);
+    font:13px/1.35 Arial, Helvetica, sans-serif;
+  }
+
+  .controls {
+    position:sticky; top:0; z-index:20; display:flex; align-items:center; gap:14px;
+    padding:11px 24px; color:#fff; background:var(--navy);
+    box-shadow:0 2px 9px rgba(0,0,0,.20);
+  }
+
+  .controls strong { font-size:14px; }
+  .controls span { color:#bdd5e4; font-size:11px; }
+
+  .controls button {
+    margin-left:auto; padding:8px 13px; color:#fff; cursor:pointer; background:var(--blue);
+    border:0; border-radius:4px; font:inherit; font-weight:700;
+  }
+
+  .controls button:hover { background:#10618e; }
+
+  .nav { display:flex; gap:4px; }
+
+  .nav a {
+    padding:5px 7px; color:#d1e3ee; border-radius:3px; font-size:10px;
+    font-weight:700; text-decoration:none;
+  }
+
+  .nav a:hover { color:#fff; background:rgba(255,255,255,.13); }
+
+  .report { width:10.5in; margin:16px auto 28px; }
+
+  .page {
+    position:relative; width:10.5in; height:7.95in; overflow:hidden;
+    margin:0 auto 16px; padding:.22in .28in; background:var(--paper);
+    box-shadow:0 2px 12px rgba(12,35,52,.18);
+    break-after:page; page-break-after:always;
+  }
+
+  .page:last-child { break-after:auto; page-break-after:auto; }
+
+  .page-header {
+    display:flex; align-items:flex-end; justify-content:space-between;
+    min-height:.50in; padding-bottom:.08in; border-bottom:3px solid var(--blue);
+  }
+
+  .brand { color:var(--navy); font-size:20px; font-weight:800; }
+
+  .brand small {
+    display:block; margin-top:2px; color:var(--muted); font-size:9px;
+    letter-spacing:.55px; text-transform:uppercase;
+  }
+
+  .ship-id { color:var(--navy); text-align:right; }
+  .ship-id strong { display:block; font-size:17px; }
+  .ship-id span { color:var(--muted); font-size:9px; }
+
+  .footer {
+    position:absolute; right:.28in; bottom:.11in; left:.28in;
+    display:flex; justify-content:space-between; padding-top:4px;
+    color:#75858d; background:#fff; border-top:1px solid var(--line); font-size:7.5px;
+  }
+
+  .section-title {
+    margin:9px 0 6px; color:var(--navy); font-size:12px; font-weight:800;
+    letter-spacing:.35px; text-transform:uppercase;
+  }
+
+  .grid { display:grid; gap:8px; }
+  .overview-top { grid-template-columns:2.05fr 1fr; }
+  .overview-bottom { grid-template-columns:1.08fr 1.32fr .94fr; margin-top:8px; }
+  .department-top { grid-template-columns:repeat(5,1fr); }
+  .department-mid { grid-template-columns:.82fr 1.18fr; }
+  .department-bottom { grid-template-columns:1.08fr .92fr; }
+
+  .panel {
+    overflow:hidden; background:#fff; border:1px solid var(--line); border-radius:4px;
+  }
+
+  .panel-header {
+    display:flex; align-items:center; justify-content:space-between; min-height:28px;
+    padding:6px 8px; background:#f2f7f9; border-bottom:1px solid var(--line);
+  }
+
+  .panel-header h3 {
+    margin:0; color:var(--navy); font-size:10px; font-weight:800;
+    letter-spacing:.28px; text-transform:uppercase;
+  }
+
+  .panel-header span { color:var(--muted); font-size:8px; }
+  .panel-body { padding:7px 8px; }
+
+  .kpi-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:7px; }
+
+  .kpi {
+    min-height:67px; padding:8px 9px; background:#fff; border:1px solid var(--line);
+    border-top:4px solid #8ca0ac; border-radius:4px;
+  }
+
+  .kpi.good { border-top-color:var(--green); }
+  .kpi.watch { border-top-color:var(--amber); }
+  .kpi.bad { border-top-color:var(--red); }
+
+  .kpi-label {
+    min-height:22px; color:var(--muted); font-size:8px; font-weight:800;
+    letter-spacing:.32px; line-height:1.18; text-transform:uppercase;
+  }
+
+  .kpi-value { margin-top:4px; color:var(--navy); font-size:22px; font-weight:800; line-height:1; }
+  .kpi-note { margin-top:3px; color:var(--muted); font-size:8px; }
+
+  .readiness { display:flex; align-items:center; gap:9px; }
+
+  .ring {
+    position:relative; display:grid; place-items:center; width:88px; height:88px;
+    flex:0 0 88px; border-radius:50%;
+  }
+
+  .ring::before {
+    position:absolute; width:64px; height:64px; content:""; background:#fff; border-radius:50%;
+  }
+
+  .ring strong { position:relative; z-index:1; color:var(--navy); font-size:22px; }
+
+  .ring span {
+    position:relative; z-index:1; display:block; margin-top:-17px; color:var(--muted);
+    font-size:7px; font-weight:800; text-align:center; text-transform:uppercase;
+  }
+
+  .readiness-copy { color:var(--muted); font-size:9px; }
+  .readiness-copy strong { display:block; margin-bottom:4px; color:var(--navy); font-size:11px; }
+
+  .dept-row {
+    display:grid; grid-template-columns:35px 1fr 33px 28px; gap:5px;
+    align-items:center; margin:6px 0; font-size:8px;
+  }
+
+  .dept-row strong { color:var(--navy); }
+
+  .track { height:8px; overflow:hidden; background:#e4ecef; border-radius:10px; }
+  .fill { height:100%; border-radius:10px; }
+  .metric { color:var(--navy); font-weight:800; text-align:right; }
+
+  .heatmap {
+    display:grid; grid-template-columns:36px repeat(5,1fr); gap:3px; align-items:center; font-size:7px;
+  }
+
+  .heat-head { color:var(--muted); font-size:7px; font-weight:800; text-align:center; }
+  .heat-label { color:var(--navy); font-weight:800; }
+
+  .heat {
+    height:16px; border-radius:2px; font-size:7px; font-weight:800;
+    line-height:16px; text-align:center;
+  }
+
+  .good-bg { color:#155c34; background:#c9e8d0; }
+  .watch-bg { color:#855000; background:#f9dda0; }
+  .bad-bg { color:#90251c; background:#f3c0bb; }
+  .neutral-bg { color:#566a75; background:#e9eef1; }
+
+  .priority {
+    display:grid; grid-template-columns:18px 1fr; gap:6px; padding:5px 0;
+    border-bottom:1px solid #e5ecef;
+  }
+
+  .priority:last-child { border-bottom:0; }
+
+  .priority-number {
+    display:grid; place-items:center; width:18px; height:18px; color:#fff;
+    background:var(--red); border-radius:50%; font-size:8px; font-weight:800;
+  }
+
+  .priority strong { display:block; color:var(--navy); font-size:8px; }
+  .priority span { color:var(--muted); font-size:7px; }
+
+  .stat {
+    min-height:56px; padding:7px 8px; border:1px solid var(--line);
+    border-left:5px solid var(--blue); border-radius:3px;
+  }
+
+  .stat.good { border-left-color:var(--green); }
+  .stat.watch { border-left-color:var(--amber); }
+  .stat.bad { border-left-color:var(--red); }
+
+  .stat label {
+    display:block; color:var(--muted); font-size:7px; font-weight:800;
+    letter-spacing:.3px; text-transform:uppercase;
+  }
+
+  .stat strong {
+    display:block; margin-top:3px; color:var(--navy); font-size:18px; line-height:1;
+  }
+
+  .stat span { color:var(--muted); font-size:7px; }
+
+  .manning-row {
+    display:grid; grid-template-columns:65px 1fr 35px; gap:6px; align-items:center;
+    margin:7px 0; font-size:8px;
+  }
+
+  .manning-row strong { color:var(--navy); }
+
+  .manning-bar {
+    position:relative; height:13px; overflow:hidden; background:#e5edef; border-radius:2px;
+  }
+
+  .manning-ba {
+    position:absolute; top:0; bottom:0; left:0; background:#9db8c5;
+  }
+
+  .manning-cob {
+    position:absolute; top:3px; bottom:3px; left:0; background:var(--blue);
+  }
+
+  .nec-row {
+    display:grid; grid-template-columns:42px 1fr 35px; gap:5px; align-items:center;
+    margin:2px 0; font-size:7px;
+  }
+
+  .nec-row strong { color:var(--navy); text-transform:uppercase; }
+
+  .nec-stack {
+    display:flex; height:8px; overflow:hidden; background:#e6edef; border-radius:2px;
+  }
+
+  .nec-filled { background:var(--green); }
+  .nec-gap { background:var(--red); }
+
+  .tag {
+    display:inline-block; min-width:22px; padding:2px 3px; border-radius:9px;
+    font-size:6px; font-weight:800; text-align:center;
+  }
+
+  .tag.good { color:#155c34; background:#d8f0df; }
+  .tag.watch { color:#855000; background:#fff0ca; }
+  .tag.bad { color:#90251c; background:#fde0de; }
+  .tag.neutral { color:#526672; background:#e8eef1; }
+
+  .concern {
+    margin-bottom:4px; padding:5px 6px; background:#f9fbfc; border:1px solid #d7e2e7;
+    border-left:4px solid var(--amber); border-radius:2px;
+  }
+
+  .concern.c3, .concern.c4 { border-left-color:var(--red); }
+
+  .concern-head {
+    display:flex; justify-content:space-between; gap:8px; color:var(--navy);
+    font-size:8px; font-weight:800;
+  }
+
+  .concern-copy {
+    margin:2px 0 3px; overflow:hidden; color:var(--muted); font-size:6.7px;
+    line-height:1.1; text-overflow:ellipsis; white-space:nowrap;
+  }
+
+  .chain {
+    display:grid; grid-template-columns:1.2fr 10px 1.1fr 10px 1.1fr;
+    gap:4px; align-items:stretch;
+  }
+
+  .chain-box {
+    min-height:29px; padding:3px; background:#fff; border:1px solid var(--line);
+    border-radius:2px; font-size:6.3px;
+  }
+
+  .chain-box strong {
+    display:block; margin-bottom:1px; color:var(--navy); font-size:6.5px;
+  }
+
+  .chain-arrow {
+    display:grid; place-items:center; color:var(--blue); font-size:12px; font-weight:800;
+  }
+
+  .linked { color:#155c34; background:var(--soft-green); border-color:#b5d9c0; }
+  .related { color:#82500a; background:var(--soft-amber); border-color:#efd293; }
+  .unlinked { color:#7b2d28; background:var(--soft-red); border-color:#ebc1be; }
+
+  .mission-summary {
+    display:grid; grid-template-columns:repeat(4,1fr); gap:5px; margin-bottom:4px;
+  }
+
+  .mission-summary-box {
+    min-height:35px; padding:4px 5px; border:1px solid var(--line);
+    border-top:3px solid var(--blue); border-radius:3px;
+  }
+
+  .mission-summary-box.good { border-top-color:var(--green); }
+  .mission-summary-box.watch { border-top-color:var(--amber); }
+  .mission-summary-box.bad { border-top-color:var(--red); }
+
+  .mission-summary-box label {
+    display:block; color:var(--muted); font-size:6px; font-weight:800;
+    letter-spacing:.2px; text-transform:uppercase;
+  }
+
+  .mission-summary-box strong {
+    display:block; margin-top:2px; color:var(--navy); font-size:13px; line-height:1;
+  }
+
+  .mission-summary-bar {
+    display:flex; height:7px; overflow:hidden; background:#e6edef; border-radius:9px;
+  }
+
+  .mission-summary-bar span { height:100%; }
+
+  table { width:100%; border-collapse:collapse; font-size:7px; }
+
+  th {
+    padding:4px; color:#4b6471; background:#edf4f6; border-bottom:1px solid var(--line);
+    font-size:6.5px; letter-spacing:.25px; text-align:left; text-transform:uppercase;
+  }
+
+  td {
+    padding:3px 4px; border-bottom:1px solid #e4ecef; vertical-align:top;
+  }
+
+  .right { text-align:right; }
+  .center { text-align:center; }
+
+  .legend {
+    display:flex; flex-wrap:wrap; gap:7px; margin-top:4px; color:var(--muted); font-size:7px;
+  }
+
+  .legend i {
+    display:inline-block; width:7px; height:7px; margin-right:2px; border-radius:50%;
+  }
+
+  .callout {
+    padding:7px 8px; color:#4b626f; background:var(--soft-blue);
+    border:1px solid #c8dfe9; border-left:4px solid var(--blue); font-size:8px;
+  }
+
+  .callout strong { color:var(--navy); }
+
+  .empty {
+    padding:14px; color:var(--muted); font-size:8px; font-style:italic; text-align:center;
+  }
+
+  /* Fixed department-page print layout. */
+  .department-page { display:flex; flex-direction:column; }
+
+  .department-page .department-top {
+    flex:0 0 58px; margin:8px 0 7px;
+  }
+
+  .department-page .department-mid {
+    flex:0 0 83px;
+  }
+
+  .department-page .department-mid .panel {
+    height:83px;
+  }
+
+  .department-page .department-mid .panel-body {
+    padding-top:5px; padding-bottom:4px;
+  }
+
+  .department-page .section-title {
+    flex:0 0 19px; margin:7px 0 4px;
+  }
+
+  .department-page .chain-section {
+    flex:0 0 296px;
+  }
+
+  .department-page .chain-section .panel {
+    height:296px;
+  }
+
+  .department-page .chain-section .panel-body {
+    height:266px; overflow:hidden; padding:5px 7px;
+  }
+
+  .department-page .department-bottom {
+    flex:0 0 127px; margin-top:7px;
+  }
+
+  .department-page .department-bottom .panel {
+    height:127px;
+  }
+
+  .department-page .department-bottom .panel-body {
+    padding-top:4px; padding-bottom:3px;
+  }
+
+  /* Continuous appendix table. */
+  .appendix-continuous {
+    width:10.5in; min-height:7.5in; margin:16px auto 28px; padding:.22in .28in;
+    background:#fff; box-shadow:0 2px 12px rgba(12,35,52,.18);
+    break-before:page; page-break-before:always;
+  }
+
+  .appendix-continuous .page-header { margin-bottom:7px; }
+
+  .appendix-continuous .footer {
+    position:static; margin-top:7px;
+  }
+
+  .appendix-intro {
+    margin:5px 0; padding:5px 7px; color:#4d626e; background:var(--soft-blue);
+    border:1px solid #c8dfe9; border-left:4px solid var(--blue); font-size:7px;
+  }
+
+  .appendix-intro strong { color:var(--navy); }
+
+  .appendix-table {
+    table-layout:fixed; font-size:5.7px;
+  }
+
+  .appendix-table thead { display:table-header-group; }
+
+  .appendix-table tr {
+    break-inside:avoid; page-break-inside:avoid;
+  }
+
+  .appendix-table th {
+    padding:3px 2px; font-size:5.5px; line-height:1.05;
+  }
+
+  .appendix-table td {
+    padding:2px 3px; line-height:1.1; overflow-wrap:anywhere; vertical-align:top;
+  }
+
+  .appendix-table .source-col { width:9%; }
+  .appendix-table .issue-col { width:17%; }
+  .appendix-table .effect-col { width:22%; }
+  .appendix-table .parts-col { width:20%; }
+  .appendix-table .control-col { width:23%; }
+  .appendix-table .status-col { width:9%; }
+
+  .appendix-status {
+    display:block; margin-top:1px; font-size:5.5px; font-weight:800;
+  }
+
+  .appendix-note {
+    margin-top:5px; color:var(--muted); font-size:7px;
+  }
+
+  @page {
+    size:letter landscape;
+    margin:.25in;
+  }
+
+  @media print {
+    body { min-width:0; background:#fff; }
+    .controls { display:none; }
+    .report { width:auto; margin:0; }
+    .page { width:10.5in; height:7.95in; margin:0; box-shadow:none; }
+
+    .appendix-continuous {
+      width:auto; min-height:0; margin:0; padding:.22in .28in; box-shadow:none;
+    }
+  }
+</style>
+<link rel="stylesheet" href="./shared/site-home.css">
+</head>
+
+<body>
+  <div class="controls">
+    <a class="site-home" href="../">← Home</a>
+    <div>
+      <strong>USS MAHAN (DDG 72) — Readiness Dashboard</strong><br>
+      <span>Embedded data · Ship overview, department pages, and Material Issue Master Register</span>
+    </div>
+
+    <nav class="nav">
+      <a href="#overview">Overview</a>
+      <a href="#eng">ENG</a>
+      <a href="#ops">OPS</a>
+      <a href="#cs">CS</a>
+      <a href="#weps">WEPS</a>
+      <a href="#sup">SUP</a>
+      <a href="#appendix">Appendix</a>
+    </nav>
+
+    <button type="button" onclick="window.print()">Print Report</button>
+  </div>
+
+  <main id="report" class="report"></main>
+
+<script>
+"use strict";
+
+/* ============================================================
+   EMBEDDED USS MAHAN (DDG 72) DATA
+   ============================================================ */
+
+const SHIP = {
+  name: "USS MAHAN",
+  hull: "DDG 72",
+  uic: "45021",
+  reportDate: "5 Nov 2026"
+};
+
+const DEPTS = {
+  eng:  { short: "ENG",  name: "Engineering",    color: "#1878aa" },
+  ops:  { short: "OPS",  name: "Operations",     color: "#138a8a" },
+  cs:   { short: "CS",   name: "Combat Systems", color: "#6950a1" },
+  weps: { short: "WEPS", name: "Weapons",        color: "#a85f00" },
+  sup:  { short: "SUP",  name: "Supply",         color: "#197344" }
+};
+
+const MANNING = [
+  { dept:"ops",  supervisor:[9,10], journeyman:[15,14], apprentice:[21,19] },
+  { dept:"eng",  supervisor:[5,4],  journeyman:[11,12], apprentice:[17,15] },
+  { dept:"cs",   supervisor:[6,5],  journeyman:[10,9],  apprentice:[19,18] },
+  { dept:"weps", supervisor:[5,4],  journeyman:[6,7],   apprentice:[13,12] },
+  { dept:"sup",  supervisor:[3,3],  journeyman:[9,8],   apprentice:[12,11] }
+];
+
+const NEC = [
+  {dept:"eng", code:"4911", name:"Gas Turbine System Tech, Mechanical", ba:1, cob:0, fill:"27-Jan-27"},
+  {dept:"eng", code:"4915", name:"AC & Refrigeration Tech", ba:3, cob:2, fill:"19-Feb-27"},
+  {dept:"eng", code:"u07a", name:"Diesel Engine Inspector", ba:1, cob:1, fill:"N/A"},
+  {dept:"eng", code:"u01a", name:"Gas Free Engineer", ba:3, cob:2, fill:"6-Apr-27"},
+  {dept:"eng", code:"4951", name:"Structural Welder", ba:2, cob:1, fill:"29-Apr-27"},
+  {dept:"eng", code:"u15a", name:"Quality Assurance Inspector", ba:2, cob:1, fill:"7-Jul-27"},
+  {dept:"cs", code:"v44b", name:"SPY-1D Tech", ba:3, cob:2, fill:"22-May-27"},
+  {dept:"cs", code:"v38b", name:"FCS Tech", ba:2, cob:2, fill:"N/A"},
+  {dept:"cs", code:"v26b", name:"Mk-41 VLS Tech", ba:3, cob:2, fill:"30-Jul-27"},
+  {dept:"cs", code:"c12a", name:"SLQ-32 EW Tech", ba:2, cob:1, fill:"7-Oct-27"},
+  {dept:"cs", code:"v86a", name:"SHF SATCOM Tech", ba:2, cob:1, fill:"1-Jan-28"},
+  {dept:"weps", code:"v15a", name:"CIWS Mk15 Tech", ba:3, cob:2, fill:"22-Aug-27"},
+  {dept:"sup", code:"s11a", name:"Food Service Management Specialist", ba:3, cob:3, fill:"N/A"},
+  {dept:"sup", code:"s05a", name:"HAZMAT Control Tech", ba:2, cob:1, fill:"24-Jan-28"},
+  {dept:"sup", code:"s01a", name:"Relational Supply Unit Level Admin", ba:1, cob:1, fill:"N/A"},
+  {dept:"sup", code:"s00a", name:"Ship's Store Retail Manager", ba:1, cob:0, fill:"4-Jan-27"},
+  {dept:"ops", code:"w12a", name:"ANAV", ba:1, cob:0, fill:"16-Feb-28"},
+  {dept:"ops", code:"v01a", name:"AIC Controller", ba:3, cob:3, fill:"N/A"},
+  {dept:"ops", code:"w19a", name:"Tactical Data Link 16", ba:2, cob:1, fill:"2-Apr-28"},
+  {dept:"ops", code:"w03a", name:"Shipboard Navigation ECDIS-N", ba:3, cob:2, fill:"25-Apr-28"},
+  {dept:"ops", code:"w16a", name:"GCCS-M Operator", ba:2, cob:1, fill:"19-Nov-26"}
+];
+
+const MISSION = [
+  {dept:"ops", mission:"MOB-S", certified:true, re:88, team:true, watchteams:"2", drill:"5-Nov-26"},
+  {dept:"ops", mission:"MOB-A", certified:true, re:84, team:true, watchteams:"2", drill:"10-Nov-26"},
+  {dept:"eng", mission:"MOB-D", certified:true, re:76, team:true, watchteams:"1", drill:"15-Nov-26"},
+  {dept:"ops", mission:"MOB-N", certified:false, re:79, team:false, watchteams:"3", drill:"20-Nov-26"},
+  {dept:"eng", mission:"MOB-E", certified:true, re:81, team:true, watchteams:"3", drill:"25-Nov-26"},
+  {dept:"cs", mission:"AW", certified:true, re:85, team:true, watchteams:"2", drill:"30-Nov-26"},
+  {dept:"cs", mission:"BMD", certified:true, re:82, team:true, watchteams:"1", drill:"5-Dec-26"},
+  {dept:"cs", mission:"SUW", certified:true, re:78, team:true, watchteams:"2", drill:"10-Dec-26"},
+  {dept:"cs", mission:"ASW", certified:true, re:80, team:true, watchteams:"1", drill:"15-Dec-26"},
+  {dept:"weps", mission:"STRIKE", certified:true, re:73, team:true, watchteams:"1", drill:"20-Dec-26"},
+  {dept:"weps", mission:"NSFS", certified:true, re:77, team:true, watchteams:"1", drill:"26-Dec-26"},
+  {dept:"weps", mission:"VBSS", certified:true, re:75, team:false, watchteams:"2", drill:"31-Dec-26"},
+  {dept:"ops", mission:"3M", certified:true, re:70, team:true, watchteams:"N/A", drill:"5-Jan-27"},
+  {dept:"ops", mission:"FSOM", certified:false, re:86, team:false, watchteams:"1", drill:"10-Jan-27"},
+  {dept:"sup", mission:"SUPPLY", certified:true, re:74, team:true, watchteams:"1", drill:"15-Jan-27"},
+  {dept:"ops", mission:"SAR", certified:true, re:83, team:true, watchteams:"2", drill:"20-Jan-27"},
+  {dept:"cs", mission:"COMMS", certified:true, re:89, team:true, watchteams:"3", drill:"25-Jan-27"},
+  {dept:"cs", mission:"EW", certified:true, re:80, team:true, watchteams:"3", drill:"31-Jan-27"}
+];
+
+const CASREPS = [
+  {n:27153,dept:"eng",equipment:"Nr 1 Fire Pump",mission:"MOB-D",category:"C3",etr:"18-Nov-26",part:"w-172",tech:true,fleet:false,redline:true,description:"Fire pump seized during weekly operational test; firemain carried by remaining pumps."},
+  {n:27154,dept:"weps",equipment:"Mk 32 SVTT",mission:"ASW",category:"C2",etr:"6-Dec-26",part:"w-189",tech:false,fleet:false,redline:false,description:"Port torpedo-tube door will not lock open; ship's force replacing latch from onboard spares."},
+  {n:27155,dept:"eng",equipment:"AFFF Station 2",mission:"MOB-D",category:"C2",etr:"13-Dec-26",part:"w-206",tech:false,fleet:false,redline:false,description:"AFFF concentrate discharge valve will not open; ship's force replacing valve from onboard repair parts."},
+  {n:27301,dept:"eng",equipment:"2 GTG",mission:"MOB-E",category:"C3",etr:"27-Nov-26",part:"w-255",tech:true,fleet:false,redline:true,description:"2 GTG will not build voltage following an exciter-diode failure; electrical load shifted to remaining generators."},
+  {n:27302,dept:"eng",equipment:"Nr 2 Firemain Isolation Valve",mission:"MOB-D",category:"C4",etr:"14-Nov-26",part:"w-256",tech:true,fleet:true,redline:true,description:"Valve failed shut; forward loop cannot be pressurized and forward damage-control coverage is degraded."},
+  {n:27303,dept:"ops",equipment:"AN/WSN-7",mission:"MOB-N",category:"C2",etr:"20-Nov-26",part:"w-257",tech:true,fleet:false,redline:false,description:"Inertial navigator cannot complete alignment; processor card replacement underway with technical assistance standing by."},
+  {n:27304,dept:"ops",equipment:"RHIB Outboard",mission:"MOB-S",category:"C2",etr:"16-Nov-26",part:"w-258",tech:false,fleet:false,redline:false,description:"Starboard RHIB outboard lost propulsion; CANNAB request submitted to USS ROSS."},
+  {n:27305,dept:"ops",equipment:"RAST",mission:"MOB-A",category:"C3",etr:"2-Dec-26",part:"w-259",tech:true,fleet:false,redline:false,description:"Frayed hauldown cable fails inspection; helicopter recovery limited to clear-deck landing."},
+  {n:27306,dept:"weps",equipment:"Mk 41 VLS",mission:"STRIKE, AW",category:"C3",etr:"9-Dec-26",part:"w-260",tech:true,fleet:true,redline:true,description:"Cell 37 hatch actuator leak prevents opening; cell removed from launch sequence."},
+  {n:27307,dept:"weps",equipment:"Mk 45 Gun",mission:"NSFS, SUW",category:"C2",etr:"22-Nov-26",part:"w-261",tech:false,fleet:false,redline:false,description:"Rammer fails to return to battery; ship's force replacing return spring from onboard spares."},
+  {n:27308,dept:"cs",equipment:"Link-16 Terminal",mission:"COMMS, AW",category:"C3",etr:"30-Nov-26",part:"w-262",tech:true,fleet:false,redline:true,description:"Terminal cannot enter network; tactical-link participation is lost."},
+  {n:27309,dept:"cs",equipment:"SPY-1D SIGPRO",mission:"AW, BMD",category:"C2",etr:"19-Nov-26",part:"none",tech:true,fleet:true,redline:false,description:"Signal processor is out of commission; technical assistance is on board for fault isolation."},
+  {n:27310,dept:"cs",equipment:"SQQ-89",mission:"ASW",category:"C3",etr:"7-Dec-26",part:"w-263",tech:true,fleet:false,redline:true,description:"Sonar dome pressurization will not hold; active sonar operations are suspended."},
+  {n:27311,dept:"sup",equipment:"Galley Convection Oven",mission:"SUPPLY",category:"C2",etr:"15-Nov-26",part:"w-264",tech:false,fleet:false,redline:false,description:"Oven will not maintain set temperature; meal-preparation capacity reduced."},
+  {n:27312,dept:"sup",equipment:"Laundry Washer No. 2",mission:"SUPPLY",category:"C2",etr:"24-Nov-26",part:"w-265",tech:false,fleet:false,redline:false,description:"Washer will not complete drain cycle; laundry throughput reduced."},
+  {n:27313,dept:"sup",equipment:"Walk-In Refrigerator",mission:"SUPPLY",category:"C3",etr:"5-Dec-26",part:"w-266",tech:true,fleet:false,redline:true,description:"Compressor trips on overload; perishable-food storage capacity reduced."}
+];
+
+const PARTS = [
+  {req:"RQN-45021-26-0001",dept:"eng",item:"Fire pump rotating assembly",qty:1,priority:"1",status:"Backordered",eta:"18-Nov-26",source:"DLA",casrep:27153,remarks:"CASREP C3; vendor production delay"},
+  {req:"RQN-45021-26-0002",dept:"weps",item:"Mk 32 SVTT door latch",qty:1,priority:"3",status:"Available",eta:"9-Nov-26",source:"NAVSUP-WSS",casrep:27154,remarks:"CASREP C2; material available for issue"},
+  {req:"RQN-45021-26-0003",dept:"eng",item:"AFFF concentrate discharge valve",qty:1,priority:"3",status:"Available",eta:"10-Nov-26",source:"DLA",casrep:27155,remarks:"CASREP C2; local stock identified"},
+  {req:"RQN-45021-26-0004",dept:"eng",item:"2 GTG exciter assembly",qty:1,priority:"2",status:"Backordered",eta:"27-Nov-26",source:"NAVSUP-WSS",casrep:27301,remarks:"CASREP C3; electrical-load limitations in effect"},
+  {req:"RQN-45021-26-0005",dept:"eng",item:"Nr 2 firemain isolation valve",qty:1,priority:"1",status:"Backordered",eta:"14-Nov-26",source:"DLA",casrep:27302,remarks:"CASREP C4; expedited shipment requested"},
+  {req:"RQN-45021-26-0006",dept:"ops",item:"AN/WSN-7 processor card",qty:1,priority:"3",status:"Available",eta:"12-Nov-26",source:"NAVSUP-WSS",casrep:27303,remarks:"CASREP C2; awaiting technical-assistance confirmation"},
+  {req:"RQN-45021-26-0007",dept:"ops",item:"RHIB outboard lower-unit assembly",qty:1,priority:"3",status:"Available - CANNAB",eta:"16-Nov-26",source:"USS ROSS",casrep:27304,remarks:"CASREP C2; transfer coordination pending"},
+  {req:"RQN-45021-26-0008",dept:"ops",item:"RAST hauldown cable",qty:1,priority:"2",status:"In Transit",eta:"2-Dec-26",source:"NAVSUP-WSS",casrep:27305,remarks:"CASREP C3; shipment released from depot"},
+  {req:"RQN-45021-26-0009",dept:"weps",item:"Mk 41 VLS hatch-actuator seal kit",qty:1,priority:"2",status:"Backordered",eta:"9-Dec-26",source:"NAVSUP-WSS",casrep:27306,remarks:"CASREP C3; vendor lead time applies"},
+  {req:"RQN-45021-26-0010",dept:"weps",item:"Mk 45 rammer return spring",qty:2,priority:"3",status:"Available",eta:"11-Nov-26",source:"NAVSUP-WSS",casrep:27307,remarks:"CASREP C2; one required and one retained as spare"},
+  {req:"RQN-45021-26-0011",dept:"cs",item:"Link-16 terminal power supply",qty:1,priority:"2",status:"Backordered",eta:"30-Nov-26",source:"NAVSUP-WSS",casrep:27308,remarks:"CASREP C3; tactical-link participation degraded"},
+  {req:"RQN-45021-26-0012",dept:"cs",item:"SQQ-89 dome pressurization valve",qty:1,priority:"2",status:"Backordered",eta:"7-Dec-26",source:"NAVSUP-WSS",casrep:27310,remarks:"CASREP C3; active sonar operations suspended"},
+  {req:"RQN-45021-26-0013",dept:"sup",item:"Galley convection-oven heating element",qty:2,priority:"3",status:"Available",eta:"8-Nov-26",source:"DLA",casrep:27311,remarks:"CASREP C2; one for installation and one spare"},
+  {req:"RQN-45021-26-0014",dept:"sup",item:"Laundry washer drain pump",qty:1,priority:"3",status:"Backordered",eta:"24-Nov-26",source:"DLA",casrep:27312,remarks:"CASREP C2; reduced laundry throughput"},
+  {req:"RQN-45021-26-0015",dept:"sup",item:"Walk-in refrigerator compressor contactor",qty:1,priority:"2",status:"Backordered",eta:"5-Dec-26",source:"DLA",casrep:27313,remarks:"CASREP C3; refrigerated-storage capacity reduced"},
+  {req:"RQN-45021-26-0016",dept:"sup",item:"Walk-in refrigerator overload relay",qty:1,priority:"2",status:"Available",eta:"15-Nov-26",source:"DLA",casrep:27313,remarks:"CASREP C3; consolidated shipment with contactor"},
+  {req:"RQN-45021-26-0017",dept:"weps",item:"Mk 32 SVTT door-latch hardware kit",qty:1,priority:"3",status:"Available",eta:"9-Nov-26",source:"NAVSUP-WSS",casrep:27154,remarks:"CASREP supporting hardware"},
+  {req:"RQN-45021-26-0018",dept:"eng",item:"LM2500 fuel-nozzle set",qty:4,priority:"6",status:"In Transit",eta:"20-Nov-26",source:"NAVSUP-WSS",casrep:null,remarks:"Planned corrective maintenance"},
+  {req:"RQN-45021-26-0019",dept:"eng",item:"Reduction-gear lube-oil filter element",qty:12,priority:"6",status:"Available",eta:"8-Nov-26",source:"DLA",casrep:null,remarks:"Quarterly replenishment"},
+  {req:"RQN-45021-26-0020",dept:"eng",item:"Seawater strainer basket",qty:2,priority:"6",status:"Available",eta:"13-Nov-26",source:"DLA",casrep:null,remarks:"Maintenance stock replenishment"},
+  {req:"RQN-45021-26-0021",dept:"eng",item:"GTM igniter exciter lead",qty:2,priority:"6",status:"Backordered",eta:"12-Dec-26",source:"NAVSUP-WSS",casrep:null,remarks:"Required for planned maintenance availability"},
+  {req:"RQN-45021-26-0022",dept:"eng",item:"JP-5 service-pump mechanical seal kit",qty:1,priority:"6",status:"Not provided",eta:"Not provided",source:"Not provided",casrep:null,remarks:"Source row is incomplete"}
+];
+
+const TSO = [
+  {n:"TSO 24-011",date:"18-Mar-24",dept:"eng",related:"Engineering plant safety / standing risk-control measure",text:"Maintain enhanced engineering-plant tag-out verification during propulsion and electrical-plant maintenance."},
+  {n:"TSO 24-019",date:"22-Jul-24",dept:"cs",related:"Tactical data-system configuration control",text:"Verify time synchronization of designated tactical systems at watch turnover and before major training events."},
+  {n:"TSO 24-027",date:"14-Nov-24",dept:"sup",related:"Food-service refrigeration monitoring",text:"Maintain daily temperature logs for walk-in refrigerated and frozen food-storage spaces."},
+  {n:"TSO 25-003",date:"6-Jan-25",dept:"eng",related:"Auxiliary machinery-space damage prevention",text:"Conduct additional auxiliary-machinery bilge soundings and visual inspections during duty-section rounds."},
+  {n:"TSO 25-014",date:"9-May-25",dept:"cs",related:"Combat-system network configuration control",text:"Prohibit unauthorized tactical-network fiber-routing, console-connection, or baseline changes."},
+  {n:"TSO 25-022",date:"16-Sep-25",dept:"ops",related:"Navigation and surface-watch risk control",text:"Require bridge and CIC navigation watch teams to log cross-checks before restricted waters or sea-and-anchor detail."},
+  {n:"TSO 25-031",date:"3-Dec-25",dept:"eng",related:"Firemain configuration management",text:"Maintain one verified alternate firefighting-water path before isolating a firemain section."},
+  {n:"TSO 26-001",date:"12-Jan-26",dept:"cs",related:"Tactical data-link continuity",text:"Maintain a manual tactical data-link status board during major exercises, EMCON, and casualty-response drills."},
+  {n:"TSO 26-002",date:"3-Feb-26",dept:"sup",related:"Galley and laundry equipment readiness",text:"Inspect galley critical-equipment spare parts monthly and report below-minimum stock."},
+  {n:"TSO 26-004",date:"12-Jun-26",dept:"eng",related:"LM2500 GTM 1A / CASREP C2-26-046",text:"Restrict GTM 1A operation to no more than 85 percent power pending vibration assessment and repair."},
+  {n:"TSO 26-005",date:"22-Aug-26",dept:"eng",related:"No. 2 GTG / CASREP C2-26-045",text:"Secure Auxiliary Steam Line No. 2 pending gasket replacement and leak testing."},
+  {n:"TSO 26-006",date:"12-Sep-26",dept:"cs",related:"AN/SPY-1D Signal Processor / CASREP C3-26-044",text:"Disable AN/SPY-1D high-power transmit mode; use approved reduced-power configuration only."},
+  {n:"TSO 26-007",date:"3-Nov-26",dept:"cs",related:"AN/SLQ-32(V)6 / CASREP C3-26-049",text:"Secure AN/SLQ-32 active transmitters pending cooling-water flow-switch replacement."},
+  {n:"TSO 26-008",date:"5-Nov-26",dept:"weps",related:"Mk 45 Mod 2 Gun Mount / CASREP C2-26-051",text:"Use Mk 45 single-hoist feed rate only; do not conduct sustained-fire or rapid-feed evolutions."},
+  {n:"TSO 26-009",date:"5-Nov-26",dept:"ops",related:"AN/SPS-73 / CASREP C2-26-043",text:"Maintain dedicated surface-search radar watch and cross-check bearing data against navigation sources."}
+];
+
+const DFS = [
+  {n:"DFS-E-25-007",date:"16-Sep-25",dept:"eng",type:"Permanent / Minor",related:"Auxiliary seawater system configuration",text:"Approves alternate material and fitting arrangement for auxiliary seawater-pump discharge sensing connection."},
+  {n:"DFS-SUP-24-002",date:"22-Jul-24",dept:"sup",type:"Permanent / Minor",related:"Galley scullery drainage arrangement",text:"Approves alternate galley scullery drain-screen configuration pending modernization."},
+  {n:"DFS-CS-25-011",date:"3-Dec-25",dept:"cs",type:"Temporary / Minor",related:"CIC Console 4 cooling-control assembly",text:"Allows secondary cooling configuration; console not for sustained high-heat tactical-system operations."},
+  {n:"DFS-E-26-012",date:"5-Nov-26",dept:"eng",type:"Temporary / Major",related:"LM2500 GTM 1A / CASREP C2-26-046",text:"Limits ship speed to 20 knots; high-power operations not authorized pending engineering assessment."},
+  {n:"DFS-CS-26-008",date:"5-Nov-26",dept:"cs",type:"Temporary / Major",related:"AN/SPY-1D Signal Processor / CASREP C3-26-044",text:"Restricts radar employment in affected sector under approved reduced-power parameters."},
+  {n:"DFS-WEAP-26-003",date:"5-Nov-26",dept:"weps",type:"Temporary / Major",related:"Mk 41 Mod 2 VLS Cell 5 / CASREP C3-26-050",text:"Authorizes manual hatch override for Cell 5 only; remote opening remains restricted pending repair and testing."}
+];
+
+/* ============================================================
+   HELPERS
+   ============================================================ */
+
+const TOTAL_PAGES = 6;
+const byDept = (records, dept) => records.filter(r => r.dept === dept);
+const significant = row => row.category === "C3" || row.category === "C4";
+const gaps = rows => rows.filter(r => r.cob < r.ba);
+const sum = values => values.reduce((a, b) => a + b, 0);
+
+function fillPct(cob, ba) {
+  return ba ? Math.round((cob / ba) * 100) : 0;
+}
+
+function statusForPercent(value) {
+  if (value < 80) return "bad";
+  if (value < 90) return "watch";
+  return "good";
+}
+
+function tag(text, type = "neutral") {
+  return `<span class="tag ${type}">${text}</span>`;
+}
+
+function shorten(text, maxLength = 165) {
+  const value = String(text || "");
+  return value.length <= maxLength ? value : value.slice(0, maxLength - 1).trim() + "…";
+}
+
+function manningTotals(dept = null) {
+  const rows = dept ? byDept(MANNING, dept) : MANNING;
+  const ba = sum(rows.map(r => r.supervisor[0] + r.journeyman[0] + r.apprentice[0]));
+  const cob = sum(rows.map(r => r.supervisor[1] + r.journeyman[1] + r.apprentice[1]));
+  return { ba, cob, pct: fillPct(cob, ba) };
+}
+
+function header(title, page) {
+  const pageText = typeof page === "number"
+    ? `Page ${page} of ${TOTAL_PAGES}`
+    : "Reference Appendix";
+
+  return `
+    <header class="page-header">
+      <div class="brand">
+        Ship Readiness Dashboard
+        <small>${title}</small>
+      </div>
+      <div class="ship-id">
+        <strong>${SHIP.name}</strong>
+        <span>${SHIP.hull} · UIC ${SHIP.uic} · ${SHIP.reportDate} · ${pageText}</span>
+      </div>
+    </header>
+  `;
+}
+
+function footer() {
+  return `
+    <footer class="footer">
+      <span>Embedded source trackers: Manning · NEC · Mission Area · CASREP · TSO · DFS · Parts Requisition</span>
+      <span>BA = Billets Authorized · COB = Current On Board · RE = Readiness Evaluation</span>
+    </footer>
+  `;
+}
+
+function relatedTSO(dept, casrep) {
+  const equipment = casrep.equipment.toLowerCase();
+
+  return byDept(TSO, dept).filter(row => {
+    const ref = (row.related + " " + row.text).toLowerCase();
+
+    if (equipment.includes("fire") && ref.includes("firemain")) return true;
+    if (equipment.includes("gtg") && (ref.includes("gtg") || ref.includes("engineering-plant"))) return true;
+    if (equipment.includes("spy") && ref.includes("spy")) return true;
+    if (equipment.includes("mk 45") && ref.includes("mk 45")) return true;
+    if (equipment.includes("galley") && ref.includes("galley")) return true;
+    if (equipment.includes("refrigerator") && ref.includes("refriger")) return true;
+    if (equipment.includes("link-16") && ref.includes("data-link")) return true;
+    if (equipment.includes("an/wsn") && ref.includes("navigation")) return true;
+
+    return false;
+  });
+}
+
+function relatedDFS(dept, casrep) {
+  const equipment = casrep.equipment.toLowerCase();
+
+  return byDept(DFS, dept).filter(row => {
+    const ref = (row.related + " " + row.text).toLowerCase();
+
+    if (equipment.includes("spy") && ref.includes("spy")) return true;
+    if (equipment.includes("mk 41") && ref.includes("mk 41")) return true;
+    if (equipment.includes("gtg") && ref.includes("gtm")) return true;
+
+    return false;
+  });
+}
+
+function materialStatus(part) {
+  if (!part) return { label:"No linked requisition", type:"unlinked" };
+
+  const value = String(part.status).toLowerCase();
+
+  if (value.includes("backorder")) return { label:"Backordered", type:"unlinked" };
+  if (value.includes("transit")) return { label:"In transit", type:"related" };
+  if (value.includes("available")) return { label:"Available", type:"linked" };
+
+  return { label:part.status, type:"related" };
+}
+
+/* ============================================================
+   OVERVIEW PAGE
+   ============================================================ */
+
+function renderOverview() {
+  const manning = manningTotals();
+  const sig = CASREPS.filter(significant);
+  const allGaps = gaps(NEC);
+  const uncertified = MISSION.filter(r => !r.certified);
+  const lowRE = MISSION.filter(r => r.re < 80);
+  const noTeam = MISSION.filter(r => !r.team);
+  const directPartLinks = CASREPS.filter(c => PARTS.some(p => p.casrep === c.n));
+  const backlog = PARTS.filter(p => String(p.status).toLowerCase().includes("backorder"));
+
+  const readinessIndex = Math.max(0, Math.round(
+    (manning.pct * .24) +
+    ((100 - sig.length * 8) * .24) +
+    ((100 - allGaps.length * 2.5) * .18) +
+    ((100 - lowRE.length * 4) * .14) +
+    ((100 - uncertified.length * 12) * .10) +
+    ((100 - noTeam.length * 7) * .10)
+  ));
+
+  const ringColor =
+    readinessIndex >= 85 ? "var(--green)" :
+    readinessIndex >= 75 ? "var(--amber)" :
+    "var(--red)";
+
+  const departmentBars = Object.keys(DEPTS).map(dept => {
+    const total = manningTotals(dept);
+    const concerns =
+      byDept(CASREPS, dept).filter(significant).length +
+      gaps(byDept(NEC, dept)).length +
+      byDept(MISSION, dept).filter(m => !m.certified || m.re < 80 || !m.team).length;
+
+    return `
+      <div class="dept-row">
+        <strong>${DEPTS[dept].short}</strong>
+        <div class="track"><div class="fill" style="width:${total.pct}%;background:${DEPTS[dept].color}"></div></div>
+        <div class="metric">${total.pct}%</div>
+        <div class="metric" style="color:${concerns ? "var(--red)" : "var(--green)"}">${concerns}</div>
+      </div>
+    `;
+  }).join("");
+
+  const heatRows = Object.keys(DEPTS).map(dept => {
+    const mission = byDept(MISSION, dept);
+    const casreps = byDept(CASREPS, dept);
+    const average = mission.length ? Math.round(sum(mission.map(m => m.re)) / mission.length) : 0;
+    const hasUncert = mission.some(m => !m.certified);
+    const below = mission.filter(m => m.re < 80).length;
+    const noTraining = mission.some(m => !m.team);
+    const sigCount = casreps.filter(significant).length;
+
+    return `
+      <div class="heat-label">${DEPTS[dept].short}</div>
+      <div class="heat ${statusForPercent(average)}-bg">${average || "—"}${average ? "%" : ""}</div>
+      <div class="heat ${hasUncert ? "bad-bg" : "good-bg"}">${hasUncert ? "FLAG" : "OK"}</div>
+      <div class="heat ${below ? "watch-bg" : "good-bg"}">${below || "OK"}</div>
+      <div class="heat ${noTraining ? "watch-bg" : "good-bg"}">${noTraining ? "FLAG" : "OK"}</div>
+      <div class="heat ${sigCount ? "bad-bg" : "good-bg"}">${sigCount || "OK"}</div>
+    `;
+  }).join("");
+
+  const priorities = [
+    ...CASREPS.filter(significant).map(c => ({
+      label:`${c.category} ${c.equipment}`,
+      detail:`${DEPTS[c.dept].short} · ${c.mission} · ETR ${c.etr}`,
+      score:c.category === "C4" ? 1 : 2
+    })),
+    ...MISSION.filter(m => m.re < 75).map(m => ({
+      label:`${m.mission} RE ${m.re}%`,
+      detail:`${DEPTS[m.dept].short} mission area below threshold`,
+      score:3
+    }))
+  ]
+  .sort((a,b) => a.score - b.score)
+  .slice(0,5)
+  .map((p, i) => `
+    <div class="priority">
+      <div class="priority-number">${i + 1}</div>
+      <div><strong>${p.label}</strong><span>${p.detail}</span></div>
+    </div>
+  `).join("");
+
+  return `
+    <section class="page" id="overview">
+      ${header("Ship Overview", 1)}
+
+      <div class="section-title">Command Readiness Snapshot</div>
+
+      <div class="grid overview-top">
+        <div class="kpi-grid">
+          <div class="kpi ${statusForPercent(manning.pct)}">
+            <div class="kpi-label">Manning BA vs COB</div>
+            <div class="kpi-value">${manning.cob} / ${manning.ba}</div>
+            <div class="kpi-note">${manning.pct}% filled · ${manning.cob - manning.ba} billets vs BA</div>
+          </div>
+
+          <div class="kpi bad">
+            <div class="kpi-label">Significant CASREPs</div>
+            <div class="kpi-value">${sig.length}</div>
+            <div class="kpi-note">C3/C4 material casualties</div>
+          </div>
+
+          <div class="kpi watch">
+            <div class="kpi-label">NEC Gaps</div>
+            <div class="kpi-value">${allGaps.length}</div>
+            <div class="kpi-note">${NEC.length} NEC requirements assessed</div>
+          </div>
+
+          <div class="kpi ${uncertified.length ? "bad" : "good"}">
+            <div class="kpi-label">Uncertified Mission Areas</div>
+            <div class="kpi-value">${uncertified.length}</div>
+            <div class="kpi-note">${uncertified.map(m => m.mission).join(", ") || "None"}</div>
+          </div>
+
+          <div class="kpi watch">
+            <div class="kpi-label">Mission Areas RE Below 80%</div>
+            <div class="kpi-value">${lowRE.length}</div>
+            <div class="kpi-note">Readiness Evaluation threshold</div>
+          </div>
+
+          <div class="kpi watch">
+            <div class="kpi-label">Areas Without Training Team</div>
+            <div class="kpi-value">${noTeam.length}</div>
+            <div class="kpi-note">${noTeam.map(m => m.mission).join(", ")}</div>
+          </div>
+        </div>
+
+        <section class="panel">
+          <div class="panel-header">
+            <h3>Composite Readiness Index</h3>
+            <span>Decision support</span>
+          </div>
+
+          <div class="panel-body">
+            <div class="readiness">
+              <div class="ring" style="background:conic-gradient(${ringColor} ${readinessIndex * 3.6}deg,#dfe8ec 0)">
+                <strong>${readinessIndex}</strong>
+                <span>Index</span>
+              </div>
+
+              <div class="readiness-copy">
+                <strong>${readinessIndex < 75 ? "COMMAND ATTENTION REQUIRED" : "WATCH ITEMS PRESENT"}</strong>
+                Index weights manning, significant CASREPs, NEC shortages, mission-area qualification health, and training-team availability.
+
+                <div class="legend">
+                  <span><i style="background:var(--green)"></i>85–100 stable</span>
+                  <span><i style="background:var(--amber)"></i>75–84 watch</span>
+                  <span><i style="background:var(--red)"></i>&lt;75 attention</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <div class="grid overview-bottom">
+        <section class="panel">
+          <div class="panel-header">
+            <h3>Department Manning and Concern Load</h3>
+            <span>Right value = readiness flags</span>
+          </div>
+
+          <div class="panel-body">
+            ${departmentBars}
+            <div class="legend">
+              <span>Bar = manning fill percentage</span>
+              <span>Flags = C3/C4 + NEC gaps + mission exceptions</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-header">
+            <h3>Mission-Area Heat Map</h3>
+            <span>Department roll-up</span>
+          </div>
+
+          <div class="panel-body">
+            <div class="heatmap">
+              <div></div>
+              <div class="heat-head">Avg RE</div>
+              <div class="heat-head">Cert</div>
+              <div class="heat-head">RE&lt;80</div>
+              <div class="heat-head">Team</div>
+              <div class="heat-head">C3/C4</div>
+              ${heatRows}
+            </div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-header">
+            <h3>Priority Watch List</h3>
+            <span>Material and readiness</span>
+          </div>
+
+          <div class="panel-body">${priorities}</div>
+        </section>
+      </div>
+
+      <div class="section-title">Concern-to-Control Tracker Health</div>
+
+      <div class="grid" style="grid-template-columns:repeat(4,1fr)">
+        <div class="stat bad">
+          <label>Direct CASREP-to-Part Links</label>
+          <strong>${directPartLinks.length} / ${CASREPS.length}</strong>
+          <span>Numeric CASREP link in requisition tracker</span>
+        </div>
+
+        <div class="stat watch">
+          <label>Backordered Parts</label>
+          <strong>${backlog.length}</strong>
+          <span>CASREP and planned-maintenance demand</span>
+        </div>
+
+        <div class="stat watch">
+          <label>Active TSOs</label>
+          <strong>${TSO.length}</strong>
+          <span>Standing operational risk controls</span>
+        </div>
+
+        <div class="stat watch">
+          <label>Approved DFSs</label>
+          <strong>${DFS.length}</strong>
+          <span>Approved deviations and limits</span>
+        </div>
+      </div>
+
+      <div class="callout" style="margin-top:8px">
+        <strong>Command focus:</strong>
+        Material-risk control is strongest where a CASREP has a direct requisition number, identified material status, and a specific operational mitigation.
+        Department pages show the casualty-to-control chain. The appendix consolidates every CASREP, TSO, DFS, and parts record.
+      </div>
+
+      ${footer()}
+    </section>
+  `;
+}
+
+/* ============================================================
+   DEPARTMENT PAGE FUNCTIONS
+   ============================================================ */
+
+function renderManning(dept) {
+  const row = byDept(MANNING, dept)[0];
+
+  const tiers = [
+    ["Supervisor", row.supervisor],
+    ["Journeyman", row.journeyman],
+    ["Apprentice", row.apprentice]
+  ];
+
+  const max = Math.max(...tiers.map(t => t[1][0]));
+
+  return tiers.map(([label, data]) => `
+    <div class="manning-row">
+      <strong>${label}</strong>
+      <div class="manning-bar">
+        <div class="manning-ba" style="width:${data[0] / max * 100}%"></div>
+        <div class="manning-cob" style="width:${data[1] / max * 100}%"></div>
+      </div>
+      <span class="metric">${data[1]}/${data[0]}</span>
+    </div>
+  `).join("");
+}
+
+function renderMissionCompact(dept) {
+  const missions = byDept(MISSION, dept);
+
+  if (!missions.length) return `<div class="empty">No mission areas mapped to this department.</div>`;
+
+  const averageRE = Math.round(sum(missions.map(m => m.re)) / missions.length);
+  const uncertified = missions.filter(m => !m.certified).length;
+  const belowThreshold = missions.filter(m => m.re < 80).length;
+  const noTrainingTeam = missions.filter(m => !m.team).length;
+  const goodCount = missions.filter(m => m.re >= 90).length;
+  const watchCount = missions.filter(m => m.re >= 80 && m.re < 90).length;
+  const badCount = missions.filter(m => m.re < 80).length;
+  const total = missions.length || 1;
+
+  return `
+    <div class="mission-summary">
+      <div class="mission-summary-box ${statusForPercent(averageRE)}">
+        <label>Average RE</label>
+        <strong>${averageRE}%</strong>
+      </div>
+
+      <div class="mission-summary-box ${uncertified ? "bad" : "good"}">
+        <label>Uncertified</label>
+        <strong>${uncertified}</strong>
+      </div>
+
+      <div class="mission-summary-box ${belowThreshold ? "watch" : "good"}">
+        <label>RE Below 80%</label>
+        <strong>${belowThreshold}</strong>
+      </div>
+
+      <div class="mission-summary-box ${noTrainingTeam ? "watch" : "good"}">
+        <label>No Training Team</label>
+        <strong>${noTrainingTeam}</strong>
+      </div>
+    </div>
+
+    <div class="mission-summary-bar">
+      <span style="width:${goodCount / total * 100}%;background:var(--green)"></span>
+      <span style="width:${watchCount / total * 100}%;background:var(--amber)"></span>
+      <span style="width:${badCount / total * 100}%;background:var(--red)"></span>
+    </div>
+
+    <div class="legend" style="margin-top:3px">
+      <span><i style="background:var(--green)"></i>RE ≥90</span>
+      <span><i style="background:var(--amber)"></i>RE 80–89</span>
+      <span><i style="background:var(--red)"></i>RE &lt;80</span>
+    </div>
+  `;
+}
+
+function renderNEC(dept) {
+  const rows = byDept(NEC, dept).sort((a,b) => (a.cob - a.ba) - (b.cob - b.ba));
+
+  if (!rows.length) return `<div class="empty">No NEC requirements assigned.</div>`;
+
+  return rows.map(n => {
+    const pct = n.ba ? n.cob / n.ba * 100 : 0;
+
+    return `
+      <div class="nec-row">
+        <strong>${n.code}</strong>
+        <div class="nec-stack">
+          <div class="nec-filled" style="width:${pct}%"></div>
+          <div class="nec-gap" style="width:${100 - pct}%"></div>
+        </div>
+        <span class="metric">${n.cob}/${n.ba}</span>
+      </div>
+    `;
+  }).join("");
+}
+
+function renderPartsTable(dept) {
+  const rows = byDept(PARTS, dept).filter(r => r.casrep);
+
+  if (!rows.length) return `<div class="empty">No CASREP-linked requisitions assigned.</div>`;
+
+  return `
+    <table>
+      <thead>
+        <tr>
+          <th>CASREP</th>
+          <th>Part / Requisition</th>
+          <th>Pri</th>
+          <th>Status</th>
+          <th>ETA</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${rows.map(p => `
+          <tr>
+            <td><strong>${p.casrep}</strong></td>
+            <td>${p.item}<br><span style="color:var(--muted)">${p.req}</span></td>
+            <td class="center">${p.priority}</td>
+            <td>${p.status}</td>
+            <td>${p.eta}</td>
+          </tr>
+        `).join("")}
+      </tbody>
+    </table>
+  `;
+}
+
+function renderConcernChain(casrep) {
+  const partRecords = PARTS.filter(p => p.casrep === casrep.n);
+  const part = partRecords[0];
+  const material = materialStatus(part);
+  const tsos = relatedTSO(casrep.dept, casrep);
+  const dfss = relatedDFS(casrep.dept, casrep);
+
+  let controlText = "No TSO/DFS relationship identified.";
+  let controlType = "unlinked";
+
+  if (dfss.length) {
+    controlText = `${dfss[0].n}: ${dfss[0].type}`;
+    controlType = "related";
+  } else if (tsos.length) {
+    controlText = `${tsos[0].n}: Active TSO`;
+    controlType = "related";
+  }
+
+  return `
+    <article class="concern ${casrep.category.toLowerCase()}">
+      <div class="concern-head">
+        <span>${casrep.category} · CASREP ${casrep.n} · ${casrep.equipment}</span>
+        <span>ETR ${casrep.etr}</span>
+      </div>
+
+      <div class="concern-copy">${casrep.description}</div>
+
+      <div class="chain">
+        <div class="chain-box">
+          <strong>1. Operational Effect</strong>
+          ${casrep.mission}<br>
+          ${casrep.redline ? "TYCOM redline" : "No TYCOM redline"} ·
+          ${casrep.tech ? "Tech assist" : "Ship's force"}
+        </div>
+
+        <div class="chain-arrow">→</div>
+
+        <div class="chain-box ${material.type}">
+          <strong>2. Material Recovery</strong>
+          ${part ? `${part.item}<br>${material.label} · ETA ${part.eta}` : "No direct requisition linked"}
+        </div>
+
+        <div class="chain-arrow">→</div>
+
+        <div class="chain-box ${controlType}">
+          <strong>3. Risk Control</strong>
+          ${controlText}<br>
+          ${tsos.length || dfss.length ? "Equipment/department related" : "No source relationship"}
+        </div>
+      </div>
+    </article>
+  `;
+}
+
+function renderDepartment(dept, pageNumber) {
+  const info = DEPTS[dept];
+  const total = manningTotals(dept);
+  const departmentCASREPs = byDept(CASREPS, dept);
+  const sig = departmentCASREPs.filter(significant);
+  const departmentNEC = byDept(NEC, dept);
+  const departmentGaps = gaps(departmentNEC);
+  const departmentMission = byDept(MISSION, dept);
+  const missionFlags = departmentMission.filter(m => !m.certified || m.re < 80 || !m.team);
+  const backorders = byDept(PARTS, dept).filter(p =>
+    String(p.status).toLowerCase().includes("backorder")
+  );
+
+  const severity = { C4:1, C3:2, C2:3, C1:4 };
+
+  const departmentConcerns = [...departmentCASREPs]
+    .sort((a, b) => severity[a.category] - severity[b.category]);
+
+  return `
+    <section class="page department-page" id="${dept}">
+      ${header(`${info.name} Department`, pageNumber)}
+
+      <div class="grid department-top">
+        <div class="stat ${statusForPercent(total.pct)}">
+          <label>Manning BA / COB</label>
+          <strong>${total.cob} / ${total.ba}</strong>
+          <span>${total.pct}% filled</span>
+        </div>
+
+        <div class="stat ${sig.length ? "bad" : "good"}">
+          <label>Significant CASREPs</label>
+          <strong>${sig.length}</strong>
+          <span>${departmentCASREPs.length} total material casualties</span>
+        </div>
+
+        <div class="stat ${departmentGaps.length ? "watch" : "good"}">
+          <label>NEC Gaps</label>
+          <strong>${departmentGaps.length}</strong>
+          <span>${departmentNEC.length} requirements assessed</span>
+        </div>
+
+        <div class="stat ${missionFlags.length ? "watch" : "good"}">
+          <label>Mission Exceptions</label>
+          <strong>${missionFlags.length}</strong>
+          <span>Cert, RE, or training-team flags</span>
+        </div>
+
+        <div class="stat ${backorders.length ? "bad" : "good"}">
+          <label>Parts Backordered</label>
+          <strong>${backorders.length}</strong>
+          <span>CASREP and maintenance demand</span>
+        </div>
+      </div>
+
+      <div class="grid department-mid">
+        <section class="panel">
+          <div class="panel-header">
+            <h3>Manning Composition</h3>
+            <span>Blue = COB · Gray = BA</span>
+          </div>
+          <div class="panel-body">${renderManning(dept)}</div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-header">
+            <h3>Mission-Area Readiness Summary</h3>
+            <span>Detailed assessment on Overview</span>
+          </div>
+          <div class="panel-body">${renderMissionCompact(dept)}</div>
+        </section>
+      </div>
+
+      <div class="section-title">Casualty-to-Control Chain</div>
+
+      <section class="chain-section">
+        <div class="panel">
+          <div class="panel-header">
+            <h3>Material Casualty → Recovery Action → Operational Risk Control</h3>
+            <span>All department CASREPs</span>
+          </div>
+
+          <div class="panel-body">
+            ${departmentConcerns.length
+              ? departmentConcerns.map(renderConcernChain).join("")
+              : `<div class="empty">No CASREPs assigned to this department.</div>`}
+          </div>
+        </div>
+      </section>
+
+      <div class="grid department-bottom">
+        <section class="panel">
+          <div class="panel-header">
+            <h3>NEC Health</h3>
+            <span>Green = COB · Red = shortage to BA</span>
+          </div>
+          <div class="panel-body">${renderNEC(dept)}</div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-header">
+            <h3>CASREP-Linked Parts Requisitions</h3>
+            <span>Material tracker</span>
+          </div>
+          <div class="panel-body" style="padding:0">${renderPartsTable(dept)}</div>
+        </section>
+      </div>
+
+      ${footer()}
+    </section>
+  `;
+}
+
+/* ============================================================
+   CONTINUOUS MATERIAL ISSUE MASTER REGISTER
+   ============================================================ */
+
+function formatControls(tsos, dfss) {
+  const controls = [
+    ...tsos.map(t => `${t.n} (TSO)`),
+    ...dfss.map(d => `${d.n} (${d.type})`)
+  ];
+
+  return controls.length ? controls.join("<br>") : "No related TSO/DFS identified.";
+}
+
+function buildIssueRegister() {
+  const usedTSO = new Set();
+  const usedDFS = new Set();
+
+  const casrepRows = CASREPS.map(casrep => {
+    const parts = PARTS.filter(part => part.casrep === casrep.n);
+    const tsos = relatedTSO(casrep.dept, casrep);
+    const dfss = relatedDFS(casrep.dept, casrep);
+
+    tsos.forEach(t => usedTSO.add(t.n));
+    dfss.forEach(d => usedDFS.add(d.n));
+
+    const partText = parts.length
+      ? parts.map(p => `${p.item}; ${p.req}; ${p.status}; ETA ${p.eta}`).join("<br>")
+      : "No direct requisition.";
+
+    const hasBackorder = parts.some(p =>
+      String(p.status).toLowerCase().includes("backorder")
+    );
+
+    const relatedText = [
+      ...tsos.map(t => t.related),
+      ...dfss.map(d => d.related)
+    ].join("; ");
+
+    return {
+      source: `CASREP ${casrep.n}<br>${tag(casrep.category, significant(casrep) ? "bad" : "watch")}`,
+      dept: DEPTS[casrep.dept].short,
+      issue: `<strong>${casrep.equipment}</strong><br>${casrep.mission}`,
+      effect: shorten(casrep.description),
+      parts: partText,
+      controls: `${formatControls(tsos, dfss)}<br><span style="color:var(--muted)">${shorten(relatedText || "No source relationship.", 115)}</span>`,
+      status: `
+        ETR ${casrep.etr}
+        <span class="appendix-status" style="color:${hasBackorder ? "var(--red)" : "var(--green)"}">
+          ${parts.length
+            ? (hasBackorder ? "DIRECT PART LINK · BACKORDER" : "DIRECT PART LINK")
+            : "NO PART LINK"}
+        </span>
+      `
+    };
+  });
+
+  const standaloneTSO = TSO
+    .filter(t => !usedTSO.has(t.n))
+    .map(t => ({
+      source: `${t.n}<br>${tag("TSO", "watch")}`,
+      dept: DEPTS[t.dept].short,
+      issue: `<strong>Standing Risk Control</strong><br>${t.related}`,
+      effect: shorten(t.text),
+      parts: "No specific material requisition.",
+      controls: `Active TSO<br><span style="color:var(--muted)">${t.related}</span>`,
+      status: `<span class="appendix-status" style="color:var(--amber)">CONTROL-ONLY CONDITION</span>`
+    }));
+
+  const standaloneDFS = DFS
+    .filter(d => !usedDFS.has(d.n))
+    .map(d => ({
+      source: `${d.n}<br>${tag("DFS", "watch")}`,
+      dept: DEPTS[d.dept].short,
+      issue: `<strong>Approved Deviation</strong><br>${d.related}`,
+      effect: shorten(d.text),
+      parts: "No specific material requisition.",
+      controls: `${d.type}<br><span style="color:var(--muted)">${d.related}</span>`,
+      status: `<span class="appendix-status" style="color:var(--amber)">APPROVED DFS</span>`
+    }));
+
+  const standaloneParts = PARTS
+    .filter(p => !p.casrep)
+    .map(p => ({
+      source: `${p.req}<br>${tag("PARTS", "neutral")}`,
+      dept: DEPTS[p.dept].short,
+      issue: `<strong>${p.item}</strong><br>${shorten(p.remarks, 90)}`,
+      effect: "Planned maintenance, replenishment, or non-CASREP material demand.",
+      parts: `${p.qty} ea; Priority ${p.priority}; ${p.status}; ETA ${p.eta}; ${p.source}`,
+      controls: "No directly associated TSO/DFS identified.",
+      status: `<span class="appendix-status" style="color:${
+        String(p.status).toLowerCase().includes("backorder")
+          ? "var(--red)"
+          : "var(--green)"
+      }">NON-CASREP MATERIAL DEMAND</span>`
+    }));
+
+  return [
+    ...casrepRows,
+    ...standaloneTSO,
+    ...standaloneDFS,
+    ...standaloneParts
+  ];
+}
+
+function renderIssueRegister() {
+  const rows = buildIssueRegister();
+
+  return `
+    <section class="appendix-continuous" id="appendix">
+      ${header("Material Issue Master Register", "Appendix")}
+
+      <div class="section-title">Consolidated Material, CASREP, TSO, DFS, and Parts Reference Table</div>
+
+      <div class="appendix-intro">
+        <strong>Reference use:</strong> Each row represents one casualty, condition, approved deviation,
+        standing risk control, or material requirement. CASREP rows incorporate linked parts requisitions
+        and related TSO/DFS controls. A <strong>Direct Part Link</strong> means the numeric CASREP identifier
+        appears in the parts tracker. TSO/DFS associations are marked as related when tied by department,
+        equipment, or operational effect rather than an exact CASREP number.
+      </div>
+
+      <table class="appendix-table">
+        <thead>
+          <tr>
+            <th class="source-col">Source / Dept</th>
+            <th class="issue-col">Material Issue or Condition</th>
+            <th class="effect-col">Operational Effect or Requirement</th>
+            <th class="parts-col">Parts / Recovery Tracker</th>
+            <th class="control-col">TSO / DFS Control</th>
+            <th class="status-col">Link / Recovery Status</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          ${rows.map(row => `
+            <tr>
+              <td>${row.source}<br><strong>${row.dept}</strong></td>
+              <td>${row.issue}</td>
+              <td>${row.effect}</td>
+              <td>${row.parts}</td>
+              <td>${row.controls}</td>
+              <td>${row.status}</td>
+            </tr>
+          `).join("")}
+        </tbody>
+      </table>
+
+      <div class="appendix-note">
+        This is one continuous table. When printed, the browser will flow the table over the minimum number
+        of additional landscape pages required and repeat the column headers.
+      </div>
+
+      ${footer()}
+    </section>
+  `;
+}
+
+/* ============================================================
+   BUILD REPORT
+   ============================================================ */
+
+document.getElementById("report").innerHTML =
+  renderOverview() +
+  renderDepartment("eng", 2) +
+  renderDepartment("ops", 3) +
+  renderDepartment("cs", 4) +
+  renderDepartment("weps", 5) +
+  renderDepartment("sup", 6) +
+  renderIssueRegister();
+</script>
+<style>
+  /* Redline / CRR enhancement: seven Overview KPIs fit in two rows. */
+  #overview .kpi-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  #overview .kpi {
+    min-height: 63px;
+  }
+
+  .priority-flag {
+    display: inline-block;
+    margin: 2px 2px 0 0;
+    padding: 1px 4px;
+    color: #8f2219;
+    background: #fde0de;
+    border-radius: 8px;
+    font-size: 6px;
+    font-weight: 800;
+    letter-spacing: .15px;
+    text-transform: uppercase;
+  }
+
+  .priority-flag.crr {
+    color: #6a4800;
+    background: #fff0ca;
+  }
+</style>
+
+<script>
+/* ============================================================
+   OVERVIEW OVERRIDE — ADDS TYCOM REDLINE / FLEET CRR METRIC
+   ============================================================ */
+
+function renderOverview() {
+  const manning = manningTotals();
+  const sig = CASREPS.filter(significant);
+  const allGaps = gaps(NEC);
+  const uncertified = MISSION.filter(r => !r.certified);
+  const lowRE = MISSION.filter(r => r.re < 80);
+  const noTeam = MISSION.filter(r => !r.team);
+
+  /* A CASREP is counted once if it is a TYCOM Redline, a Fleet
+     CRR, or both. */
+  const elevatedCASREPs = CASREPS.filter(c => c.redline || c.fleet);
+  const tycomRedlines = CASREPS.filter(c => c.redline);
+  const fleetCRRs = CASREPS.filter(c => c.fleet);
+
+  const directPartLinks = CASREPS.filter(c => PARTS.some(p => p.casrep === c.n));
+  const backlog = PARTS.filter(p =>
+    String(p.status).toLowerCase().includes("backorder")
+  );
+
+  const readinessIndex = Math.max(0, Math.round(
+    (manning.pct * .24) +
+    ((100 - sig.length * 8) * .24) +
+    ((100 - allGaps.length * 2.5) * .18) +
+    ((100 - lowRE.length * 4) * .14) +
+    ((100 - uncertified.length * 12) * .10) +
+    ((100 - noTeam.length * 7) * .10)
+  ));
+
+  const ringColor =
+    readinessIndex >= 85 ? "var(--green)" :
+    readinessIndex >= 75 ? "var(--amber)" :
+    "var(--red)";
+
+  const departmentBars = Object.keys(DEPTS).map(dept => {
+    const total = manningTotals(dept);
+
+    const concerns =
+      byDept(CASREPS, dept).filter(significant).length +
+      byDept(CASREPS, dept).filter(c => c.redline || c.fleet).length +
+      gaps(byDept(NEC, dept)).length +
+      byDept(MISSION, dept).filter(m => !m.certified || m.re < 80 || !m.team).length;
+
+    return `
+      <div class="dept-row">
+        <strong>${DEPTS[dept].short}</strong>
+        <div class="track">
+          <div class="fill" style="width:${total.pct}%;background:${DEPTS[dept].color}"></div>
+        </div>
+        <div class="metric">${total.pct}%</div>
+        <div class="metric" style="color:${concerns ? "var(--red)" : "var(--green)"}">${concerns}</div>
+      </div>
+    `;
+  }).join("");
+
+  const heatRows = Object.keys(DEPTS).map(dept => {
+    const mission = byDept(MISSION, dept);
+    const casreps = byDept(CASREPS, dept);
+    const average = mission.length
+      ? Math.round(sum(mission.map(m => m.re)) / mission.length)
+      : 0;
+
+    const hasUncert = mission.some(m => !m.certified);
+    const below = mission.filter(m => m.re < 80).length;
+    const noTraining = mission.some(m => !m.team);
+    const sigCount = casreps.filter(significant).length;
+    const elevatedCount = casreps.filter(c => c.redline || c.fleet).length;
+
+    return `
+      <div class="heat-label">${DEPTS[dept].short}</div>
+      <div class="heat ${statusForPercent(average)}-bg">${average || "—"}${average ? "%" : ""}</div>
+      <div class="heat ${hasUncert ? "bad-bg" : "good-bg"}">${hasUncert ? "FLAG" : "OK"}</div>
+      <div class="heat ${below ? "watch-bg" : "good-bg"}">${below || "OK"}</div>
+      <div class="heat ${noTraining ? "watch-bg" : "good-bg"}">${noTraining ? "FLAG" : "OK"}</div>
+      <div class="heat ${(sigCount || elevatedCount) ? "bad-bg" : "good-bg"}">
+        ${sigCount || elevatedCount ? `${sigCount}/${elevatedCount}` : "OK"}
+      </div>
+    `;
+  }).join("");
+
+  const severity = { C4: 1, C3: 2, C2: 3, C1: 4 };
+
+  /* Priority Watch List includes all significant CASREPs and
+     Redline/CRR records, then readiness areas below 75% RE. */
+  const priorityCasreps = CASREPS
+    .filter(c => significant(c) || c.redline || c.fleet)
+    .sort((a, b) => {
+      const aScore = severity[a.category] * 10 - (a.redline ? 3 : 0) - (a.fleet ? 2 : 0);
+      const bScore = severity[b.category] * 10 - (b.redline ? 3 : 0) - (b.fleet ? 2 : 0);
+      return aScore - bScore;
+    })
+    .map(c => {
+      const flags = [
+        c.redline ? `<span class="priority-flag">TYCOM Redline</span>` : "",
+        c.fleet ? `<span class="priority-flag crr">Fleet CRR</span>` : ""
+      ].join("");
+
+      return {
+        label: `${c.category} ${c.equipment}`,
+        detail: `${DEPTS[c.dept].short} · ${c.mission} · ETR ${c.etr}<br>${flags}`,
+        score: severity[c.category] * 10 - (c.redline ? 3 : 0) - (c.fleet ? 2 : 0)
+      };
+    });
+
+  const priorityMissionAreas = MISSION
+    .filter(m => m.re < 75)
+    .map(m => ({
+      label: `${m.mission} RE ${m.re}%`,
+      detail: `${DEPTS[m.dept].short} mission area below threshold`,
+      score: 50
+    }));
+
+  const priorities = [
+    ...priorityCasreps,
+    ...priorityMissionAreas
+  ]
+  .sort((a, b) => a.score - b.score)
+  .slice(0, 5)
+  .map((p, i) => `
+    <div class="priority">
+      <div class="priority-number">${i + 1}</div>
+      <div>
+        <strong>${p.label}</strong>
+        <span>${p.detail}</span>
+      </div>
+    </div>
+  `).join("");
+
+  return `
+    <section class="page" id="overview">
+      ${header("Ship Overview", 1)}
+
+      <div class="section-title">Command Readiness Snapshot</div>
+
+      <div class="grid overview-top">
+        <div class="kpi-grid">
+          <div class="kpi ${statusForPercent(manning.pct)}">
+            <div class="kpi-label">Manning BA vs COB</div>
+            <div class="kpi-value">${manning.cob} / ${manning.ba}</div>
+            <div class="kpi-note">${manning.pct}% filled · ${manning.cob - manning.ba} billets vs BA</div>
+          </div>
+
+          <div class="kpi bad">
+            <div class="kpi-label">Significant CASREPs</div>
+            <div class="kpi-value">${sig.length}</div>
+            <div class="kpi-note">C3/C4 material casualties</div>
+          </div>
+
+          <div class="kpi bad">
+            <div class="kpi-label">TYCOM Redline / Fleet CRR CASREPs</div>
+            <div class="kpi-value">${elevatedCASREPs.length}</div>
+            <div class="kpi-note">${tycomRedlines.length} Redline · ${fleetCRRs.length} Fleet CRR</div>
+          </div>
+
+          <div class="kpi watch">
+            <div class="kpi-label">NEC Gaps</div>
+            <div class="kpi-value">${allGaps.length}</div>
+            <div class="kpi-note">${NEC.length} NEC requirements assessed</div>
+          </div>
+
+          <div class="kpi ${uncertified.length ? "bad" : "good"}">
+            <div class="kpi-label">Uncertified Mission Areas</div>
+            <div class="kpi-value">${uncertified.length}</div>
+            <div class="kpi-note">${uncertified.map(m => m.mission).join(", ") || "None"}</div>
+          </div>
+
+          <div class="kpi watch">
+            <div class="kpi-label">Mission Areas RE Below 80%</div>
+            <div class="kpi-value">${lowRE.length}</div>
+            <div class="kpi-note">Readiness Evaluation threshold</div>
+          </div>
+
+          <div class="kpi watch">
+            <div class="kpi-label">Areas Without Training Team</div>
+            <div class="kpi-value">${noTeam.length}</div>
+            <div class="kpi-note">${noTeam.map(m => m.mission).join(", ")}</div>
+          </div>
+        </div>
+
+        <section class="panel">
+          <div class="panel-header">
+            <h3>Composite Readiness Index</h3>
+            <span>Decision support</span>
+          </div>
+
+          <div class="panel-body">
+            <div class="readiness">
+              <div class="ring" style="background:conic-gradient(${ringColor} ${readinessIndex * 3.6}deg,#dfe8ec 0)">
+                <strong>${readinessIndex}</strong>
+                <span>Index</span>
+              </div>
+
+              <div class="readiness-copy">
+                <strong>${readinessIndex < 75 ? "COMMAND ATTENTION REQUIRED" : "WATCH ITEMS PRESENT"}</strong>
+                Index weights manning, significant CASREPs, NEC shortages, mission-area qualification health, and training-team availability.
+
+                <div class="legend">
+                  <span><i style="background:var(--green)"></i>85–100 stable</span>
+                  <span><i style="background:var(--amber)"></i>75–84 watch</span>
+                  <span><i style="background:var(--red)"></i>&lt;75 attention</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <div class="grid overview-bottom">
+        <section class="panel">
+          <div class="panel-header">
+            <h3>Department Manning and Concern Load</h3>
+            <span>Right value = readiness flags</span>
+          </div>
+
+          <div class="panel-body">
+            ${departmentBars}
+            <div class="legend">
+              <span>Bar = manning fill percentage</span>
+              <span>Flags include C3/C4, Redline/CRR, NEC, and mission exceptions</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-header">
+            <h3>Mission-Area Heat Map</h3>
+            <span>Last column = C3/C4 / Redline-CRR</span>
+          </div>
+
+          <div class="panel-body">
+            <div class="heatmap">
+              <div></div>
+              <div class="heat-head">Avg RE</div>
+              <div class="heat-head">Cert</div>
+              <div class="heat-head">RE&lt;80</div>
+              <div class="heat-head">Team</div>
+              <div class="heat-head">Sig / RL</div>
+              ${heatRows}
+            </div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-header">
+            <h3>Priority Watch List</h3>
+            <span>Redline and CRR indicators shown</span>
+          </div>
+
+          <div class="panel-body">${priorities}</div>
+        </section>
+      </div>
+
+      <div class="section-title">Concern-to-Control Tracker Health</div>
+
+      <div class="grid" style="grid-template-columns:repeat(4,1fr)">
+        <div class="stat bad">
+          <label>Direct CASREP-to-Part Links</label>
+          <strong>${directPartLinks.length} / ${CASREPS.length}</strong>
+          <span>Numeric CASREP link in requisition tracker</span>
+        </div>
+
+        <div class="stat bad">
+          <label>TYCOM Redline / Fleet CRR</label>
+          <strong>${elevatedCASREPs.length}</strong>
+          <span>Unique CASREPs with elevated command reporting</span>
+        </div>
+
+        <div class="stat watch">
+          <label>Backordered Parts</label>
+          <strong>${backlog.length}</strong>
+          <span>CASREP and planned-maintenance demand</span>
+        </div>
+
+        <div class="stat watch">
+          <label>Active Controls</label>
+          <strong>${TSO.length + DFS.length}</strong>
+          <span>${TSO.length} TSO · ${DFS.length} DFS</span>
+        </div>
+      </div>
+
+      <div class="callout" style="margin-top:8px">
+        <strong>Command focus:</strong>
+        ${elevatedCASREPs.length} unique CASREP(s) carry a TYCOM Redline and/or Fleet CRR indicator.
+        These casualties are prioritized in the watch list and should be reviewed for operational impact,
+        recovery path, external support, material status, and controlling TSO/DFS measures.
+      </div>
+
+      ${footer()}
+    </section>
+  `;
+}
+
+/* Rebuild the complete report using the enhanced Overview. */
+document.getElementById("report").innerHTML =
+  renderOverview() +
+  renderDepartment("eng", 2) +
+  renderDepartment("ops", 3) +
+  renderDepartment("cs", 4) +
+  renderDepartment("weps", 5) +
+  renderDepartment("sup", 6) +
+  renderIssueRegister();
+</script>
+</body>
+</html>
