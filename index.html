@@ -10,6 +10,7 @@
     *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(circle at 80% 5%,#15507d 0,transparent 28%),linear-gradient(145deg,#030d18,#071d34 70%,#0b2e50);color:var(--ink);font:16px/1.55 system-ui,-apple-system,Segoe UI,sans-serif}
     a{color:inherit}.wrap{width:min(1120px,calc(100% - 32px));margin:auto}
     nav{display:flex;align-items:center;justify-content:space-between;padding:22px 0}.brand{font-weight:900;letter-spacing:.08em}.navlinks{display:flex;gap:20px;color:var(--muted);font-size:.9rem}.navlinks a{text-decoration:none}.hero{padding:90px 0 76px;max-width:900px}.eyebrow{color:var(--blue);font-weight:850;letter-spacing:.12em;font-size:.75rem}.hero h1{font-size:clamp(3rem,7vw,6rem);line-height:.98;letter-spacing:-.045em;margin:18px 0}.hero p{max-width:720px;color:var(--muted);font-size:1.15rem}.actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px}.button{display:inline-block;text-decoration:none;padding:12px 18px;border-radius:8px;background:var(--blue);color:#052039;font-weight:850}.button.secondary{background:transparent;color:var(--ink);border:1px solid var(--line)}
+    .showcase{padding:0 0 55px}.video-shell{position:relative;padding:8px;border:1px solid var(--line);border-radius:18px;background:linear-gradient(145deg,#17446a,#081827);box-shadow:0 28px 80px #0009}.showcase-video{display:block;width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:11px;background:#02070c}.video-label{position:absolute;left:25px;top:25px;padding:6px 10px;border:1px solid #ffffff35;border-radius:999px;background:#03101ccc;color:#d8efff;font-size:.7rem;font-weight:850;letter-spacing:.1em;pointer-events:none}
     .presentation-shell{display:grid;grid-template-columns:64px minmax(0,1fr) 64px;gap:14px;align-items:center}.presentation-frame{width:100%;aspect-ratio:16/9;border:1px solid var(--line);border-radius:16px;background:#050b17;box-shadow:0 24px 60px #0008}.slide-arrow{height:92px;border:1px solid var(--line);border-radius:12px;background:#102e4d;color:var(--blue);font-size:2.4rem;cursor:pointer}.slide-arrow:hover{border-color:var(--blue);background:#163c61}.presentation-help{text-align:center;color:var(--muted);font-size:.9rem;margin-top:12px}
     section{padding:55px 0}.section-head{max-width:700px;margin-bottom:28px}.section-head h2{font-size:clamp(2rem,4vw,3rem);margin:8px 0}.section-head p{color:var(--muted)}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.card{background:linear-gradient(145deg,#102e4d,#091d32);border:1px solid var(--line);border-radius:14px;padding:22px}.number{color:var(--blue);font-weight:900;font-size:.8rem}.card h3{margin:10px 0}.card p{color:var(--muted);margin-bottom:0}.flow{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.flow .card{position:relative}.flow .card:not(:last-child)::after{content:"→";position:absolute;right:-13px;top:50%;z-index:2;color:var(--gold);font-size:1.4rem}.callout{display:flex;justify-content:space-between;gap:30px;align-items:center;background:linear-gradient(110deg,#12446f,#112740);border:1px solid #46769c;border-radius:16px;padding:30px}.callout h2{margin:0 0 8px}.callout p{margin:0;color:var(--muted)}footer{padding:40px 0 60px;color:var(--muted);font-size:.85rem}
     @media(max-width:850px){.hero{padding-top:55px}.grid{grid-template-columns:1fr}.flow{grid-template-columns:1fr 1fr}.flow .card::after{display:none}.presentation-shell{grid-template-columns:46px minmax(0,1fr) 46px}.slide-arrow{height:70px}}@media(max-width:560px){.navlinks{display:none}.flow{grid-template-columns:1fr}.callout{display:block}.callout .button{margin-top:20px}.presentation-shell{grid-template-columns:1fr 1fr}.presentation-frame{grid-column:1/-1;grid-row:1}.slide-arrow{height:48px}}
@@ -17,17 +18,21 @@
 </head>
 <body>
   <header class="wrap">
-    <nav><div class="brand">SAGGLE ROC · FLEETHACKER 2026</div><div class="navlinks"><a href="#presentation">Presentation</a><a href="#how">How it works</a><a href="#why">Why it matters</a><a href="./app/sender.html">Launch app</a></div></nav>
+    <nav><div class="brand">SAGGLE ROC · FLEETHACKER 2026</div><div class="navlinks"><a href="#showcase">Watch</a><a href="#presentation">Presentation</a><a href="#how">How it works</a><a href="#why">Why it matters</a><a href="./app/">Launch app</a></div></nav>
     <div class="hero">
       <div>
         <div class="eyebrow">STANDARDIZE · AUTOMATE · VISUALIZE</div>
         <h1>From Fleet Data to Decision at 0800.</h1>
         <p>A faster, clearer 0800 report—built from trusted data and available where the fleet needs it, including low-bandwidth environments.</p>
-        <div class="actions"><a class="button" href="./app/sender.html">Try the demo</a><a class="button secondary" href="#presentation">View presentation</a><a class="button secondary" href="#how">See how it works</a></div>
+        <div class="actions"><a class="button" href="./app/">Try the demo</a><a class="button secondary" href="#showcase">Watch FleetPulse</a><a class="button secondary" href="#presentation">View presentation</a></div>
       </div>
     </div>
   </header>
   <main>
+    <section class="showcase" id="showcase"><div class="wrap">
+      <div class="section-head"><div class="eyebrow">FLEETPULSE IN ACTION</div><h2>Readiness at a glance.</h2><p>See how FleetPulse turns operational data into a clear, decision-ready picture.</p></div>
+      <div class="video-shell"><span class="video-label">FLEETPULSE · PRODUCT TOUR</span><video class="showcase-video" src="./FleetPulse.mp4" autoplay muted loop playsinline controls preload="metadata">Your browser does not support embedded video.</video></div>
+    </div></section>
     <section id="presentation"><div class="wrap"><div class="section-head"><h2>The SAGGLE ROC story</h2><p>See the problem, solution, architecture, and path to fleet impact.</p></div>
       <div class="presentation-shell">
         <button class="slide-arrow" id="presentationPrevious" aria-label="Previous presentation slide">‹</button>
@@ -42,7 +47,7 @@
     <section id="why"><div class="wrap"><div class="section-head"><h2>Less reporting. More readiness.</h2><p>Give leaders a clearer picture while returning time to the deckplate.</p></div>
       <div class="grid"><article class="card"><span class="number">ONE PICTURE</span><h3>Consistent reporting</h3><p>A shared structure improves clarity across departments.</p></article><article class="card"><span class="number">LESS MANUAL WORK</span><h3>Faster preparation</h3><p>Automation reduces repetitive collection and re-entry.</p></article><article class="card"><span class="number">DDIL-READY</span><h3>Available at the edge</h3><p>Lightweight payloads keep the report useful in constrained environments.</p></article></div>
     </div></section>
-    <section><div class="wrap"><div class="callout"><div><h2>See the workflow in action</h2><p>The demonstration uses synthetic sample data and is not an approved operational system.</p></div><a class="button" href="./app/sender.html">Start the demo</a></div></div></section>
+    <section><div class="wrap"><div class="callout"><div><h2>See the workflow in action</h2><p>The demonstration uses synthetic sample data and is not an approved operational system.</p></div><a class="button" href="./app/">Start the demo</a></div></div></section>
   </main>
   <footer class="wrap">SAGGLE ROC · FleetHacker 2026</footer>
   <script>

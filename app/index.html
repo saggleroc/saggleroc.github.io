@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta http-equiv="refresh" content="0; url=./sender.html">
+  <meta http-equiv="refresh" content="0; url=./foundry.html">
   <title>FleetHacker Temporary App Launcher</title>
   <style>
     :root{color-scheme:dark;--text:#eef6ff;--muted:#abc0d3;--line:#31506f;--blue:#61b7ff;--gold:#ffd166}
@@ -14,15 +14,16 @@
   <div class="topline"><a class="back" href="../">← Project overview</a><button id="resetApp" class="reset">Reset entire demo</button></div>
   <header><span class="temp">TEMPORARY APP LAUNCHER</span><h1>Choose a side of the workflow.</h1><p>The prototype is split into a shore-side message generator and an offline viewer. Open both in separate tabs to walk through the full demo.</p></header>
   <div class="grid">
-    <article class="card"><div>STEP 1</div><h2>Generate a message</h2><p>Load the built-in synthetic sample, generate the message, then save it to the simulated drive.</p><a class="button" href="./sender.html">Open generator</a></article>
-    <article class="card"><div>STEP 2</div><h2>View the 0800 report</h2><p>Browse the simulated drive and open the saved message. No files on your computer are required.</p><a class="button" href="./0800.html">Open viewer</a></article>
+    <article class="card"><div>STEP 1</div><h2>Export from Foundry</h2><p>Export the synthetic 0800 report JSON and save it to the simulated drive.</p><a class="button" href="./foundry.html">Open Foundry</a></article>
+    <article class="card"><div>STEP 2</div><h2>Generate a message</h2><p>Load the Foundry export from the simulated drive, generate the message, and send it to the ship.</p><a class="button" href="./sender.html">Open generator</a></article>
+    <article class="card"><div>STEP 3</div><h2>View the 0800 report</h2><p>Retrieve the delivered message and render the report aboard the simulated ship.</p><a class="button" href="./0800.html">Open viewer</a></article>
   </div>
   <div class="note"><strong>TEMP / DEMO ONLY:</strong> Use synthetic data. The prototype is not an approved operational, security, or classification-handling system.</div>
 </main>
 <script src="./shared/virtual-drive.js"></script>
 <script>
-  location.replace("./sender.html");
-  document.getElementById("resetApp").addEventListener("click",()=>{VirtualDrive.clear();location.href="./sender.html";});
+  location.replace("./foundry.html");
+  document.getElementById("resetApp").addEventListener("click",()=>{VirtualDrive.clear();location.href="./foundry.html";});
 </script>
 </body>
 </html>

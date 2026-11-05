@@ -46,8 +46,8 @@
 </head>
 <body>
 <main>
-  <div class="topline"><div><h1>0800 Report Message Generator</h1><p class="lead">Package a single-ship 0800 report as a verified, offline text message.</p></div><button id="resetApp" class="reset">Reset entire demo</button></div>
-  <div class="demo-bar"><strong>TEMP DEMO</strong><span>Step 1: load data. Step 2: send the generated message to USS MAHAN.</span><button id="loadSample" class="next-action">1. Load synthetic sample</button></div>
+  <div class="topline"><div><h1>0800 Report Message Generator</h1><p class="lead">Package a single-ship 0800 report as a verified, offline message.</p></div><button id="resetApp" class="reset">Reset entire demo</button></div>
+  <div class="demo-bar"><strong>TEMP DEMO</strong><span>Step 2: retrieve the Foundry export. Step 3: send the generated message to USS MAHAN.</span><button id="loadSample" class="next-action">2. Load Foundry export from simulated drive</button></div>
   <div class="grid">
     <section class="card">
       <label for="jsonFile">0800 report JSON</label>
@@ -67,7 +67,7 @@ This message contains a single-ship operational summary. Open the offline 0800 r
     </section>
     <section class="card">
       <div class="message-actions">
-        <button id="sendToShip" class="virtual">2. Send to ship</button>
+        <button id="sendToShip" class="virtual">3. Send to ship</button>
       </div>
       <label for="message">Generated message</label>
       <textarea id="message" readonly spellcheck="false" placeholder="The complete message will appear here."></textarea>

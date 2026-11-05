@@ -43,7 +43,7 @@ async function decode(){
     $("status").className="error";$("status").textContent=`Not loaded: ${e.message}`;
   }
 }
-function resetDemo(){VirtualDrive.clear();location.href="./sender.html"}
+function resetDemo(){VirtualDrive.clear();location.href="./foundry.html"}
 async function loadMessageTraffic(){
   const files=VirtualDrive.list();
   if(!files.length){

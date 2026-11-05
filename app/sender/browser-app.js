@@ -46,14 +46,14 @@
   }
 
   async function loadSample() {
-    $("status").textContent = "Loading the built-in synthetic sample…";
+    $("status").textContent = "Loading the Foundry export from the simulated drive…";
     try {
-      const response = await fetch("./examples/0800-report.json");
-      if (!response.ok) throw new Error(`Sample returned HTTP ${response.status}`);
-      $("json").value = await response.text();
+      const file = VirtualDrive.list().find(item => item.type === "application/json" || item.name.toLowerCase().endsWith(".json"));
+      if (!file) throw new Error("No Foundry JSON export was found. Reset the demo and export the report from Foundry.");
+      $("json").value = file.content;
       await generate();
     } catch (error) {
-      $("status").textContent = `Could not load the sample: ${error.message}`;
+      $("status").textContent = `Could not load the Foundry export: ${error.message}`;
     }
   }
 
@@ -83,10 +83,10 @@
   });
   $("resetApp").addEventListener("click", () => {
     VirtualDrive.clear();
-    location.reload();
+    location.href = "./foundry.html";
   });
 
   const local = new Date(Date.now() - new Date().getTimezoneOffset() * 60000);
   $("asOf").value = local.toISOString().slice(0, 16);
-  $("status").textContent = "Load the built-in synthetic sample or import your own JSON to begin.";
+  $("status").textContent = "Load the Foundry report export from the simulated drive to begin.";
 })();
