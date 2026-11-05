@@ -38,6 +38,8 @@
       const reduction = Math.round((1 - result.encodedLength / (result.rawLength * 1.6)) * 100);
       const count = document.missionAreas.length + document.manning.length + document.casreps.length + document.necs.length;
       $("status").textContent = `${count} report rows: ${result.rawLength} raw bytes → ${result.byteLength} ${result.compression.toLowerCase()} bytes → ${result.encodedLength} Base32 characters (${Math.max(0, reduction)}% smaller).`;
+      $("loadSample").classList.remove("next-action");
+      $("sendToShip").classList.add("next-action");
     } catch (error) {
       $("status").textContent = `Error: ${error.message}`;
     }
@@ -73,7 +75,10 @@
     if (!$("message").value) await generate();
     if (!$("message").value) return;
     VirtualDrive.write(`eight-oclock-report-${Date.now()}.txt`, $("message").value, "text/plain");
-    $("status").textContent = "Report sent to USS MAHAN message traffic.";
+    $("sendToShip").classList.remove("next-action");
+    $("transfer").hidden = false;
+    setTimeout(() => { $("transferStatus").textContent = "Message received aboard USS MAHAN."; }, 1500);
+    setTimeout(() => { location.href = "./eight-oclock.html"; }, 2600);
   });
   $("resetApp").addEventListener("click", () => {
     VirtualDrive.clear();
