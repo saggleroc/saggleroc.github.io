@@ -154,6 +154,24 @@
     await decode();
   }
 
+  async function loadSeededShipData() {
+    const datasets = [
+      ["tso", "./examples/mahan-tso.csv", "USS-MAHAN-TSO.csv"],
+      ["dfs", "./examples/mahan-dfs.csv", "USS-MAHAN-DFS.csv"]
+    ];
+    for (const [kind, url, name] of datasets) {
+      let file = VirtualDrive.read(name);
+      if (!file) {
+        const response = await fetch(url);
+        if (!response.ok) throw new Error(`${kind.toUpperCase()} data returned HTTP ${response.status}`);
+        file = VirtualDrive.write(name, await response.text(), "text/csv");
+      }
+      shipControls[kind] = EightOClockShipControls.importCsv(kind, file.content);
+    }
+    if (currentReport) render();
+    setShipDataStatus(`${shipControls.tso.length} TSO and ${shipControls.dfs.length} DFS rows loaded from the simulated drive.`);
+  }
+
   async function uploadCsv(kind, event) {
     const file = event.target.files[0];
     if (!file || !currentReport) return;
@@ -174,7 +192,14 @@
   });
   $("messageFile").addEventListener("change", async event => { const file=event.target.files[0]; if(file){$("message").value=await file.text();decode();} });
   $("printReport").addEventListener("click", () => window.print());
-  $("openShipData").addEventListener("click", () => { $("shipDataModal").hidden = false; });
+  $("openShipData").addEventListener("click", async () => {
+    $("shipDataModal").hidden = false;
+    try {
+      await loadSeededShipData();
+    } catch (error) {
+      setShipDataStatus(`Ship data could not be loaded: ${error.message}`);
+    }
+  });
   $("closeShipData").addEventListener("click", () => { $("shipDataModal").hidden = true; });
   $("shipDataModal").addEventListener("click", event => {
     if (event.target === $("shipDataModal")) $("shipDataModal").hidden = true;
