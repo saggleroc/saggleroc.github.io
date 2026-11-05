@@ -61,7 +61,7 @@ export async function encodeMessage(packet, { subject = "DASHBOARD UPDATE", body
   const lines = encoded.match(/.{1,64}/g)?.join("\n") ?? "";
   const message = [
     `SUBJECT: ${subject}`, "", body, "",
-    "----- NAVDASH PAYLOAD BEGIN -----",
+    "----- EIGHT O'CLOCK REPORT PAYLOAD BEGIN -----",
     "VERSION: 1",
     "ENCODING: BASE32",
     `COMPRESSION: ${result.method}`,
@@ -69,14 +69,14 @@ export async function encodeMessage(packet, { subject = "DASHBOARD UPDATE", body
     `RAW-LENGTH: ${sourceBytes.length}`,
     `CHECKSUM: ${checksum(result.bytes)}`,
     "", lines,
-    "----- NAVDASH PAYLOAD END -----"
+    "----- EIGHT O'CLOCK REPORT PAYLOAD END -----"
   ].join("\n");
   return { message, rawLength: sourceBytes.length, encodedLength: encoded.length, byteLength: result.bytes.length, compression: result.method };
 }
 
 export async function decodeMessage(text) {
-  const block = text.match(/-+\s*NAVDASH\s+PAYLOAD\s+BEGIN\s*-+([\s\S]*?)-+\s*NAVDASH\s+PAYLOAD\s+END\s*-+/i);
-  if (!block) throw new Error("No NAVDASH payload markers were found.");
+  const block = text.match(/-+\s*EIGHT\s+O['’]?CLOCK\s+REPORT\s+PAYLOAD\s+BEGIN\s*-+([\s\S]*?)-+\s*EIGHT\s+O['’]?CLOCK\s+REPORT\s+PAYLOAD\s+END\s*-+/i);
+  if (!block) throw new Error("No Eight O'Clock Report payload markers were found.");
   const section = block[1];
   const expectedChecksum = section.match(/CHECKSUM\s*:\s*([0-9A-F]{8})/i)?.[1].toUpperCase();
   const expectedLength = Number(section.match(/LENGTH\s*:\s*(\d+)/i)?.[1]);

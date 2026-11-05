@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Eight O'Clock Data Aggregator</title>
+  <style>
+    :root{--ink:#18232d;--muted:#647582;--line:#d7e0e5;--blue:#087ca7;--blue-dark:#064b6b;--cyan:#3cc4d8;--panel:#fff;--bg:#eef3f5}
+    *{box-sizing:border-box}body{margin:0;background:linear-gradient(145deg,#e8eff2,#f7f9fa 55%,#e6eef1);color:var(--ink);font:14px/1.45 "Segoe UI",Arial,sans-serif}
+    header{min-height:62px;display:flex;align-items:center;justify-content:space-between;gap:24px;padding:9px 24px;background:#071c2b;color:#fff;border-bottom:3px solid var(--cyan);box-shadow:0 5px 18px #14293626}
+    .brand{display:flex;align-items:center;gap:13px}.brand-mark{display:grid;place-items:center;width:38px;height:38px;border:1px solid #4ebed2;border-radius:7px;background:#0d354a;color:#7de1ed;font-weight:900;letter-spacing:-.08em}
+    .brand strong{display:block;font-size:17px;letter-spacing:.12em}.brand small{color:#8fb2c2;font-size:9px}.actions{display:flex;gap:9px;align-items:center}
+    button{border:1px solid #b7c7cf;border-radius:5px;background:#fff;color:var(--ink);padding:8px 13px;cursor:pointer;font-weight:700}
+    button.primary{border-color:#19a8c2;background:linear-gradient(135deg,#168eb0,#076d98);color:#fff;box-shadow:0 5px 13px #001c2d66}.next-action{animation:pulse 1.25s infinite;box-shadow:0 0 0 4px #f4c95d66}
+    @keyframes pulse{50%{box-shadow:0 0 0 9px #f4c95d22,0 0 24px #f4c95d88}}
+    main{width:min(1280px,calc(100% - 32px));margin:auto;padding:20px 0 34px}.context,.tabs,.panel{background:var(--panel);border:1px solid var(--line);border-radius:8px;box-shadow:0 8px 24px #24404f10}
+    .context{position:relative;display:grid;grid-template-columns:1.8fr 1fr 1fr;margin-bottom:14px;overflow:hidden}.context>div{position:relative;z-index:1;padding:17px 18px;border-right:1px solid var(--line)}.context>div:last-child{border:0}
+    .ship-identity{display:flex;align-items:center;gap:20px}.ship-art{width:170px;height:48px;object-fit:contain;object-position:left center;opacity:.88}.ship-name{font-size:17px;font-weight:800;color:#0a5677}
+    small{display:block;color:var(--muted);text-transform:uppercase;font-size:10px;font-weight:700;letter-spacing:.04em}
+    .tabs{display:flex;gap:4px;padding:6px;margin-bottom:14px;overflow:auto}.tabs button{margin:0;padding:9px 14px;border:0;background:transparent;white-space:nowrap}.tabs button.active{background:#e5f5f8;color:var(--blue-dark);font-weight:800}
+    .panel{padding:18px}.section-title{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.panel h2{font-size:12px;color:var(--muted);margin:0;text-transform:uppercase;letter-spacing:.1em}.live{color:#21865d;font-size:11px;font-weight:800}.live::before{content:"";display:inline-block;width:7px;height:7px;margin-right:6px;border-radius:50%;background:#34bd7b;box-shadow:0 0 0 4px #34bd7b20}
+    .metrics{display:grid;grid-template-columns:repeat(6,1fr);border:1px solid var(--line);border-radius:7px;overflow:hidden}.metric{padding:16px;border-right:1px solid var(--line);background:linear-gradient(#fff,#f8fbfc)}.metric:last-child{border:0}.metric strong{display:block;font-size:22px;margin-top:8px}.metric:nth-last-child(-n+3) strong{color:#08799c}
+    .note{margin:14px 0;padding:12px 14px;border-left:4px solid var(--cyan);border-radius:4px;background:#edf8fa;color:#40545f}
+    table{width:100%;border-collapse:separate;border-spacing:0;background:#fff;border:1px solid var(--line);border-radius:7px;overflow:hidden}th,td{text-align:left;padding:12px;border-bottom:1px solid var(--line)}th{background:#f1f6f8;color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.05em}tbody tr:last-child td{border-bottom:0}tbody tr:hover{background:#f2fafb}
+    #status{min-width:205px;color:#a9c2cd;font-size:12px}@media(max-width:820px){header{align-items:flex-start;flex-direction:column}.actions{width:100%;flex-wrap:wrap}.metrics{grid-template-columns:repeat(2,1fr)}.context{grid-template-columns:1fr}.context>div{border-right:0;border-bottom:1px solid var(--line)}.ship-art{width:130px}}
+  </style>
+</head>
+<body>
+<header>
+  <div class="brand"><span class="brand-mark">08</span><div><strong>EIGHT O'CLOCK DATA AGGREGATOR</strong><small>FLEET READINESS WORKSPACE</small></div></div>
+  <div class="actions"><span id="status">Step 1: export the report.</span><button id="refreshData">Refresh</button><button id="exportJson" class="primary next-action">1. Export report JSON</button></div>
+</header>
+<main>
+  <section class="context">
+    <div class="ship-identity"><img class="ship-art" src="./ddg51.png" alt="Arleigh Burke-class destroyer silhouette"><div><small>Ship</small><span class="ship-name">USS MAHAN</span></div></div><div><small>Department</small><span id="departmentName">Operations</span></div><div><small>Hull</small>DDG 72</div>
+  </section>
+  <nav class="tabs" aria-label="Report sections"><button class="active" aria-pressed="true">Operations</button><button aria-pressed="false">Weapons</button><button aria-pressed="false">Combat Systems</button><button aria-pressed="false">Supply</button><button aria-pressed="false">Engineering</button><button aria-pressed="false">Personnel</button><button aria-pressed="false">Materiel</button><button aria-pressed="false">Training</button></nav>
+  <section class="panel">
+    <div class="section-title"><h2>Manning overview</h2><span class="live">DATA CURRENT</span></div>
+    <div class="metrics" id="metrics">
+      <div class="metric"><small>BA</small><strong>43</strong></div><div class="metric"><small>COB</small><strong>39</strong></div><div class="metric"><small>P3</small><strong>42</strong></div>
+      <div class="metric"><small>Current fill</small><strong>90.7%</strong></div><div class="metric"><small>Projected fill</small><strong>97.7%</strong></div><div class="metric"><small>Gaps</small><strong>4</strong></div>
+    </div>
+    <p class="note"><strong>BA:</strong> billets authorized · <strong>COB:</strong> current onboard · <strong>P3:</strong> prospective onboard three months out.</p>
+    <table>
+      <thead><tr><th>Experience level</th><th>BA</th><th>COB</th><th>P3</th><th>Current fill</th><th>Projected fill</th><th>Gaps</th></tr></thead>
+      <tbody id="manningRows"><tr><td>Apprentice</td><td>20</td><td>18</td><td>19</td><td>90%</td><td>95%</td><td>2</td></tr><tr><td>Supervisor</td><td>8</td><td>7</td><td>8</td><td>87.5%</td><td>100%</td><td>1</td></tr><tr><td>Journeyman</td><td>15</td><td>14</td><td>15</td><td>93.3%</td><td>100%</td><td>1</td></tr></tbody>
+    </table>
+  </section>
+</main>
+<script src="./shared/virtual-drive.js"></script>
+<script>
+const departmentData={
+  "Operations":[[20,18,19],[8,7,8],[15,14,15]],
+  "Weapons":[[16,15,16],[7,7,7],[13,12,13]],
+  "Combat Systems":[[24,21,23],[9,8,9],[18,16,17]],
+  "Supply":[[13,12,13],[6,6,6],[11,10,11]],
+  "Engineering":[[28,24,27],[12,10,11],[22,20,21]],
+  "Personnel":[[8,8,8],[4,4,4],[7,6,7]],
+  "Materiel":[[18,16,17],[7,6,7],[14,13,14]],
+  "Training":[[10,9,10],[5,5,5],[9,8,9]]
+};
+const labels=["Apprentice","Supervisor","Journeyman"];
+function renderDepartment(name){
+  const rows=departmentData[name];
+  const totals=rows.reduce((sum,row)=>sum.map((value,index)=>value+row[index]),[0,0,0]);
+  const current=totals[1]/totals[0]*100,projected=totals[2]/totals[0]*100,gaps=totals[0]-totals[1];
+  document.getElementById("departmentName").textContent=name;
+  document.getElementById("metrics").innerHTML=[
+    ["BA",totals[0]],["COB",totals[1]],["P3",totals[2]],["Current fill",`${current.toFixed(1)}%`],["Projected fill",`${projected.toFixed(1)}%`],["Gaps",gaps]
+  ].map(([label,value])=>`<div class="metric"><small>${label}</small><strong>${value}</strong></div>`).join("");
+  document.getElementById("manningRows").innerHTML=rows.map((row,index)=>{
+    const fill=row[1]/row[0]*100,projection=row[2]/row[0]*100;
+    return `<tr><td>${labels[index]}</td><td>${row[0]}</td><td>${row[1]}</td><td>${row[2]}</td><td>${fill.toFixed(1)}%</td><td>${projection.toFixed(1)}%</td><td>${row[0]-row[1]}</td></tr>`;
+  }).join("");
+}
+document.querySelectorAll(".tabs button").forEach(button=>button.addEventListener("click",()=>{
+  document.querySelectorAll(".tabs button").forEach(tab=>{tab.classList.remove("active");tab.setAttribute("aria-pressed","false")});
+  button.classList.add("active");button.setAttribute("aria-pressed","true");renderDepartment(button.textContent);
+}));
+document.getElementById("refreshData").addEventListener("click",()=>{
+  const active=document.querySelector(".tabs button.active");
+  renderDepartment(active.textContent);
+  document.getElementById("status").textContent=`${active.textContent} data refreshed just now.`;
+});
+document.getElementById("exportJson").addEventListener("click",async()=>{
+  const button=document.getElementById("exportJson"),status=document.getElementById("status");
+  button.classList.remove("next-action");button.disabled=true;status.textContent="Exporting report to the simulated drive…";
+  try{
+    const response=await fetch("./examples/eight-oclock-report.json");
+    if(!response.ok)throw new Error(`Export returned HTTP ${response.status}`);
+    VirtualDrive.write("USS-MAHAN-eight-oclock-report.json",await response.text(),"application/json");
+    status.textContent="Export complete. Opening the message generator…";
+    setTimeout(()=>{location.href="./sender.html"},700);
+  }catch(error){status.textContent=`Export failed: ${error.message}`;button.disabled=false;button.classList.add("next-action")}
+});
+</script>
+</body>
+</html>

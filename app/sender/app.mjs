@@ -1,5 +1,5 @@
 import { equipmentReadinessRecords } from "../shared/core/document-model.mjs";
-import { encodeMessage } from "../shared/transport/navdash.mjs";
+import { encodeMessage } from "../shared/transport/eight-oclock.mjs";
 
 const $ = id => document.getElementById(id);
 
@@ -67,7 +67,7 @@ $("download").addEventListener("click", async () => {
   if (!$("message").value) return;
   const link = document.createElement("a");
   link.href = URL.createObjectURL(new Blob([$("message").value], { type: "text/plain" }));
-  link.download = `navdash-${new Date().toISOString().replace(/[:.]/g, "-")}.txt`;
+  link.download = `eight-oclock-report-${new Date().toISOString().replace(/[:.]/g, "-")}.txt`;
   link.click();
   setTimeout(() => URL.revokeObjectURL(link.href), 1000);
 });

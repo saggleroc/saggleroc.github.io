@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta http-equiv="refresh" content="0; url=./0800.html">
+  <script>window.location.replace("./eight-oclock.html");</script>
   <title>Offline Dashboard Viewer</title>
   <style>
     :root { color-scheme:dark; --navy:#061526; --panel:#102741; --line:#31506f; --blue:#5eb8ff; --red:#ff796f; --gold:#f7c85f; --text:#f1f7fc; --muted:#abc0d3; }
@@ -19,18 +19,6 @@
     textarea { min-height:145px; resize:vertical; font-family:ui-monospace,Consolas,monospace; font-size:12px; margin-top:12px; }
     button { padding:10px 14px; border:0; border-radius:7px; background:var(--blue); color:#052039; font-weight:800; cursor:pointer; }
     button.secondary { background:#d5e5f3; }
-    button.virtual { background:#73e2a7; }
-    .topline { display:flex; justify-content:space-between; gap:16px; align-items:start; }
-    .reset { background:transparent; color:var(--muted); border:1px solid var(--line); white-space:nowrap; }
-    .next-action { position:relative; animation:pulse 1.25s infinite; box-shadow:0 0 0 5px #ffd16655,0 0 30px #ffd16677; }
-    @keyframes pulse { 50% { box-shadow:0 0 0 10px #ffd16622,0 0 42px #ffd166aa; } }
-    .see-dashboard { display:none; margin-top:12px; }
-    .see-dashboard.ready { display:inline-block; }
-    dialog { width:min(680px,calc(100% - 32px)); color:var(--text); background:#102741; border:1px solid #486b8c; border-radius:14px; padding:20px; box-shadow:0 25px 80px #000a; }
-    dialog::backdrop { background:#020812cc; }
-    .virtual-files { display:grid; gap:10px; margin:18px 0; }
-    .virtual-file { display:flex; justify-content:space-between; gap:15px; align-items:center; padding:13px; background:#07182c; border:1px solid #31506f; border-radius:8px; }
-    .virtual-file small { display:block; color:var(--muted); }
     .table-tools { display:flex; flex-wrap:wrap; gap:10px; align-items:center; }
     .table-tools input[type=file] { width:auto; max-width:280px; }
     #tableStatus { flex-basis:100%; margin:0; }
@@ -91,13 +79,11 @@
   </style>
 </head>
 <body>
-<script>location.replace("./0800.html");</script>
 <main>
-  <div class="topline"><div><h1>Offline Dashboard Viewer</h1><p class="lead">Import or paste a complete text message. The viewer detects and decodes the embedded dashboard payload locally.</p></div><button id="resetApp" class="reset">Reset entire demo</button></div>
+  <h1>Offline Dashboard Viewer</h1>
+  <p class="lead">Import or paste a complete text message. The viewer detects and decodes the embedded dashboard payload locally.</p>
 
   <section class="card">
-    <p class="muted"><strong style="color:#73e2a7">TEMP DEMO:</strong> Open a message saved by the generator without using your computer's file system.</p>
-    <button id="browseVirtual" class="virtual next-action">4. Browse simulated drive</button>
     <div class="import-grid">
       <div>
         <label for="messageFile">Message file</label>
@@ -106,17 +92,9 @@
       <button id="decode">Decode message</button>
     </div>
     <label for="message" style="margin-top:14px">Or paste message text</label>
-    <textarea id="message" spellcheck="false" placeholder="Paste SUBJECT, body, and NAVDASH payload here..."></textarea>
+    <textarea id="message" spellcheck="false" placeholder="Paste the Eight O'Clock Report message here..."></textarea>
     <div id="status" role="status">Waiting for a message.</div>
-    <button id="seeDashboard" class="virtual see-dashboard">6. See the dashboard ↓</button>
   </section>
-
-  <dialog id="virtualBrowser">
-    <h2>Simulated file browser</h2>
-    <p class="muted">These demo files live only in this browser's local storage. They are not uploaded or saved to your computer.</p>
-    <div id="virtualFiles" class="virtual-files"></div>
-    <button id="closeVirtual" class="secondary">Close</button>
-  </dialog>
 
   <div id="dashboard" hidden>
     <section class="card banner">
@@ -170,7 +148,6 @@
   </div>
 </main>
 <script src="./shared/browser-foundation.js"></script>
-<script src="./shared/virtual-drive.js"></script>
 <script src="src/table-files.js"></script>
 <script>
   "use strict";
@@ -178,51 +155,8 @@
   let currentDashboard = null;
   let shoreDashboard = null;
 
-  function refreshVirtualBrowser() {
-    const container = $("virtualFiles");
-    container.replaceChildren();
-    const files = VirtualDrive.list();
-    if (!files.length) {
-      const empty = document.createElement("p");
-      empty.className = "muted";
-      empty.textContent = "No virtual files yet. Generate a message, then choose “Save to simulated drive.”";
-      const reset = document.createElement("button");
-      reset.className = "virtual next-action";
-      reset.textContent = "Reset demo and start again";
-      reset.addEventListener("click", resetDemo);
-      container.append(empty, reset);
-      return;
-    }
-    files.forEach((file, index) => {
-      const row = document.createElement("div");
-      row.className = "virtual-file";
-      const details = document.createElement("div");
-      const name = document.createElement("strong");
-      name.textContent = file.name;
-      const saved = document.createElement("small");
-      saved.textContent = `Saved ${new Date(file.savedAt).toLocaleString()} · ${(file.content.length / 1024).toFixed(1)} KB`;
-      details.append(name, saved);
-      const open = document.createElement("button");
-      open.textContent = index === 0 ? "5. Load file (most recent)" : "Load file";
-      if (index === 0) open.classList.add("next-action");
-      open.addEventListener("click", async () => {
-        $("message").value = file.content;
-        $("virtualBrowser").close();
-        $("browseVirtual").classList.remove("next-action");
-        await decode();
-      });
-      row.append(details, open);
-      container.append(row);
-    });
-  }
-
-  function resetDemo() {
-    VirtualDrive.clear();
-    location.href = "./sender.html";
-  }
-
   async function decodeDashboardMessage(text) {
-    const decoded = await FleetPulse.decodeMessage(text);
+    const decoded = await EightOClockReport.decodeMessage(text);
     let packet;
     if (decoded.f === "ND1" && ["repair", "readiness"].includes(decoded.d) && Array.isArray(decoded.r)) {
       packet = {
@@ -238,7 +172,7 @@
           weekly_repairs:Array.isArray(row[7]) ? row[7] : []
         }))
       };
-    } else if (decoded.format === "NAVDASH-1" && decoded.dashboard === "equipment-repair-time" && Array.isArray(decoded.records)) {
+    } else if (decoded.format === "EIGHT-OCLOCK-REPORT-1" && decoded.dashboard === "equipment-repair-time" && Array.isArray(decoded.records)) {
       packet = decoded;
     } else {
       throw new Error("The decoded data is not a supported dashboard packet.");
@@ -402,7 +336,7 @@
     const text = $("message").value;
     $("status").className = "";
     $("status").textContent = "Decoding and verifying payload…";
-    if (!/NAVDASH\s+PAYLOAD\s+END/i.test(text)) {
+    if (!/EIGHT\s+O['’]?CLOCK\s+REPORT\s+PAYLOAD\s+END/i.test(text)) {
       $("dashboard").hidden = true;
       $("status").textContent = text.trim() ? "Decoding… waiting for the complete payload." : "Waiting for a message.";
       return;
@@ -414,10 +348,8 @@
       render(result);
       $("status").className = "ok";
       $("status").textContent = `Payload verified and loaded: ${result.packet.records.length} records.`;
-      $("seeDashboard").classList.add("ready", "next-action");
     } catch (error) {
       $("dashboard").hidden = true;
-      $("seeDashboard").classList.remove("ready", "next-action");
       $("status").className = "error";
       $("status").textContent = `Not loaded: ${error.message}`;
     }
@@ -427,23 +359,11 @@
   $("message").addEventListener("input", () => {
     clearTimeout(timer);
     $("dashboard").hidden = true;
-    $("seeDashboard").classList.remove("ready", "next-action");
     $("status").className = "";
     $("status").textContent = "Decoding and verifying payload…";
     timer = setTimeout(decode, 400);
   });
   $("decode").addEventListener("click", decode);
-  $("browseVirtual").addEventListener("click", () => {
-    $("browseVirtual").classList.remove("next-action");
-    refreshVirtualBrowser();
-    $("virtualBrowser").showModal();
-  });
-  $("closeVirtual").addEventListener("click", () => $("virtualBrowser").close());
-  $("resetApp").addEventListener("click", resetDemo);
-  $("seeDashboard").addEventListener("click", () => {
-    $("seeDashboard").classList.remove("next-action");
-    $("dashboard").scrollIntoView({behavior:"smooth", block:"start"});
-  });
   $("messageFile").addEventListener("change", async event => {
     const file = event.target.files[0];
     if (file) {
@@ -457,10 +377,10 @@
 
   $("exportTable").addEventListener("click", () => {
     if (!currentDashboard) return;
-    const csv = NavdashTableFiles.exportTable(currentDashboard.packet.records);
+    const csv = EightOClockTableFiles.exportTable(currentDashboard.packet.records);
     const link = document.createElement("a");
     link.href = URL.createObjectURL(new Blob([csv], {type:"text/csv;charset=utf-8"}));
-    link.download = `${NavdashTableFiles.TABLE_UID}.csv`;
+    link.download = `${EightOClockTableFiles.TABLE_UID}.csv`;
     link.click();
     setTimeout(() => URL.revokeObjectURL(link.href), 1000);
     $("tableStatus").textContent = "Table exported. Edit it in Excel and import the saved CSV here.";
@@ -470,7 +390,7 @@
     const file = event.target.files[0];
     if (!file || !currentDashboard) return;
     try {
-      const records = NavdashTableFiles.importTable(await file.text());
+      const records = EightOClockTableFiles.importTable(await file.text());
       const replacement = {
         subject: currentDashboard.subject,
         packet: {...currentDashboard.packet, records}

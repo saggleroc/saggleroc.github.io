@@ -1,5 +1,5 @@
-export const NAVDASH_FORMAT = "NAVDASH";
-export const NAVDASH_VERSION = 2;
+export const EIGHT_OCLOCK_FORMAT = "EIGHT-OCLOCK-REPORT";
+export const EIGHT_OCLOCK_VERSION = 2;
 
 const isObject = value => value !== null && typeof value === "object" && !Array.isArray(value);
 
@@ -11,8 +11,8 @@ export function validateDocument(document) {
     add("document.type", "$", "Document must be a JSON object.");
     return { valid: false, errors };
   }
-  if (document.format !== NAVDASH_FORMAT) add("document.format", "$.format", `Expected "${NAVDASH_FORMAT}".`);
-  if (document.version !== NAVDASH_VERSION) add("document.version", "$.version", `Expected version ${NAVDASH_VERSION}.`);
+  if (document.format !== EIGHT_OCLOCK_FORMAT) add("document.format", "$.format", `Expected "${EIGHT_OCLOCK_FORMAT}".`);
+  if (document.version !== EIGHT_OCLOCK_VERSION) add("document.version", "$.version", `Expected version ${EIGHT_OCLOCK_VERSION}.`);
   for (const field of ["uid", "generatedAt"]) {
     if (typeof document[field] !== "string" || !document[field].trim()) add(`document.${field}`, `$.${field}`, `${field} is required.`);
   }
