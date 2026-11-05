@@ -1,0 +1,86 @@
+{
+  "format": "EIGHT-OCLOCK-REPORT",
+  "version": 1,
+  "generatedAt": "2026-11-05T08:00:00-05:00",
+  "report": {
+    "title": "Commanding Officer's Eight O'Clock Report",
+    "asOf": "2026-11-05T08:00:00-05:00",
+    "classification": "UNCLASSIFIED // FOR OFFICIAL USE ONLY",
+    "ship": {
+      "name": "USS MAHAN",
+      "hullNumber": "DDG 72",
+      "uic": "45021",
+      "location": "Underway",
+      "status": "UNDERWAY",
+      "commandingOfficer": "CDR J. SAMPLE"
+    }
+  },
+  "summary": {
+    "operationalStatus": "READY",
+    "personnelOnboard": 184,
+    "personnelRequired": 197,
+    "openCasreps": 16,
+    "certifiedMissionAreas": 16,
+    "totalMissionAreas": 18,
+    "weather": "Winds 220/12 kt · Seas 2–3 ft · Visibility 10 nm",
+    "intent": "Continue basic phase training. Prioritize MOB-N and FSOM certification recovery and close C2 CASREP 26789."
+  },
+  "missionAreas": [
+    {"department":"OPS","name":"MOB-S","certified":true,"certDate":"2026-09-26","readiness":88,"nextEvent":"2026-11-05","qualifiedWatchteams":2,"trainingTeam":true},
+    {"department":"OPS","name":"MOB-A","certified":true,"certDate":"2026-10-26","readiness":84,"nextEvent":"2026-11-10","qualifiedWatchteams":2,"trainingTeam":true},
+    {"department":"ENG","name":"MOB-D","certified":true,"certDate":"2026-09-26","readiness":76,"nextEvent":"2026-11-15","qualifiedWatchteams":1,"trainingTeam":true},
+    {"department":"OPS","name":"MOB-N","certified":false,"certDate":null,"readiness":79,"nextEvent":"2026-11-20","qualifiedWatchteams":3,"trainingTeam":false},
+    {"department":"ENG","name":"MOB-E","certified":true,"certDate":"2026-10-26","readiness":81,"nextEvent":"2026-11-25","qualifiedWatchteams":3,"trainingTeam":true},
+    {"department":"CS","name":"AW","certified":true,"certDate":"2026-09-26","readiness":85,"nextEvent":"2026-11-30","qualifiedWatchteams":2,"trainingTeam":true},
+    {"department":"CS","name":"BMD","certified":true,"certDate":"2026-10-26","readiness":82,"nextEvent":"2026-12-05","qualifiedWatchteams":1,"trainingTeam":true},
+    {"department":"CS","name":"SUW","certified":true,"certDate":"2026-09-26","readiness":78,"nextEvent":"2026-12-10","qualifiedWatchteams":2,"trainingTeam":true},
+    {"department":"CS","name":"ASW","certified":true,"certDate":"2026-10-26","readiness":80,"nextEvent":"2026-12-15","qualifiedWatchteams":1,"trainingTeam":true},
+    {"department":"WEPS","name":"STRIKE","certified":true,"certDate":"2026-09-26","readiness":73,"nextEvent":"2026-12-20","qualifiedWatchteams":1,"trainingTeam":true},
+    {"department":"WEPS","name":"NSFS","certified":true,"certDate":"2026-10-26","readiness":77,"nextEvent":"2026-12-26","qualifiedWatchteams":1,"trainingTeam":true},
+    {"department":"WEPS","name":"VBSS","certified":true,"certDate":"2026-09-26","readiness":75,"nextEvent":"2026-12-31","qualifiedWatchteams":2,"trainingTeam":false},
+    {"department":"OPS","name":"3M","certified":true,"certDate":"2026-09-26","readiness":70,"nextEvent":"2027-01-05","qualifiedWatchteams":null,"trainingTeam":true},
+    {"department":"OPS","name":"FSOM","certified":false,"certDate":null,"readiness":86,"nextEvent":"2027-01-10","qualifiedWatchteams":1,"trainingTeam":false},
+    {"department":"SUP","name":"SUPPLY","certified":true,"certDate":"2026-10-26","readiness":74,"nextEvent":"2027-01-15","qualifiedWatchteams":1,"trainingTeam":true},
+    {"department":"OPS","name":"SAR","certified":true,"certDate":"2026-09-26","readiness":83,"nextEvent":"2027-01-20","qualifiedWatchteams":2,"trainingTeam":true},
+    {"department":"CS","name":"COMMS","certified":true,"certDate":"2026-10-26","readiness":89,"nextEvent":"2027-01-25","qualifiedWatchteams":3,"trainingTeam":true},
+    {"department":"CS","name":"EW","certified":true,"certDate":"2026-09-26","readiness":80,"nextEvent":"2027-01-31","qualifiedWatchteams":3,"trainingTeam":true}
+  ],
+  "manning": [
+    {"department":"OPS","supervisor":{"required":9,"onboard":10,"fit":10},"journeyman":{"required":15,"onboard":14,"fit":14},"apprentice":{"required":21,"onboard":19,"fit":19}},
+    {"department":"ENG","supervisor":{"required":5,"onboard":4,"fit":4},"journeyman":{"required":11,"onboard":12,"fit":12},"apprentice":{"required":17,"onboard":15,"fit":15}},
+    {"department":"CS","supervisor":{"required":6,"onboard":5,"fit":5},"journeyman":{"required":10,"onboard":9,"fit":9},"apprentice":{"required":19,"onboard":18,"fit":18}},
+    {"department":"WEPS","supervisor":{"required":5,"onboard":4,"fit":4},"journeyman":{"required":6,"onboard":7,"fit":7},"apprentice":{"required":13,"onboard":12,"fit":12}},
+    {"department":"SUP","supervisor":{"required":3,"onboard":3,"fit":3},"journeyman":{"required":9,"onboard":8,"fit":8},"apprentice":{"required":12,"onboard":11,"fit":11}}
+  ],
+  "necs": [
+    {"department":"ENG","code":"4911","name":"Gas Turbine System Technician, Mechanical","required":1,"onboard":1,"projectedFill":"N/A"},
+    {"department":"ENG","code":"4915","name":"AC and Refrigeration Technician","required":3,"onboard":2,"projectedFill":"15-Dec-26"},
+    {"department":"ENG","code":"U07A","name":"Diesel Engine Inspector","required":1,"onboard":1,"projectedFill":"N/A"},
+    {"department":"ENG","code":"U01A","name":"Gas Free Engineer","required":3,"onboard":3,"projectedFill":"N/A"},
+    {"department":"ENG","code":"4951","name":"Structural Welder","required":2,"onboard":1,"projectedFill":"5-Mar-27"},
+    {"department":"ENG","code":"U15A","name":"Quality Assurance Inspector","required":2,"onboard":2,"projectedFill":"N/A"},
+    {"department":"CS","code":"V44B","name":"SPY-1D Technician","required":3,"onboard":3,"projectedFill":"N/A"},
+    {"department":"CS","code":"V38B","name":"Fire Control System Technician","required":2,"onboard":1,"projectedFill":"8-Jan-27"},
+    {"department":"CS","code":"V26B","name":"Mk 41 VLS Technician","required":3,"onboard":3,"projectedFill":"N/A"},
+    {"department":"CS","code":"C12A","name":"SLQ-32 EW Technician","required":2,"onboard":2,"projectedFill":"N/A"},
+    {"department":"CS","code":"V86A","name":"SHF SATCOM Technician","required":2,"onboard":1,"projectedFill":"11-Sep-27"},
+    {"department":"WEPS","code":"V15A","name":"CIWS Mk 15 Technician","required":3,"onboard":3,"projectedFill":"N/A"},
+    {"department":"SUP","code":"S11A","name":"Food Service Management Specialist","required":3,"onboard":3,"projectedFill":"N/A"},
+    {"department":"SUP","code":"S05A","name":"HAZMAT Control Technician","required":2,"onboard":1,"projectedFill":"14-Mar-27"},
+    {"department":"SUP","code":"S01A","name":"Relational Supply Unit Level Administrator","required":1,"onboard":1,"projectedFill":"N/A"},
+    {"department":"SUP","code":"S00A","name":"Ship's Store Retail Manager","required":1,"onboard":1,"projectedFill":"N/A"},
+    {"department":"OPS","code":"W12A","name":"ANAV","required":1,"onboard":1,"projectedFill":"N/A"},
+    {"department":"OPS","code":"V01A","name":"AIC Controller","required":3,"onboard":2,"projectedFill":"18-Jan-28"},
+    {"department":"OPS","code":"W19A","name":"Tactical Data Link 16","required":2,"onboard":2,"projectedFill":"N/A"},
+    {"department":"OPS","code":"W03A","name":"Shipboard Navigation ECDIS-N","required":3,"onboard":3,"projectedFill":"N/A"},
+    {"department":"OPS","code":"W16A","name":"GCCS-M Operator","required":2,"onboard":1,"projectedFill":"21-Dec-26"}
+  ],
+  "casreps": [
+    {"number":"27100","department":"ENG","equipment":"1A GTM","missionArea":"MOB-E","category":"C3","etr":"2026-11-27","description":"Starter motor failed to engage; starter assembly on order.","parts":"STARTER ASSEMBLY","partStatus":"ON ORDER","techAssist":true,"redline":true},
+    {"number":"27101","department":"CS","equipment":"SPQ-9B","missionArea":"SUW","category":"C2","etr":"2026-12-12","description":"Transmitter degraded; onboard troubleshooting in progress.","parts":"NONE","partStatus":"TROUBLESHOOTING","techAssist":false,"redline":false}
+  ],
+  "notes": [
+    {"time":"0600","section":"OPERATIONS","text":"Completed navigation and engineering drills. No safety incidents."},
+    {"time":"0730","section":"PLAN OF THE DAY","text":"Flight quarters 0930; MOB-N assessment rehearsal 1300; engineering training team debrief 1600."}
+  ]
+}

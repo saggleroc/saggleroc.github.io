@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Eight O'Clock Report</title>
+  <link rel="stylesheet" href="./eight-oclock-report.css">
+</head>
+<body>
+<section class="loader" id="loader">
+  <div><h1>Eight O'Clock Report</h1><button id="resetApp">Reset entire demo</button></div>
+  <p class="muted">Load a complete Eight O'Clock Report message. Verification and rendering occur locally.</p>
+  <button id="loadTraffic">5. Load from message traffic</button>
+  <div class="loader-grid"><div><label for="messageFile">Message file</label><input id="messageFile" type="file" accept=".txt,text/plain"></div><button id="decode">Open report</button></div>
+  <label for="message">Or paste complete message</label>
+  <textarea id="message" spellcheck="false" placeholder="Paste the subject, body, and Eight O'Clock Report payload…"></textarea>
+  <div id="status" class="muted" role="status">Waiting for an Eight O'Clock Report message.</div>
+</section>
+<div id="dashboard" hidden>
+  <div class="screen-controls">
+    <button id="printReport">Print Report</button>
+    <button id="openShipData" class="secondary">Ship Data</button>
+    <span id="shipDataStatus" role="status">No ship TSO or DFS data loaded.</span>
+    <nav id="tabNav" class="tab-nav" aria-label="Dashboard sheets"></nav>
+  </div>
+  <main id="report" class="report"></main>
+  <div id="shipDataModal" class="modal" hidden>
+    <section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="shipDataTitle">
+      <div class="modal-header"><div><h2 id="shipDataTitle">Ship Data CSV</h2><p>Download a template, edit it in Excel, then upload it here.</p></div><button id="closeShipData" class="icon-button" aria-label="Close">×</button></div>
+      <div class="dataset-grid">
+        <section class="dataset-card"><h3>Temporary Standing Orders (TSO)</h3><p>Ship-maintained operational risk controls.</p><div class="modal-actions"><button id="exportTso">Download TSO CSV</button><label class="file-button">Upload TSO CSV<input id="tsoFile" type="file" accept=".csv,text/csv"></label></div></section>
+        <section class="dataset-card"><h3>Departures from Specification (DFS)</h3><p>Ship-maintained approved deviations and limitations.</p><div class="modal-actions"><button id="exportDfs">Download DFS CSV</button><label class="file-button">Upload DFS CSV<input id="dfsFile" type="file" accept=".csv,text/csv"></label></div></section>
+      </div>
+      <div class="modal-footer"><span id="modalShipDataStatus">No ship TSO or DFS data loaded.</span><button id="clearShipData" class="danger-button">Clear Ship Data</button></div>
+    </section>
+  </div>
+</div>
+<script src="./shared/browser-foundation.js"></script>
+<script src="./shared/virtual-drive.js"></script>
+<script src="./src/ship-control-files.js"></script>
+<script src="./eight-oclock-report.js"></script>
+</body>
+</html>

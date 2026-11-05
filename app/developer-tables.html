@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Editable Tables Prototype</title>
+  <link rel="stylesheet" href="developer-mode.css">
+</head>
+<body data-mode="tables">
+<main>
+  <h1>Developer Mode: Editable Tables</h1>
+  <p class="lead">Prototype 3 · Expand the existing table approach to all source data while keeping calculations read-only.</p>
+  <section class="card">
+    <div class="toolbar">
+      <div class="field"><label for="sourceFile">Canonical JSON or Eight O'Clock Report message</label><input id="sourceFile" type="file" accept=".json,.txt,application/json,text/plain"></div>
+      <button id="loadData">Load pasted data</button>
+    </div>
+    <label for="sourceText" style="margin-top:14px">Or paste data</label>
+    <textarea id="sourceText" placeholder="Paste canonical JSON or a complete Eight O'Clock Report message"></textarea>
+    <div id="status" role="status">Waiting for data.</div>
+  </section>
+  <div id="workspace" hidden>
+    <section class="card banner">
+      <div><div class="eyebrow">SHIPBOARD DEVELOPER MODE</div><h2 id="shipName"></h2><p class="muted">Expanded editable-table prototype</p></div>
+      <div><span class="muted">DATA AS OF</span><strong id="asOf"></strong></div>
+    </section>
+    <div class="app-tabs" role="tablist" aria-label="Dashboard workspace">
+      <button id="dashboardTab" class="app-tab active" role="tab" aria-selected="true" aria-controls="dashboardPane">Dashboard</button>
+      <button id="editorTab" class="app-tab" role="tab" aria-selected="false" aria-controls="editorPane">Data Editor</button>
+    </div>
+    <div id="dashboardPane" role="tabpanel" aria-labelledby="dashboardTab">
+      <section class="stats" style="margin-top:18px">
+        <div class="stat"><span>Selected ship</span><strong id="selectedMetric">—</strong></div>
+        <div class="stat"><span>Fleet average · calculated</span><strong id="averageMetric">—</strong></div>
+        <div class="stat"><span>Fleet rank · calculated</span><strong id="rankMetric">—</strong></div>
+        <div class="stat"><span>Failure rate</span><strong id="failureMetric">—</strong></div>
+      </section>
+      <div id="dashboardVisuals"></div>
+    </div>
+    <div id="editorPane" role="tabpanel" aria-labelledby="editorTab" hidden>
+      <div id="modeContent"></div>
+    </div>
+    <section class="card save-bar"><span>Save the complete edited snapshot with ship-edit metadata and date.</span><button id="saveJson">Download ship edits JSON</button></section>
+  </div>
+</main>
+<script src="shared/browser-foundation.js"></script>
+<script src="developer-mode.js"></script>
+</body>
+</html>

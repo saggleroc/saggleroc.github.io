@@ -11,7 +11,7 @@
       add("document.type", "$", "Document must be a JSON object.");
       return { valid: false, errors };
     }
-    if (document.format !== "NAVDASH") add("document.format", "$.format", 'Expected "NAVDASH".');
+    if (document.format !== "EIGHT-OCLOCK-REPORT") add("document.format", "$.format", 'Expected "EIGHT-OCLOCK-REPORT".');
     if (document.version !== 2) add("document.version", "$.version", "Expected version 2.");
     for (const field of ["uid", "generatedAt"]) {
       if (typeof document[field] !== "string" || !document[field].trim()) add(`document.${field}`, `$.${field}`, `${field} is required.`);
@@ -135,17 +135,17 @@
     const lines = (encoded.match(/.{1,64}/g) || []).join("\n");
     const message = [
       `SUBJECT: ${settings.subject || "DASHBOARD UPDATE"}`, "", settings.body || "", "",
-      "----- NAVDASH PAYLOAD BEGIN -----", "VERSION: 1", "ENCODING: BASE32",
+      "----- EIGHT O'CLOCK REPORT PAYLOAD BEGIN -----", "VERSION: 1", "ENCODING: BASE32",
       `COMPRESSION: ${result.method}`, `LENGTH: ${result.bytes.length}`,
       `RAW-LENGTH: ${sourceBytes.length}`, `CHECKSUM: ${checksum(result.bytes)}`,
-      "", lines, "----- NAVDASH PAYLOAD END -----"
+      "", lines, "----- EIGHT O'CLOCK REPORT PAYLOAD END -----"
     ].join("\n");
     return { message, rawLength: sourceBytes.length, encodedLength: encoded.length, byteLength: result.bytes.length, compression: result.method };
   }
 
   async function decodeMessage(text) {
-    const block = text.match(/-+\s*NAVDASH\s+PAYLOAD\s+BEGIN\s*-+([\s\S]*?)-+\s*NAVDASH\s+PAYLOAD\s+END\s*-+/i);
-    if (!block) throw new Error("No NAVDASH payload markers were found.");
+    const block = text.match(/-+\s*EIGHT\s+O['’]?CLOCK\s+REPORT\s+PAYLOAD\s+BEGIN\s*-+([\s\S]*?)-+\s*EIGHT\s+O['’]?CLOCK\s+REPORT\s+PAYLOAD\s+END\s*-+/i);
+    if (!block) throw new Error("No Eight O'Clock Report payload markers were found.");
     const section = block[1];
     const expectedChecksum = section.match(/CHECKSUM\s*:\s*([0-9A-F]{8})/i)?.[1].toUpperCase();
     const expectedLength = Number(section.match(/LENGTH\s*:\s*(\d+)/i)?.[1]);
@@ -164,5 +164,5 @@
     return JSON.parse(new TextDecoder("utf-8", { fatal: true }).decode(rawBytes));
   }
 
-  global.FleetPulse = { validateDocument, equipmentReadinessRecords, encodeMessage, decodeMessage };
+  global.EightOClockReport = { validateDocument, equipmentReadinessRecords, encodeMessage, decodeMessage };
 })(window);

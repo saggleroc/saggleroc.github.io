@@ -1,0 +1,9 @@
+casrep_number,ship_name,hull_number,uic,dept,equipment_name,mission_area,category,etr,description,parts_ordered,part_status,tech_assist_reqd,fleet_crr,tycom_redline,training_material,cannab
+26055,hopper,DDG 70,12345,eng,1A GTM,MOB-E,C3,12/25/2026,1A GTM OOC due to faulty starter,w-127,available,FALSE,FALSE,TRUE,TRUE,FALSE
+26789,benfold,DDG 65,12346,cs,spy sigpro,"AW, BMD",C2,12/25/2027,"SIGPRO OOC, falut unknown",none,unknown,TRUE,TRUE,FALSE,TRUE,FALSE
+26145,higgins,DDG 76,12347,ops,slewing arm davit,MOB-S,C4,11/28/2026,"SLAD OOC, hydraulic pressure failure, troubleshooting in progress, CANNAB request from USS Benfold",w-165,available,TRUE,FALSE,TRUE,TRUE,TRUE
+26210,arleigh burke,DDG 51,21453,cs,spy-1d transmitter,"AW, BMD",C3,10/15/2026,"SPY-1D RF driver cabinet failure, single transmitter group OOC. Troubleshooting indicates failed driver TWT.",w-201,ordered,TRUE,FALSE,TRUE,FALSE,FALSE
+26315,arleigh burke,DDG 51,21453,eng,1 gtg,MOB-E,C2,9/22/2026,"1 GTG output voltage fluctuations, AVR suspected faulty. Attempting to swap AVR board with onboard spares.",w-104,available,FALSE,FALSE,FALSE,TRUE,FALSE
+26402,arleigh burke,DDG 51,21453,weps,mk 41 vls,"STW, AW",C3,11/5/2026,"Cell 12 hatch actuator hydraulic leak, hatch fails to open. Conducting seal replacement.",w-309,ordered,TRUE,TRUE,TRUE,FALSE,FALSE
+26588,arleigh burke,DDG 51,21453,ops,sps-67 radar,"MOB-S, SUW",C2,8/30/2026,"SPS-67 antenna motor assembly failed, drive motor seized. Requesting technical assistance from regional maintenance center.",none,unknown,TRUE,FALSE,FALSE,TRUE,FALSE
+26612,arleigh burke,DDG 51,21453,eng,port shaft seal,MOB-E,C4,10/1/2026,"Port main shaft seal excessive leakage, exceeding allowable limits. Requires emergency drydocking / underwater repair.",w-440,ordered,TRUE,TRUE,TRUE,FALSE,TRUE

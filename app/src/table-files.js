@@ -1,7 +1,7 @@
 (function (root, factory) {
   const api = factory();
   if (typeof module === "object" && module.exports) module.exports = api;
-  else root.NavdashTableFiles = api;
+  else root.EightOClockTableFiles = api;
 })(typeof globalThis !== "undefined" ? globalThis : this, function () {
   "use strict";
 

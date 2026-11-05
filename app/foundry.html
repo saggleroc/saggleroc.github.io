@@ -54,9 +54,9 @@ document.getElementById("exportJson").addEventListener("click",async()=>{
   const button=document.getElementById("exportJson"),status=document.getElementById("status");
   button.classList.remove("next-action");button.disabled=true;status.textContent="Exporting report to the simulated drive…";
   try{
-    const response=await fetch("./examples/0800-report.json");
+    const response=await fetch("./examples/eight-oclock-report.json");
     if(!response.ok)throw new Error(`Export returned HTTP ${response.status}`);
-    VirtualDrive.write("USS-MAHAN-0800-report.json",await response.text(),"application/json");
+    VirtualDrive.write("USS-MAHAN-eight-oclock-report.json",await response.text(),"application/json");
     status.textContent="Export complete. Opening the message generator…";
     setTimeout(()=>{location.href="./sender.html"},700);
   }catch(error){status.textContent=`Export failed: ${error.message}`;button.disabled=false;button.classList.add("next-action")}
